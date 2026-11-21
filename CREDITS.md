@@ -1,0 +1,72 @@
+# Crediti
+
+I modelli 3D di questo gioco sono di Polyfork e sono distribuiti sotto licenza [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
+Le curve e gli scambi sono una modifica del modello Straight Track (piegato in codice); alcuni veicoli sono accorciati.
+
+- Straight Track by Polyfork (https://polyfork.dev/asset/straight-track-d4cf38), CC BY 4.0
+- Curved Track by Polyfork (https://polyfork.dev/asset/curved-track-819ec6), CC BY 4.0
+- Set of Points by Polyfork (https://polyfork.dev/asset/set-of-points-610126), CC BY 4.0
+- Point Lever by Polyfork (https://polyfork.dev/asset/point-lever-5b61ca), CC BY 4.0
+- Diamond Crossing by Polyfork (https://polyfork.dev/asset/diamond-crossing-436c20), CC BY 4.0
+- Steel Girder Bridge by Polyfork (https://polyfork.dev/asset/steel-girder-bridge-d80bb4), CC BY 4.0
+- Timber Trestle Bridge by Polyfork (https://polyfork.dev/asset/timber-trestle-bridge-c3cd88), CC BY 4.0
+- Stone Viaduct Span by Polyfork (https://polyfork.dev/asset/stone-viaduct-span-0bd731), CC BY 4.0
+- Tunnel Portal by Polyfork (https://polyfork.dev/asset/tunnel-portal-4ac9f3), CC BY 4.0
+- Incline Track by Polyfork (https://polyfork.dev/asset/incline-track-b10620), CC BY 4.0
+- Buffer Stop by Polyfork (https://polyfork.dev/asset/buffer-stop-4871fc), CC BY 4.0
+- Semaphore Signal by Polyfork (https://polyfork.dev/asset/semaphore-signal-cb8968), CC BY 4.0
+- Colour-Light Signal by Polyfork (https://polyfork.dev/asset/colour-light-signal-713276), CC BY 4.0
+- Level Crossing by Polyfork (https://polyfork.dev/asset/level-crossing-37d00b), CC BY 4.0
+- Crossing Gate by Polyfork (https://polyfork.dev/asset/crossing-gate-50bcee), CC BY 4.0
+- Country Lane Tile by Polyfork (https://polyfork.dev/asset/country-lane-tile-65e8ee), CC BY 4.0
+- Tank Steam Locomotive by Polyfork (https://polyfork.dev/asset/tank-steam-locomotive-314bb1), CC BY 4.0
+- Tender Steam Locomotive by Polyfork (https://polyfork.dev/asset/tender-steam-locomotive-8e2a82), CC BY 4.0
+- Coal Tender by Polyfork (https://polyfork.dev/asset/coal-tender-0e3647), CC BY 4.0
+- Diesel Shunter by Polyfork (https://polyfork.dev/asset/diesel-shunter-67094b), CC BY 4.0
+- Mainline Diesel Locomotive by Polyfork (https://polyfork.dev/asset/mainline-diesel-locomotive-33ef97), CC BY 4.0
+- Railbus by Polyfork (https://polyfork.dev/asset/railbus-e972f3), CC BY 4.0
+- Handcar by Polyfork (https://polyfork.dev/asset/handcar-3e4083), CC BY 4.0
+- Tank Wagon by Polyfork (https://polyfork.dev/asset/tank-wagon-d860fa), CC BY 4.0
+- Hopper Wagon by Polyfork (https://polyfork.dev/asset/hopper-wagon-b4c486), CC BY 4.0
+- Flatbed Wagon by Polyfork (https://polyfork.dev/asset/flatbed-wagon-53187a), CC BY 4.0
+- Passenger Carriage by Polyfork (https://polyfork.dev/asset/passenger-carriage-de9d58), CC BY 4.0
+- Brake Coach by Polyfork (https://polyfork.dev/asset/brake-coach-f83456), CC BY 4.0
+- Covered Goods Van by Polyfork (https://polyfork.dev/asset/covered-goods-van-34fce3), CC BY 4.0
+- Open Goods Wagon by Polyfork (https://polyfork.dev/asset/open-goods-wagon-998292), CC BY 4.0
+- Guard's Van by Polyfork (https://polyfork.dev/asset/guard-s-van-6231d0), CC BY 4.0
+- Country Station Building by Polyfork (https://polyfork.dev/asset/country-station-building-2d8f5e), CC BY 4.0
+- Platform Run by Polyfork (https://polyfork.dev/asset/platform-run-3738d0), CC BY 4.0
+- Platform Canopy Run by Polyfork (https://polyfork.dev/asset/platform-canopy-run-bc2275), CC BY 4.0
+- Station Bench by Polyfork (https://polyfork.dev/asset/station-bench-5f56b4), CC BY 4.0
+- Timber Halt Platform by Polyfork (https://polyfork.dev/asset/timber-halt-platform-042fd8), CC BY 4.0
+- Engine Shed by Polyfork (https://polyfork.dev/asset/engine-shed-eff627), CC BY 4.0
+- Goods Shed by Polyfork (https://polyfork.dev/asset/goods-shed-206be9), CC BY 4.0
+- Yard Crane by Polyfork (https://polyfork.dev/asset/yard-crane-316e4a), CC BY 4.0
+- Coal Stage by Polyfork (https://polyfork.dev/asset/coal-stage-2789f5), CC BY 4.0
+- Red Barn by Polyfork (https://polyfork.dev/asset/red-barn-d41683), CC BY 4.0
+- Grain Silo by Polyfork (https://polyfork.dev/asset/grain-silo-58ca67), CC BY 4.0
+- Milk Churn Stand by Polyfork (https://polyfork.dev/asset/milk-churn-stand-130fe2), CC BY 4.0
+- Milk Churn by Polyfork (https://polyfork.dev/asset/milk-churn-895735), CC BY 4.0
+- Pier Head Platform by Polyfork (https://polyfork.dev/asset/pier-head-platform-63662b), CC BY 4.0
+- Harbour Master's Hut by Polyfork (https://polyfork.dev/asset/harbour-master-s-hut-226f34), CC BY 4.0
+- Mooring Bollard by Polyfork (https://polyfork.dev/asset/mooring-bollard-2d4bc9), CC BY 4.0
+- Small Fishing Boat by Polyfork (https://polyfork.dev/asset/small-fishing-boat-4ac0e3), CC BY 4.0
+- Spoil Heap by Polyfork (https://polyfork.dev/asset/spoil-heap-9aaa11), CC BY 4.0
+- Tracked Excavator by Polyfork (https://polyfork.dev/asset/tracked-excavator-8ebd3c), CC BY 4.0
+- Loading Gantry by Polyfork (https://polyfork.dev/asset/loading-gantry-34460f), CC BY 4.0
+- Lineside Tree by Polyfork (https://polyfork.dev/asset/lineside-tree-97e02a), CC BY 4.0
+- Firewood Stack by Polyfork (https://polyfork.dev/asset/firewood-stack-810f49), CC BY 4.0
+- Log Stump by Polyfork (https://polyfork.dev/asset/log-stump-1d65a5), CC BY 4.0
+- Sleeper Stack by Polyfork (https://polyfork.dev/asset/sleeper-stack-67628e), CC BY 4.0
+- Grass Tile by Polyfork (https://polyfork.dev/asset/grass-tile-37e1a7), CC BY 4.0
+- Dirt Tile by Polyfork (https://polyfork.dev/asset/dirt-tile-6f4470), CC BY 4.0
+- Cobbled Yard Tile by Polyfork (https://polyfork.dev/asset/cobbled-yard-tile-d00544), CC BY 4.0
+- Water Tower by Polyfork (https://polyfork.dev/asset/water-tower-dd6200), CC BY 4.0
+- Signal Box by Polyfork (https://polyfork.dev/asset/signal-box-f57a2d), CC BY 4.0
+- Turntable by Polyfork (https://polyfork.dev/asset/turntable-6415d2), CC BY 4.0
+- Station Garden Bed by Polyfork (https://polyfork.dev/asset/station-garden-bed-d369e3), CC BY 4.0
+- Lineside Fence Run by Polyfork (https://polyfork.dev/asset/lineside-fence-run-3a64f5), CC BY 4.0
+- Compact Tractor by Polyfork (https://polyfork.dev/asset/compact-tractor-35b84b), CC BY 4.0
+- Apple Tree by Polyfork (https://polyfork.dev/asset/apple-tree-ef0ba0), CC BY 4.0
+- Hay Bale by Polyfork (https://polyfork.dev/asset/hay-bale-079e8c), CC BY 4.0
+- Garden Rock by Polyfork (https://polyfork.dev/asset/garden-rock-7f5d60), CC BY 4.0

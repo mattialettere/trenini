@@ -1,0 +1,37 @@
+{
+  "id": "03",
+  "name": { "it": "Il primo scambio", "en": "The first switch" },
+  "terrain": ["........", "........", "........"],
+  "fixed": [
+    { "x": 1, "y": 1, "kind": "straight", "a": 3, "b": 1 },
+    { "x": 2, "y": 1, "kind": "straight", "a": 3, "b": 1 }
+  ],
+  "depots": [{ "x": 0, "y": 1, "dir": 1 }],
+  "stations": [
+    { "id": "town", "kind": "town", "x": 7, "y": 0, "dir": 1, "accepts": ["milk"] },
+    { "id": "port", "kind": "port", "x": 7, "y": 2, "dir": 1, "accepts": ["coal"] }
+  ],
+  "trains": [
+    { "cargo": "milk", "wagons": 1, "depart": 1, "depot": 0 },
+    { "cargo": "coal", "wagons": 1, "depart": 4, "depot": 0 }
+  ],
+  "stock": { "straight": 6, "curve": 4, "switch": 1 },
+  "targets": { "pieces": 7, "ticks": 12 },
+  "tutorial": [
+    { "it": "Il latte va al paese, il carbone al porto. Costruisci una linea, poi trascina un ramo partendo da un binario già posato: diventa uno scambio.", "en": "Milk goes to the village, coal to the port. Build one line, then drag a branch out of an existing track: it becomes a switch." },
+    { "it": "Tocca lo scambio per scegliere chi devia: tutti, nessuno, o solo una merce.", "en": "Tap the switch to choose who turns off: everyone, no one, or just one cargo." }
+  ],
+  "decorations": [
+    { "model": "coal-stage-2789f5", "x": 0, "y": 2, "rot": 0, "scale": 0.5 },
+    { "model": "milk-churn-stand-130fe2", "x": 0, "y": 0, "rot": 0, "scale": 0.6 }
+  ],
+  "solution": [
+    { "x": 3, "y": 1, "kind": "straight", "a": 3, "b": 1 },
+    { "x": 4, "y": 1, "kind": "straight", "a": 3, "b": 1 },
+    { "x": 5, "y": 1, "kind": "switch", "a": 3, "b": 1, "c": 0, "route": "milk" },
+    { "x": 5, "y": 0, "kind": "curve", "a": 2, "b": 1 },
+    { "x": 6, "y": 0, "kind": "straight", "a": 3, "b": 1 },
+    { "x": 6, "y": 1, "kind": "curve", "a": 3, "b": 2 },
+    { "x": 6, "y": 2, "kind": "curve", "a": 0, "b": 1 }
+  ]
+}

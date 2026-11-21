@@ -1,0 +1,25 @@
+{
+  "id": "01",
+  "name": { "it": "Prima corsa", "en": "First run" },
+  "terrain": ["T......", ".......", "......T"],
+  "fixed": [{ "x": 1, "y": 1, "kind": "straight", "a": 3, "b": 1 }],
+  "depots": [{ "x": 0, "y": 1, "dir": 1 }],
+  "stations": [{ "id": "town", "kind": "town", "x": 6, "y": 1, "dir": 1, "accepts": ["milk"] }],
+  "trains": [{ "cargo": "milk", "wagons": 1, "depart": 1, "depot": 0 }],
+  "stock": { "straight": 4 },
+  "targets": { "pieces": 4, "ticks": 7 },
+  "tutorial": [
+    { "it": "Il treno del latte deve arrivare al paese. Trascina il dito dal binario fino alla stazione.", "en": "The milk train must reach the village. Drag your finger from the track to the station." },
+    { "it": "Quando il binario è collegato, premi Via!", "en": "When the track is connected, press Go!" }
+  ],
+  "decorations": [
+    { "model": "milk-churn-stand-130fe2", "x": 0, "y": 2, "rot": 0, "scale": 0.6 },
+    { "model": "station-garden-bed-d369e3", "x": 5, "y": 0, "rot": 0, "scale": 0.6 }
+  ],
+  "solution": [
+    { "x": 2, "y": 1, "kind": "straight", "a": 3, "b": 1 },
+    { "x": 3, "y": 1, "kind": "straight", "a": 3, "b": 1 },
+    { "x": 4, "y": 1, "kind": "straight", "a": 3, "b": 1 },
+    { "x": 5, "y": 1, "kind": "straight", "a": 3, "b": 1 }
+  ]
+}
