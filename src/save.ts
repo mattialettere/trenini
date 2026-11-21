@@ -10,6 +10,7 @@ export interface LevelSave {
 export interface SaveData {
   version: 1;
   lang?: 'it' | 'en';
+  muted?: boolean;
   levels: Record<string, LevelSave>;
 }
 

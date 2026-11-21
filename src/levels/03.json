@@ -19,7 +19,7 @@
   "targets": { "pieces": 7, "ticks": 12 },
   "tutorial": [
     { "it": "Il latte va al paese, il carbone al porto. Costruisci una linea, poi trascina un ramo partendo da un binario già posato: diventa uno scambio.", "en": "Milk goes to the village, coal to the port. Build one line, then drag a branch out of an existing track: it becomes a switch." },
-    { "it": "Tocca lo scambio per scegliere chi devia: tutti, nessuno, o solo una merce.", "en": "Tap the switch to choose who turns off: everyone, no one, or just one cargo." }
+    { "it": "Sopra lo scambio compare un cartello grande: toccalo per scegliere chi devia. Freccia dritta = nessuno, freccia curva = tutti, icona = solo quella merce. Qui scegli il latte.", "en": "A big sign appears above the switch: tap it to choose who turns. Straight arrow = no one, curved arrow = everyone, icon = only that cargo. Here, pick milk." }
   ],
   "decorations": [
     { "model": "coal-stage-2789f5", "x": 0, "y": 2, "rot": 0, "scale": 0.5 },

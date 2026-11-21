@@ -3,7 +3,7 @@ import { Board } from '../core/board';
 import type { SimSnapshot, TrackStep } from '../core/sim';
 import { Cargo, Cell, DX, DY, Dir, Piece, opposite } from '../core/types';
 import { ModelGeo, bendTrack, centered, loadModel } from './assets';
-import { cargoSprite, markerSprite, switchSprite } from './icons';
+import { cargoSprite, markerSprite } from './icons';
 
 /** Lato di una cella in metri: quanto il binario dritto Polyfork. */
 export const CELL = 4;
@@ -419,11 +419,6 @@ export class GameScene {
         mesh.position.add(c);
         this.trackGroup.add(mesh);
       }
-      if (p.kind === 'switch') {
-        const sign = switchSprite(p.route ?? 'none');
-        sign.position.copy(c).add(new THREE.Vector3(0, 3.2, 0));
-        this.trackGroup.add(sign);
-      }
     }
   }
 
@@ -573,6 +568,13 @@ export class GameScene {
     const m = markerSprite('#e0322b');
     m.position.copy(this.cellCenter(x, y)).add(new THREE.Vector3(0, 3, 0));
     this.overlayGroup.add(m);
+  }
+
+  /** Posizione sullo schermo (pixel CSS) di un punto sopra una cella. */
+  screenPos(x: number, y: number, height = 0): { x: number; y: number } {
+    const v = this.cellCenter(x, y).setY(height).project(this.camera);
+    const r = this.canvas.getBoundingClientRect();
+    return { x: r.left + ((v.x + 1) / 2) * r.width, y: r.top + ((1 - v.y) / 2) * r.height };
   }
 
   setGridVisible(v: boolean) {

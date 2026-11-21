@@ -75,43 +75,53 @@ export function cargoSprite(cargo: Cargo, scale = 1.6): THREE.Sprite {
   return s;
 }
 
-/** Cartello di uno scambio: freccia dritta, freccia deviata o icona della merce deviata. */
-export function switchSprite(route: SwitchRoute): THREE.Sprite {
-  const s = new THREE.Sprite(
-    spriteMaterial(`switch-${route}`, (ctx, n) => {
-      ctx.fillStyle = '#fffaf0';
-      ctx.strokeStyle = '#5b4a3a';
-      ctx.lineWidth = n * 0.05;
-      ctx.beginPath();
-      ctx.roundRect(n * 0.08, n * 0.08, n * 0.84, n * 0.84, n * 0.18);
-      ctx.fill();
-      ctx.stroke();
-      if (route === 'none' || route === 'all') {
-        ctx.strokeStyle = '#5b4a3a';
-        ctx.lineWidth = n * 0.09;
-        ctx.lineCap = 'round';
-        ctx.beginPath();
-        ctx.moveTo(n * 0.5, n * 0.78);
-        if (route === 'none') {
-          ctx.lineTo(n * 0.5, n * 0.25);
-          ctx.moveTo(n * 0.33, n * 0.4);
-          ctx.lineTo(n * 0.5, n * 0.24);
-          ctx.lineTo(n * 0.67, n * 0.4);
-        } else {
-          ctx.quadraticCurveTo(n * 0.5, n * 0.35, n * 0.78, n * 0.3);
-          ctx.moveTo(n * 0.62, n * 0.2);
-          ctx.lineTo(n * 0.79, n * 0.3);
-          ctx.lineTo(n * 0.66, n * 0.45);
-        }
-        ctx.stroke();
-      } else {
-        drawCargo(ctx, route, n / 2, n / 2, n * 0.3);
-      }
-    }),
-  );
-  s.scale.set(1.8, 1.8, 1);
-  s.renderOrder = 10;
-  return s;
+/** Disegna il cartello di uno scambio: freccia dritta, freccia deviata o icona della merce deviata. */
+export function drawSwitch(ctx: CanvasRenderingContext2D, n: number, route: SwitchRoute) {
+  ctx.fillStyle = '#fffaf0';
+  ctx.strokeStyle = '#d9643a';
+  ctx.lineWidth = n * 0.07;
+  ctx.beginPath();
+  ctx.arc(n / 2, n / 2, n * 0.44, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+  if (route === 'none' || route === 'all') {
+    ctx.strokeStyle = '#3b2f25';
+    ctx.lineWidth = n * 0.09;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    ctx.moveTo(n * 0.45, n * 0.78);
+    if (route === 'none') {
+      ctx.moveTo(n * 0.5, n * 0.78);
+      ctx.lineTo(n * 0.5, n * 0.25);
+      ctx.moveTo(n * 0.33, n * 0.4);
+      ctx.lineTo(n * 0.5, n * 0.23);
+      ctx.lineTo(n * 0.67, n * 0.4);
+    } else {
+      ctx.quadraticCurveTo(n * 0.45, n * 0.38, n * 0.76, n * 0.32);
+      ctx.moveTo(n * 0.6, n * 0.2);
+      ctx.lineTo(n * 0.77, n * 0.32);
+      ctx.lineTo(n * 0.64, n * 0.47);
+    }
+    ctx.stroke();
+  } else {
+    drawCargo(ctx, route, n / 2, n / 2, n * 0.3);
+  }
+}
+
+const switchUrls = new Map<SwitchRoute, string>();
+
+/** Immagine del cartello di uno scambio, per i pulsanti dell'interfaccia. */
+export function switchIconUrl(route: SwitchRoute): string {
+  let url = switchUrls.get(route);
+  if (!url) {
+    const c = document.createElement('canvas');
+    c.width = c.height = 128;
+    drawSwitch(c.getContext('2d')!, 128, route);
+    url = c.toDataURL();
+    switchUrls.set(route, url);
+  }
+  return url;
 }
 
 export function markerSprite(color: string): THREE.Sprite {

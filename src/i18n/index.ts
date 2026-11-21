@@ -39,6 +39,12 @@ const DICT = {
     hintTap: 'Tocca uno scambio per cambiarlo. Tieni premuto per togliere un pezzo.',
     noPieces: 'Pezzi finiti',
     prototype: 'Prototipo · 3 livelli',
+    'route.none': 'Scambio: tutti dritti',
+    'route.all': 'Scambio: tutti deviati',
+    'route.milk': 'Scambio: devia solo il latte',
+    'route.coal': 'Scambio: devia solo il carbone',
+    'route.timber': 'Scambio: devia solo il legname',
+    'route.passengers': 'Scambio: devia solo i passeggeri',
   },
   en: {
     play: 'Play',
@@ -76,6 +82,12 @@ const DICT = {
     hintTap: 'Tap a switch to change it. Press and hold to remove a piece.',
     noPieces: 'Out of pieces',
     prototype: 'Prototype · 3 levels',
+    'route.none': 'Switch: everyone straight',
+    'route.all': 'Switch: everyone turns',
+    'route.milk': 'Switch: only milk turns',
+    'route.coal': 'Switch: only coal turns',
+    'route.timber': 'Switch: only timber turns',
+    'route.passengers': 'Switch: only passengers turn',
   },
 } as const;
 

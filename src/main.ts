@@ -6,6 +6,21 @@ import { LEVELS } from './levels';
 import { GameScene } from './render/scene';
 import { levelSave, load, update } from './save';
 import credits from './assets/credits.json';
+import {
+  bell,
+  crashBang,
+  duckMusic,
+  failJingle,
+  isMuted,
+  placeTick,
+  setMuted,
+  successJingle,
+  switchClack,
+  trainChuffs,
+  unlockAudio,
+  whistle,
+} from './audio';
+import { switchIconUrl } from './render/icons';
 
 const canvas = document.getElementById('view') as HTMLCanvasElement;
 const ui = document.getElementById('ui') as HTMLDivElement;
@@ -62,6 +77,58 @@ function toast(msg: string) {
   toastTimer = window.setTimeout(() => el!.classList.remove('show'), 1800);
 }
 
+const SOUND_ON = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg>';
+const SOUND_OFF = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M17 9l5 6M22 9l-5 6"/></svg>';
+
+function muteButton() {
+  const b = h('button', { 'aria-label': 'audio', html: isMuted() ? SOUND_OFF : SOUND_ON });
+  b.addEventListener('click', () => {
+    setMuted(!isMuted());
+    b.innerHTML = isMuted() ? SOUND_OFF : SOUND_ON;
+  });
+  return b;
+}
+
+// --- pulsanti degli scambi ---------------------------------------------------------
+// Ogni scambio ha un grande cartello toccabile che segue lo scambio sullo schermo.
+
+let switchLayer: HTMLDivElement | null = null;
+
+function renderSwitchButtons() {
+  if (!switchLayer) return;
+  switchLayer.innerHTML = '';
+  const teach = levelSave(level.id).stars === 0;
+  for (const p of board.pieces.values()) {
+    if (p.kind !== 'switch' || p.fixed) continue;
+    const btn = h(
+      'button',
+      { class: `switch-btn${teach ? ' pulse' : ''}`, 'data-x': p.x, 'data-y': p.y, 'aria-label': t('switch') },
+      h('img', { src: switchIconUrl(p.route ?? 'none'), alt: '' }),
+    );
+    btn.addEventListener('pointerdown', (e) => e.stopPropagation());
+    btn.addEventListener('click', () => {
+      if (mode !== 'build') return;
+      board.beginEdit();
+      board.cycleSwitch(p.x, p.y);
+      board.endEdit();
+      switchClack();
+      afterEdit();
+      const route = board.pieceAt(p.x, p.y)?.route ?? 'none';
+      toast(t(`route.${route}` as any));
+    });
+    switchLayer.append(btn);
+  }
+  placeSwitchButtons();
+}
+
+function placeSwitchButtons() {
+  if (!switchLayer) return;
+  for (const el of switchLayer.children as HTMLCollectionOf<HTMLElement>) {
+    const pos = scene.screenPos(Number(el.dataset.x), Number(el.dataset.y), 2.2);
+    el.style.transform = `translate(${pos.x}px, ${pos.y}px) translate(-50%, -100%)`;
+  }
+}
+
 // --- schermate -----------------------------------------------------------------
 
 function unlocked(i: number) {
@@ -71,6 +138,8 @@ function unlocked(i: number) {
 function showHome() {
   mode = 'home';
   ui.innerHTML = '';
+  switchLayer = null;
+  duckMusic(false);
   scene.setGridVisible(false);
   const grid = h('div', { class: 'level-grid' });
   LEVELS.forEach((l, i) => {
@@ -98,6 +167,7 @@ function showHome() {
         { class: 'home-row' },
         h('button', { onclick: () => { setLang(getLang() === 'it' ? 'en' : 'it'); showHome(); } }, getLang() === 'it' ? 'English' : 'Italiano'),
         h('button', { onclick: showCredits }, t('credits')),
+        muteButton(),
       ),
       h('p', { class: 'small' }, t('prototype')),
     ),
@@ -135,6 +205,7 @@ async function startLevel(i: number) {
 
 function enterBuild() {
   mode = 'build';
+  duckMusic(false);
   sim = null;
   prevSnap = curSnap = null;
   scene.resetTrains();
@@ -149,6 +220,8 @@ function goalsHtml() {
 
 function renderGameUi() {
   ui.innerHTML = '';
+  switchLayer = h('div', { class: `switch-layer${mode === 'build' ? '' : ' locked'}` });
+  ui.append(switchLayer);
   const idx = LEVELS.indexOf(level);
   ui.append(
     h(
@@ -156,6 +229,7 @@ function renderGameUi() {
       { class: 'topbar' },
       h('button', { onclick: () => { scene.resetTrains(); showHome(); }, 'aria-label': t('back') }, '‹'),
       h('div', { class: 'level-info panel' }, h('div', { class: 'title' }, `${idx + 1}. ${level.name[getLang()]}`), h('div', { class: 'goals', html: goalsHtml() })),
+      muteButton(),
     ),
     h(
       'div',
@@ -195,6 +269,7 @@ function renderGameUi() {
     );
   }
   ui.append(toolbar);
+  renderSwitchButtons();
   const tut = level.tutorial;
   if (mode === 'build' && tut && tutorialStep < tut.length) {
     ui.append(
@@ -219,6 +294,7 @@ function startRun() {
   if (mode !== 'build') return;
   if (level.tutorial && tutorialStep < level.tutorial.length) tutorialStep = level.tutorial.length;
   mode = 'run';
+  duckMusic(true);
   scene.setGridVisible(false);
   scene.setHighlight(null);
   sim = new Simulation(board);
@@ -234,6 +310,8 @@ function showResult(r: Result) {
   const idx = LEVELS.indexOf(level);
   const back = h('div', { class: 'modal-back' });
   const modal = h('div', { class: 'modal panel' });
+  if (r.outcome === 'won') successJingle(r.stars);
+  else failJingle();
   if (r.outcome === 'won') {
     const best = Math.max(r.stars, levelSave(level.id).stars);
     update((s) => {
@@ -299,8 +377,10 @@ function extendPath(cell: Cell) {
   const after = board.piecesUsed() + JSON.stringify(board.exportPieces());
   if (before !== after) {
     gestureChanged = true;
+    placeTick();
     scene.updateTracks();
     renderStockOnly();
+    renderSwitchButtons();
   } else if (drawPath.length > 1 && (Object.keys(level.stock) as PieceKind[]).every((k) => board.available(k) <= 0)) {
     toast(t('noPieces'));
   }
@@ -319,6 +399,8 @@ function renderStockOnly() {
 }
 
 canvas.addEventListener('contextmenu', (e) => e.preventDefault());
+window.addEventListener('pointerdown', unlockAudio, true);
+window.addEventListener('keydown', unlockAudio, true);
 
 canvas.addEventListener('pointerdown', (e) => {
   canvas.setPointerCapture(e.pointerId);
@@ -408,7 +490,10 @@ function endPointer(e: PointerEvent) {
     if (drawPath.length === 1 && moved < 10 && performance.now() - drawStart.time < 500) {
       const c = drawPath[0];
       const p = board.pieceAt(c.x, c.y);
-      if (p?.kind === 'switch' && board.cycleSwitch(c.x, c.y)) gestureChanged = true;
+      if (p?.kind === 'switch' && board.cycleSwitch(c.x, c.y)) {
+        gestureChanged = true;
+        switchClack();
+      }
       else if (!p) toast(t('hintTap'));
     }
     board.endEdit();
@@ -463,12 +548,22 @@ function frame(now: number) {
         while (tickTime >= 1 && sim.outcome === 'running') {
           tickTime -= 1;
           prevSnap = curSnap;
+          const before = sim.trains.map((tr) => tr.status);
           sim.step();
           curSnap = sim.snapshot();
+          sim.trains.forEach((tr, i) => {
+            if (before[i] === 'waiting' && tr.status === 'running') whistle();
+            if (before[i] === 'running' && (tr.status === 'arriving' || tr.status === 'done')) bell();
+          });
+          const moving = sim.trains.filter((tr) => tr.status === 'running' || tr.status === 'arriving').length;
+          trainChuffs(moving, 1 / (TICKS_PER_SECOND * speed));
         }
         if (sim.outcome !== 'running') {
           endTimer = 0;
-          if (sim.failure) scene.showFailure(sim.failure.x, sim.failure.y);
+          if (sim.failure) {
+            scene.showFailure(sim.failure.x, sim.failure.y);
+            if (sim.failure.reason === 'collision' || sim.failure.reason === 'derail') crashBang();
+          }
         }
       } else if (endTimer >= 0) {
         tickTime = Math.min(1, tickTime + dt * TICKS_PER_SECOND * speed);
@@ -484,6 +579,7 @@ function frame(now: number) {
     }
   }
   scene.render(dt);
+  placeSwitchButtons();
   requestAnimationFrame(frame);
 }
 
@@ -496,5 +592,5 @@ function frame(now: number) {
   showHome();
   requestAnimationFrame(frame);
   // Utile per i test automatici e per il debug da console.
-  (window as any).trainland = { board: () => board, startLevel, startRun, scene, dirBetween };
+  (window as any).trainland = { board: () => board, sim: () => sim, startLevel, startRun, scene, dirBetween };
 })();
