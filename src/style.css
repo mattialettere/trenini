@@ -496,3 +496,28 @@ button.go {
 #ui > .toast {
   pointer-events: none;
 }
+
+/* Barra in basso: se i pezzi non ci stanno insieme ai tasti, i tasti salgono sopra la riga dei pezzi. */
+.toolbar {
+  flex-wrap: wrap-reverse;
+  row-gap: 8px;
+}
+
+.toolbar .actions {
+  margin-left: auto;
+}
+
+.stock {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+@media (max-width: 420px) {
+  .stock {
+    gap: 8px;
+    padding: 6px 10px;
+  }
+  .stock .item {
+    min-width: 34px;
+  }
+}
