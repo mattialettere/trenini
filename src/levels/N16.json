@@ -1,0 +1,172 @@
+{
+  "id": "N16",
+  "theme": "snow",
+  "name": {
+    "it": "Il gatto e il treno",
+    "en": "The cat and the train"
+  },
+  "terrain": [
+    "...=....=..",
+    "...=....=..",
+    "T..=....=..",
+    "...=....=..",
+    "...=....=.T",
+    "...=....=.."
+  ],
+  "fixed": [],
+  "depots": [
+    {
+      "x": 0,
+      "y": 1,
+      "dir": 1
+    }
+  ],
+  "stations": [
+    {
+      "id": "chalet",
+      "kind": "town",
+      "x": 10,
+      "y": 1,
+      "dir": 1,
+      "accepts": [
+        "passengers"
+      ]
+    },
+    {
+      "id": "port",
+      "kind": "port",
+      "x": 10,
+      "y": 4,
+      "dir": 1,
+      "accepts": [
+        "coal"
+      ]
+    }
+  ],
+  "trains": [
+    {
+      "cargo": "passengers",
+      "wagons": 1,
+      "depart": 1,
+      "depot": 0
+    },
+    {
+      "cargo": "coal",
+      "wagons": 1,
+      "depart": 3,
+      "depot": 0
+    }
+  ],
+  "stock": {
+    "straight": 10,
+    "curve": 2,
+    "switch": 1,
+    "signal": 2
+  },
+  "targets": {
+    "pieces": 12,
+    "ticks": 22
+  },
+  "crossings": [
+    {
+      "x": 3,
+      "y": 1,
+      "axis": 1,
+      "period": 5,
+      "offset": 4,
+      "duration": 2
+    },
+    {
+      "x": 8,
+      "y": 1,
+      "axis": 1,
+      "period": 6,
+      "offset": 9,
+      "duration": 2
+    }
+  ],
+  "solution": [
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 1,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 2,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 4,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 5,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 6,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 7,
+      "y": 1
+    },
+    {
+      "kind": "switch",
+      "a": 3,
+      "b": 1,
+      "c": 2,
+      "route": "coal",
+      "x": 9,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 0,
+      "b": 2,
+      "x": 9,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 0,
+      "b": 2,
+      "x": 9,
+      "y": 3
+    },
+    {
+      "kind": "curve",
+      "a": 0,
+      "b": 1,
+      "x": 9,
+      "y": 4
+    }
+  ],
+  "solutionSignals": [
+    {
+      "x": 1,
+      "y": 1
+    },
+    {
+      "x": 6,
+      "y": 1
+    }
+  ]
+}

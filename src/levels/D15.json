@@ -1,0 +1,242 @@
+{
+  "id": "D15",
+  "theme": "desert",
+  "name": {
+    "it": "Il nodo di Dry Creek",
+    "en": "Dry Creek junction"
+  },
+  "terrain": [
+    "R...........",
+    "......~.....",
+    "......~...R.",
+    "......~.....",
+    "..R...~.....",
+    "......~....."
+  ],
+  "fixed": [],
+  "depots": [
+    {
+      "x": 0,
+      "y": 1,
+      "dir": 1
+    },
+    {
+      "x": 0,
+      "y": 4,
+      "dir": 1
+    },
+    {
+      "x": 11,
+      "y": 5,
+      "dir": 3
+    }
+  ],
+  "stations": [
+    {
+      "id": "saloon",
+      "kind": "town",
+      "x": 11,
+      "y": 1,
+      "dir": 1,
+      "accepts": [
+        "passengers"
+      ]
+    },
+    {
+      "id": "store",
+      "kind": "port",
+      "x": 11,
+      "y": 3,
+      "dir": 1,
+      "accepts": [
+        "coal"
+      ]
+    },
+    {
+      "id": "west",
+      "kind": "town",
+      "x": 0,
+      "y": 2,
+      "dir": 3,
+      "accepts": [
+        "passengers"
+      ]
+    }
+  ],
+  "trains": [
+    {
+      "cargo": "coal",
+      "wagons": 1,
+      "depart": 1,
+      "depot": 0
+    },
+    {
+      "cargo": "passengers",
+      "wagons": 1,
+      "depart": 1,
+      "depot": 1
+    },
+    {
+      "cargo": "passengers",
+      "wagons": 1,
+      "depart": 2,
+      "depot": 2
+    }
+  ],
+  "stock": {
+    "straight": 13,
+    "curve": 7,
+    "switch": 2,
+    "bridge": 1
+  },
+  "targets": {
+    "pieces": 20,
+    "ticks": 14
+  },
+  "solution": [
+    {
+      "kind": "straight",
+      "a": 1,
+      "b": 3,
+      "x": 10,
+      "y": 5
+    },
+    {
+      "kind": "curve",
+      "a": 1,
+      "b": 0,
+      "x": 9,
+      "y": 5
+    },
+    {
+      "kind": "straight",
+      "a": 2,
+      "b": 0,
+      "x": 9,
+      "y": 4
+    },
+    {
+      "kind": "switch",
+      "a": 0,
+      "b": 2,
+      "c": 1,
+      "route": "all",
+      "x": 9,
+      "y": 3
+    },
+    {
+      "kind": "switch",
+      "a": 2,
+      "b": 0,
+      "c": 3,
+      "route": "none",
+      "x": 9,
+      "y": 2
+    },
+    {
+      "kind": "curve",
+      "a": 2,
+      "b": 1,
+      "x": 9,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 10,
+      "y": 1
+    },
+    {
+      "kind": "curve",
+      "a": 3,
+      "b": 0,
+      "x": 1,
+      "y": 4
+    },
+    {
+      "kind": "straight",
+      "a": 2,
+      "b": 0,
+      "x": 1,
+      "y": 3
+    },
+    {
+      "kind": "curve",
+      "a": 2,
+      "b": 3,
+      "x": 1,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 1,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 2,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 3,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 4,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 5,
+      "y": 1
+    },
+    {
+      "kind": "bridge",
+      "a": 3,
+      "b": 1,
+      "x": 6,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 7,
+      "y": 1
+    },
+    {
+      "kind": "curve",
+      "a": 3,
+      "b": 2,
+      "x": 8,
+      "y": 1
+    },
+    {
+      "kind": "curve",
+      "a": 0,
+      "b": 1,
+      "x": 8,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 10,
+      "y": 3
+    }
+  ]
+}

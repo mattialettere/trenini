@@ -1,0 +1,133 @@
+{
+  "id": "N03",
+  "theme": "snow",
+  "name": {
+    "it": "La legnaia",
+    "en": "The woodpile"
+  },
+  "terrain": [
+    "TT.......",
+    "..o......",
+    "T........",
+    "..o...T..",
+    "........."
+  ],
+  "fixed": [],
+  "depots": [
+    {
+      "x": 0,
+      "y": 4,
+      "dir": 0
+    }
+  ],
+  "stations": [
+    {
+      "id": "port",
+      "kind": "port",
+      "x": 8,
+      "y": 1,
+      "dir": 1,
+      "accepts": [
+        "timber"
+      ]
+    }
+  ],
+  "trains": [
+    {
+      "cargo": null,
+      "wagons": 2,
+      "depart": 1,
+      "depot": 0,
+      "wagon": "timber"
+    },
+    {
+      "cargo": null,
+      "wagons": 1,
+      "depart": 5,
+      "depot": 0,
+      "wagon": "timber"
+    }
+  ],
+  "stock": {
+    "straight": 6,
+    "curve": 6
+  },
+  "targets": {
+    "pieces": 9,
+    "ticks": 16
+  },
+  "pickups": [
+    {
+      "x": 2,
+      "y": 2,
+      "axis": 1,
+      "gives": "timber",
+      "kind": "forest"
+    }
+  ],
+  "solution": [
+    {
+      "kind": "curve",
+      "a": 2,
+      "b": 1,
+      "x": 0,
+      "y": 3
+    },
+    {
+      "kind": "curve",
+      "a": 3,
+      "b": 0,
+      "x": 1,
+      "y": 3
+    },
+    {
+      "kind": "curve",
+      "a": 2,
+      "b": 1,
+      "x": 1,
+      "y": 2
+    },
+    {
+      "kind": "curve",
+      "a": 3,
+      "b": 0,
+      "x": 3,
+      "y": 2
+    },
+    {
+      "kind": "curve",
+      "a": 2,
+      "b": 1,
+      "x": 3,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 4,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 5,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 6,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 7,
+      "y": 1
+    }
+  ]
+}

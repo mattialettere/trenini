@@ -1,0 +1,254 @@
+{
+  "id": "N20",
+  "theme": "snow",
+  "name": {
+    "it": "La grande tormenta",
+    "en": "The great blizzard"
+  },
+  "terrain": [
+    "....^^......",
+    "..o.^^......",
+    "....^^...o..",
+    "..o.........",
+    "......~~....",
+    "..o...~~....",
+    "....=.......",
+    "T...=......."
+  ],
+  "fixed": [],
+  "depots": [
+    {
+      "x": 0,
+      "y": 2,
+      "dir": 1
+    },
+    {
+      "x": 0,
+      "y": 6,
+      "dir": 1
+    }
+  ],
+  "stations": [
+    {
+      "id": "chalet",
+      "kind": "town",
+      "x": 11,
+      "y": 2,
+      "dir": 1,
+      "accepts": [
+        "milk",
+        "passengers"
+      ]
+    },
+    {
+      "id": "port",
+      "kind": "port",
+      "x": 11,
+      "y": 6,
+      "dir": 1,
+      "accepts": [
+        "timber",
+        "coal"
+      ]
+    }
+  ],
+  "trains": [
+    {
+      "cargo": null,
+      "wagons": 1,
+      "depart": 1,
+      "depot": 0,
+      "wagon": "milk"
+    },
+    {
+      "cargo": "passengers",
+      "wagons": 1,
+      "depart": 3,
+      "depot": 0
+    },
+    {
+      "cargo": null,
+      "wagons": 1,
+      "depart": 1,
+      "depot": 1,
+      "wagon": "timber"
+    },
+    {
+      "cargo": "coal",
+      "wagons": 1,
+      "depart": 4,
+      "depot": 1
+    },
+    {
+      "cargo": null,
+      "wagons": 1,
+      "depart": 7,
+      "depot": 1,
+      "wagon": "timber"
+    }
+  ],
+  "stock": {
+    "straight": 14,
+    "curve": 3,
+    "switch": 2,
+    "signal": 2
+  },
+  "targets": {
+    "pieces": 18,
+    "ticks": 29
+  },
+  "pickups": [
+    {
+      "x": 9,
+      "y": 3,
+      "axis": 0,
+      "gives": "milk",
+      "kind": "farm"
+    },
+    {
+      "x": 2,
+      "y": 6,
+      "axis": 1,
+      "gives": "timber",
+      "kind": "forest"
+    }
+  ],
+  "crossings": [
+    {
+      "x": 4,
+      "y": 6,
+      "axis": 1,
+      "period": 7,
+      "offset": 6,
+      "duration": 2
+    }
+  ],
+  "solution": [
+    {
+      "kind": "curve",
+      "a": 3,
+      "b": 2,
+      "x": 1,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 0,
+      "b": 2,
+      "x": 1,
+      "y": 3
+    },
+    {
+      "kind": "straight",
+      "a": 0,
+      "b": 2,
+      "x": 1,
+      "y": 4
+    },
+    {
+      "kind": "straight",
+      "a": 0,
+      "b": 2,
+      "x": 1,
+      "y": 5
+    },
+    {
+      "kind": "switch",
+      "a": 1,
+      "b": 3,
+      "c": 0,
+      "route": "none",
+      "x": 1,
+      "y": 6
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 3,
+      "y": 6
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 5,
+      "y": 6
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 6,
+      "y": 6
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 7,
+      "y": 6
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 8,
+      "y": 6
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 9,
+      "y": 6
+    },
+    {
+      "kind": "switch",
+      "a": 3,
+      "b": 1,
+      "c": 0,
+      "route": "passengers",
+      "x": 10,
+      "y": 6
+    },
+    {
+      "kind": "straight",
+      "a": 2,
+      "b": 0,
+      "x": 10,
+      "y": 5
+    },
+    {
+      "kind": "straight",
+      "a": 2,
+      "b": 0,
+      "x": 10,
+      "y": 4
+    },
+    {
+      "kind": "straight",
+      "a": 2,
+      "b": 0,
+      "x": 10,
+      "y": 3
+    },
+    {
+      "kind": "curve",
+      "a": 2,
+      "b": 1,
+      "x": 10,
+      "y": 2
+    }
+  ],
+  "solutionSignals": [
+    {
+      "x": 1,
+      "y": 3
+    },
+    {
+      "x": 1,
+      "y": 5
+    }
+  ]
+}

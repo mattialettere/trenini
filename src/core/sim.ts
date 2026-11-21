@@ -344,7 +344,7 @@ export function scoreRun(board: Board, sim: Simulation): Result {
   }
   const ticks = sim.finishTick();
   const starPieces = pieces <= board.level.targets.pieces;
-  const starTime = ticks <= board.level.targets.ticks;
+  const starTime = ticks <= board.targetTicks();
   const stars = (1 + (starPieces ? 1 : 0) + (starTime ? 1 : 0)) as 1 | 2 | 3;
   return { outcome: 'won', stars, starPieces, starTime, pieces, ticks, failure: null };
 }

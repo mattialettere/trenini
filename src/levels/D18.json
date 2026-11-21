@@ -1,0 +1,280 @@
+{
+  "id": "D18",
+  "theme": "desert",
+  "name": {
+    "it": "La città fantasma",
+    "en": "The ghost town"
+  },
+  "terrain": [
+    "...^^.......",
+    "...^^...R...",
+    "...^^.......",
+    "............",
+    ".R....~~....",
+    "......~~...R",
+    "............"
+  ],
+  "fixed": [],
+  "depots": [
+    {
+      "x": 0,
+      "y": 1,
+      "dir": 1
+    },
+    {
+      "x": 0,
+      "y": 5,
+      "dir": 1
+    },
+    {
+      "x": 6,
+      "y": 0,
+      "dir": 2
+    }
+  ],
+  "stations": [
+    {
+      "id": "saloon",
+      "kind": "town",
+      "x": 11,
+      "y": 1,
+      "dir": 1,
+      "accepts": [
+        "passengers"
+      ]
+    },
+    {
+      "id": "store",
+      "kind": "port",
+      "x": 11,
+      "y": 3,
+      "dir": 1,
+      "accepts": [
+        "coal"
+      ]
+    },
+    {
+      "id": "ranch",
+      "kind": "town",
+      "x": 6,
+      "y": 6,
+      "dir": 2,
+      "accepts": [
+        "milk"
+      ]
+    }
+  ],
+  "trains": [
+    {
+      "cargo": "coal",
+      "wagons": 1,
+      "depart": 1,
+      "depot": 0
+    },
+    {
+      "cargo": "passengers",
+      "wagons": 1,
+      "depart": 1,
+      "depot": 1
+    },
+    {
+      "cargo": "milk",
+      "wagons": 1,
+      "depart": 1,
+      "depot": 2
+    }
+  ],
+  "stock": {
+    "straight": 14,
+    "curve": 7,
+    "switch": 2,
+    "crossing": 1,
+    "bridge": 2,
+    "tunnel": 2
+  },
+  "targets": {
+    "pieces": 25,
+    "ticks": 16
+  },
+  "solution": [
+    {
+      "kind": "straight",
+      "a": 0,
+      "b": 2,
+      "x": 6,
+      "y": 1
+    },
+    {
+      "kind": "crossing",
+      "a": 0,
+      "b": 2,
+      "x": 6,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 0,
+      "b": 2,
+      "x": 6,
+      "y": 3
+    },
+    {
+      "kind": "bridge",
+      "a": 0,
+      "b": 2,
+      "x": 6,
+      "y": 4
+    },
+    {
+      "kind": "bridge",
+      "a": 0,
+      "b": 2,
+      "x": 6,
+      "y": 5
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 1,
+      "y": 5
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 2,
+      "y": 5
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 3,
+      "y": 5
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 4,
+      "y": 5
+    },
+    {
+      "kind": "curve",
+      "a": 3,
+      "b": 0,
+      "x": 5,
+      "y": 5
+    },
+    {
+      "kind": "straight",
+      "a": 2,
+      "b": 0,
+      "x": 5,
+      "y": 4
+    },
+    {
+      "kind": "straight",
+      "a": 2,
+      "b": 0,
+      "x": 5,
+      "y": 3
+    },
+    {
+      "kind": "switch",
+      "a": 1,
+      "b": 3,
+      "c": 2,
+      "route": "none",
+      "x": 5,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 7,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 8,
+      "y": 2
+    },
+    {
+      "kind": "switch",
+      "a": 3,
+      "b": 1,
+      "c": 2,
+      "route": "coal",
+      "x": 9,
+      "y": 2
+    },
+    {
+      "kind": "curve",
+      "a": 3,
+      "b": 0,
+      "x": 10,
+      "y": 2
+    },
+    {
+      "kind": "curve",
+      "a": 2,
+      "b": 1,
+      "x": 10,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 1,
+      "y": 1
+    },
+    {
+      "kind": "curve",
+      "a": 3,
+      "b": 2,
+      "x": 2,
+      "y": 1
+    },
+    {
+      "kind": "curve",
+      "a": 0,
+      "b": 1,
+      "x": 2,
+      "y": 2
+    },
+    {
+      "kind": "tunnel",
+      "a": 3,
+      "b": 1,
+      "x": 3,
+      "y": 2
+    },
+    {
+      "kind": "tunnel",
+      "a": 3,
+      "b": 1,
+      "x": 4,
+      "y": 2
+    },
+    {
+      "kind": "curve",
+      "a": 0,
+      "b": 1,
+      "x": 9,
+      "y": 3
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 10,
+      "y": 3
+    }
+  ]
+}

@@ -43,6 +43,10 @@ export class Board {
   readonly pieces = new Map<string, PlacedPiece>();
   /** Celle con un semaforo posato dal giocatore. */
   readonly signals = new Set<string>();
+  /** Pezzi in più comprati con i bonus per questo livello. */
+  extra: Partial<Record<StockKind, number>> = {};
+  /** Tick in più concessi per la stella del tempo (bonus orologio). */
+  timeBonus = 0;
   private undoStack: string[] = [];
 
   constructor(readonly level: LevelDef) {
@@ -141,7 +145,7 @@ export class Board {
   }
 
   available(kind: StockKind): number {
-    return (this.level.stock[kind] ?? 0) - this.used(kind);
+    return (this.level.stock[kind] ?? 0) + (this.extra[kind] ?? 0) - this.used(kind);
   }
 
   /** Pezzi usati per le stelle: binari posati più semafori. */
@@ -214,6 +218,35 @@ export class Board {
     this.restore(
       JSON.stringify({ p: list.filter((p) => this.buildable(p.x, p.y)), s: signals.map((c) => cellKey(c.x, c.y)) }),
     );
+  }
+
+  /** Tick massimi per la stella del tempo, compreso l'eventuale bonus. */
+  targetTicks(): number {
+    return this.level.targets.ticks + this.timeBonus;
+  }
+
+  /**
+   * Suggerimento: posa il primo pezzo della soluzione che manca o è diverso (con il suo scambio),
+   * oppure il primo semaforo che manca. Se servono, i pezzi del suggerimento sono regalati.
+   * Restituisce la cella sistemata, o null se la costruzione contiene già tutta la soluzione.
+   */
+  hint(): Cell | null {
+    for (const sp of this.level.solution) {
+      const cur = this.pieceAt(sp.x, sp.y);
+      if (cur && samePiece(cur, sp)) continue;
+      const refund = cur && !cur.fixed && cur.kind === sp.kind ? 1 : 0;
+      if (this.available(sp.kind) + refund <= 0) this.extra[sp.kind] = (this.extra[sp.kind] ?? 0) + 1;
+      this.signals.delete(cellKey(sp.x, sp.y));
+      this.pieces.set(cellKey(sp.x, sp.y), { ...sp, fixed: false });
+      return { x: sp.x, y: sp.y };
+    }
+    for (const c of this.level.solutionSignals ?? []) {
+      if (this.hasSignal(c.x, c.y)) continue;
+      if (this.available('signal') <= 0) this.extra.signal = (this.extra.signal ?? 0) + 1;
+      this.signals.add(cellKey(c.x, c.y));
+      return c;
+    }
+    return null;
   }
 
   /** Carica la soluzione di riferimento del livello (per i test). */

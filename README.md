@@ -3,8 +3,14 @@
 Un puzzle rilassante di treni su isole sospese, giocabile nel browser (prima di tutto dal telefono).
 Posi pochi binari sulla griglia, premi **Via!** e guardi i treni consegnare latte, carbone, legname e passeggeri.
 
-Stato: **20 livelli** di difficoltà crescente: scambi, ponti, gallerie, incroci, fattorie, miniere e boschi
-dove i treni vuoti caricano la merce, semafori e passaggi a livello con il trattore.
+Stato: **60 livelli** in tre mondi (campagna, neve, deserto), 20 per mondo, di difficoltà crescente: scambi,
+ponti, gallerie, incroci, fattorie, miniere e boschi dove i treni vuoti caricano la merce, semafori e passaggi
+a livello (trattore, gatto delle nevi, diligenza).
+
+Monete e negozio: le stelle danno monete (1 stella 10, 2 stelle 20, 3 stelle 50; rigiocando si prende solo la
+differenza). Tra un livello e l'altro si apre il negozio, dove si comprano bonus da usare durante la costruzione:
+pezzo extra, semaforo extra, orologio (+3 al tempo per la stella) e suggerimento (posa un pezzo della soluzione).
+Le monete si guadagnano solo giocando: niente acquisti con soldi veri.
 
 ## Sviluppo
 
@@ -24,6 +30,9 @@ Il sito viene pubblicato su GitHub Pages da `.github/workflows/pages.yml`.
 - `src/levels/` livelli in JSON, ognuno con una soluzione di riferimento da 3 stelle verificata dai test.
 - `scripts/solve.ts` strumento per chi crea livelli: disegna la soluzione da `scripts/solutions.json` come farebbe
   un giocatore, la simula e con `--write` aggiorna soluzione e obiettivi del livello
+- `scripts/design.ts` progettista automatico per i livelli di neve (`N..`) e deserto (`D..`): da una bozza
+  (terreno, depositi, stazioni, treni) trova i percorsi, imposta gli scambi, prova i semafori e scrive soluzione,
+  obiettivi e scorte
   (`npx vite-node scripts/solve.ts [id] --write`).
 - `src/i18n/` testi in italiano e inglese.
 - `tests/` test unitari della logica.

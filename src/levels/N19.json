@@ -1,0 +1,243 @@
+{
+  "id": "N19",
+  "theme": "snow",
+  "name": {
+    "it": "Neve e fumo",
+    "en": "Snow and smoke"
+  },
+  "terrain": [
+    "....^^.....",
+    "....^^..o..",
+    "T..........",
+    "....=......",
+    "....=..o...",
+    "~~..=......",
+    "~~..=....T."
+  ],
+  "fixed": [],
+  "depots": [
+    {
+      "x": 0,
+      "y": 0,
+      "dir": 2
+    },
+    {
+      "x": 0,
+      "y": 3,
+      "dir": 1
+    }
+  ],
+  "stations": [
+    {
+      "id": "chalet",
+      "kind": "town",
+      "x": 10,
+      "y": 2,
+      "dir": 1,
+      "accepts": [
+        "milk"
+      ]
+    },
+    {
+      "id": "port",
+      "kind": "port",
+      "x": 10,
+      "y": 5,
+      "dir": 1,
+      "accepts": [
+        "coal",
+        "timber"
+      ]
+    }
+  ],
+  "trains": [
+    {
+      "cargo": null,
+      "wagons": 1,
+      "depart": 1,
+      "depot": 0,
+      "wagon": "milk"
+    },
+    {
+      "cargo": "coal",
+      "wagons": 1,
+      "depart": 1,
+      "depot": 1
+    },
+    {
+      "cargo": "timber",
+      "wagons": 1,
+      "depart": 4,
+      "depot": 1
+    }
+  ],
+  "stock": {
+    "straight": 17,
+    "curve": 6
+  },
+  "targets": {
+    "pieces": 20,
+    "ticks": 16
+  },
+  "pickups": [
+    {
+      "x": 8,
+      "y": 2,
+      "axis": 1,
+      "gives": "milk",
+      "kind": "farm"
+    }
+  ],
+  "crossings": [
+    {
+      "x": 4,
+      "y": 5,
+      "axis": 1,
+      "period": 6,
+      "offset": 5,
+      "duration": 2
+    }
+  ],
+  "solution": [
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 1,
+      "y": 3
+    },
+    {
+      "kind": "curve",
+      "a": 3,
+      "b": 2,
+      "x": 2,
+      "y": 3
+    },
+    {
+      "kind": "straight",
+      "a": 0,
+      "b": 2,
+      "x": 2,
+      "y": 4
+    },
+    {
+      "kind": "curve",
+      "a": 0,
+      "b": 1,
+      "x": 2,
+      "y": 5
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 3,
+      "y": 5
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 5,
+      "y": 5
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 6,
+      "y": 5
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 7,
+      "y": 5
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 8,
+      "y": 5
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 9,
+      "y": 5
+    },
+    {
+      "kind": "curve",
+      "a": 0,
+      "b": 1,
+      "x": 0,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 1,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 2,
+      "y": 1
+    },
+    {
+      "kind": "curve",
+      "a": 3,
+      "b": 2,
+      "x": 3,
+      "y": 1
+    },
+    {
+      "kind": "curve",
+      "a": 0,
+      "b": 1,
+      "x": 3,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 4,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 5,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 6,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 7,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 9,
+      "y": 2
+    }
+  ]
+}

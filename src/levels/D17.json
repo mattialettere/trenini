@@ -1,0 +1,238 @@
+{
+  "id": "D17",
+  "theme": "desert",
+  "name": {
+    "it": "Tre diligenze",
+    "en": "Three stagecoaches"
+  },
+  "terrain": [
+    "..=...=...=..",
+    "R.=...=...=..",
+    "..=...=...=.R",
+    "..=...=...=..",
+    "..=...=...=.."
+  ],
+  "fixed": [],
+  "depots": [
+    {
+      "x": 0,
+      "y": 1,
+      "dir": 1
+    },
+    {
+      "x": 0,
+      "y": 3,
+      "dir": 1
+    }
+  ],
+  "stations": [
+    {
+      "id": "saloon",
+      "kind": "town",
+      "x": 12,
+      "y": 1,
+      "dir": 1,
+      "accepts": [
+        "passengers"
+      ]
+    },
+    {
+      "id": "store",
+      "kind": "port",
+      "x": 12,
+      "y": 3,
+      "dir": 1,
+      "accepts": [
+        "coal"
+      ]
+    }
+  ],
+  "trains": [
+    {
+      "cargo": "passengers",
+      "wagons": 1,
+      "depart": 1,
+      "depot": 0
+    },
+    {
+      "cargo": "coal",
+      "wagons": 1,
+      "depart": 1,
+      "depot": 1
+    },
+    {
+      "cargo": "passengers",
+      "wagons": 1,
+      "depart": 6,
+      "depot": 0
+    }
+  ],
+  "stock": {
+    "straight": 10,
+    "curve": 7,
+    "switch": 2,
+    "signal": 3
+  },
+  "targets": {
+    "pieces": 19,
+    "ticks": 26
+  },
+  "crossings": [
+    {
+      "x": 2,
+      "y": 1,
+      "axis": 1,
+      "period": 8,
+      "offset": 4,
+      "duration": 2
+    },
+    {
+      "x": 6,
+      "y": 3,
+      "axis": 1,
+      "period": 8,
+      "offset": 6,
+      "duration": 2
+    },
+    {
+      "x": 10,
+      "y": 1,
+      "axis": 1,
+      "period": 8,
+      "offset": 2,
+      "duration": 2
+    }
+  ],
+  "solution": [
+    {
+      "kind": "switch",
+      "a": 1,
+      "b": 3,
+      "c": 2,
+      "route": "none",
+      "x": 1,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 3,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 4,
+      "y": 1
+    },
+    {
+      "kind": "curve",
+      "a": 3,
+      "b": 2,
+      "x": 5,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 0,
+      "b": 2,
+      "x": 5,
+      "y": 2
+    },
+    {
+      "kind": "curve",
+      "a": 0,
+      "b": 1,
+      "x": 5,
+      "y": 3
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 7,
+      "y": 3
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 8,
+      "y": 3
+    },
+    {
+      "kind": "curve",
+      "a": 3,
+      "b": 0,
+      "x": 9,
+      "y": 3
+    },
+    {
+      "kind": "straight",
+      "a": 2,
+      "b": 0,
+      "x": 9,
+      "y": 2
+    },
+    {
+      "kind": "curve",
+      "a": 2,
+      "b": 1,
+      "x": 9,
+      "y": 1
+    },
+    {
+      "kind": "switch",
+      "a": 3,
+      "b": 1,
+      "c": 2,
+      "route": "coal",
+      "x": 11,
+      "y": 1
+    },
+    {
+      "kind": "curve",
+      "a": 3,
+      "b": 0,
+      "x": 1,
+      "y": 3
+    },
+    {
+      "kind": "straight",
+      "a": 2,
+      "b": 0,
+      "x": 1,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 0,
+      "b": 2,
+      "x": 11,
+      "y": 2
+    },
+    {
+      "kind": "curve",
+      "a": 0,
+      "b": 1,
+      "x": 11,
+      "y": 3
+    }
+  ],
+  "solutionSignals": [
+    {
+      "x": 7,
+      "y": 3
+    },
+    {
+      "x": 9,
+      "y": 3
+    },
+    {
+      "x": 9,
+      "y": 1
+    }
+  ]
+}

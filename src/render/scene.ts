@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { Board } from '../core/board';
 import type { SimSnapshot, TrackStep } from '../core/sim';
-import { Cargo, Cell, DX, DY, Dir, Piece, TrainDef, opposite } from '../core/types';
+import { Cargo, Cell, DX, DY, Dir, Piece, Theme, TrainDef, opposite } from '../core/types';
 import { ModelGeo, bendTrack, centered, loadModel } from './assets';
 import { cargoSprite, emptySprite, lightSprite, markerSprite, scheduleSprite } from './icons';
 
@@ -49,6 +49,111 @@ const X = {
   stump: 'log-stump-1d65a5',
 } as const;
 
+
+type Palette = Record<
+  'grass' | 'grassDark' | 'margin' | 'soil' | 'soilDark' | 'rock' | 'rockDark' | 'water' | 'waterDeep' | 'fall' | 'lot' | 'hill' | 'hillDark',
+  THREE.Color
+>;
+const pal = (o: Record<keyof Palette, string>): Palette =>
+  Object.fromEntries(Object.entries(o).map(([k, v]) => [k, new THREE.Color(v)])) as Palette;
+
+/** Un modello con la sua scala. */
+interface Prop {
+  id: string;
+  scale: number;
+}
+
+/** Aspetto di un'ambientazione: colori, alberi, edifici e veicoli. Le regole restano le stesse. */
+interface ThemeDef {
+  sky: number;
+  colors: Palette;
+  /** Alberi sulle celle 'T' e sul bordo; la scala varia di ±10%. */
+  trees: Prop[];
+  rock: Prop;
+  /** Piccoli decori sparsi sul bordo dell'isola. */
+  scatter: Prop[];
+  town: Prop;
+  barn: Prop;
+  silo: Prop | null;
+  hay: Prop;
+  spoil: Prop;
+  digger: Prop;
+  logs: Prop;
+  stump: Prop;
+  vehicle: Prop;
+  /** Porto con molo e barca, o deposito merci (nel deserto). */
+  port: 'harbour' | 'freight';
+}
+
+const THEMES: Record<Theme, ThemeDef> = {
+  country: {
+    sky: 0xbfe3f2,
+    colors: pal({
+      grass: '#95aa5d', grassDark: '#87a052', margin: '#7f9a4c', soil: '#8d6741', soilDark: '#6e4f33',
+      rock: '#8b8473', rockDark: '#6d675a', water: '#4fa3c7', waterDeep: '#3f8fb5', fall: '#8fd0ea',
+      lot: '#b59a6a', hill: '#7d9a4f', hillDark: '#6c8a43',
+    }),
+    trees: [{ id: M.tree, scale: 0.46 }, { id: M.tree, scale: 0.46 }, { id: M.apple, scale: 1 }],
+    rock: { id: M.rock, scale: 2.6 },
+    scatter: [{ id: M.rock, scale: 1.6 }, { id: M.hay, scale: 1 }],
+    town: { id: M.stationBuilding, scale: 0.3 },
+    barn: { id: 'red-barn-d41683', scale: 0.42 },
+    silo: { id: 'grain-silo-58ca67', scale: 0.36 },
+    hay: { id: M.hay, scale: 1.1 },
+    spoil: { id: 'spoil-heap-9aaa11', scale: 1 },
+    digger: { id: 'tracked-excavator-8ebd3c', scale: 0.36 },
+    logs: { id: 'firewood-stack-810f49', scale: 0.9 },
+    stump: { id: 'log-stump-1d65a5', scale: 1.3 },
+    vehicle: { id: 'compact-tractor-35b84b', scale: 0.95 },
+    port: 'harbour',
+  },
+  snow: {
+    sky: 0xcfe4f0,
+    colors: pal({
+      grass: '#eef3f6', grassDark: '#e2eaf0', margin: '#d6e0e7', soil: '#8a7d72', soilDark: '#6f655d',
+      rock: '#8c8f96', rockDark: '#6f727a', water: '#7fbfdc', waterDeep: '#6aaccd', fall: '#cdeaf6',
+      lot: '#c9c1b5', hill: '#f4f7fa', hillDark: '#dfe7ee',
+    }),
+    trees: [{ id: 'snow-laden-spruce-36716e', scale: 0.62 }, { id: 'snow-laden-spruce-36716e', scale: 0.5 }, { id: 'windblown-larch-abb99c', scale: 0.42 }],
+    rock: { id: 'rock-outcrop-158ac3', scale: 1.1 },
+    scatter: [{ id: 'stone-cairn-a9bf48', scale: 1 }, { id: 'boulder-field-cluster-08e364', scale: 0.9 }, { id: 'alpine-ibex-2a288a', scale: 1 }],
+    town: { id: 'alpine-chalet-47d59e', scale: 0.3 },
+    barn: { id: 'alpine-hay-barn-3965e5', scale: 0.42 },
+    silo: null,
+    hay: { id: 'alpine-fingerpost-d47349', scale: 1 },
+    spoil: { id: 'scree-heap-42cce5', scale: 1.3 },
+    digger: { id: 'tracked-excavator-8ebd3c', scale: 0.36 },
+    logs: { id: 'snow-capped-log-pile-8719e7', scale: 0.95 },
+    stump: { id: 'mountain-hare-d9c64c', scale: 1.6 },
+    vehicle: { id: 'piste-basher-snowcat-92fe8b', scale: 0.6 },
+    port: 'harbour',
+  },
+  desert: {
+    sky: 0xf3dcbc,
+    colors: pal({
+      grass: '#e2c089', grassDark: '#d8b47c', margin: '#cfa46d', soil: '#b9774a', soilDark: '#9a5f3a',
+      rock: '#b06a42', rockDark: '#8f5435', water: '#3ea8b4', waterDeep: '#3497a3', fall: '#8fd6de',
+      lot: '#c79a6c', hill: '#cf925b', hillDark: '#bb7f4c',
+    }),
+    trees: [{ id: 'saguaro-cactus-6b27eb', scale: 0.85 }, { id: 'saguaro-cactus-6b27eb', scale: 0.7 }, { id: 'joshua-tree-867a2c', scale: 0.5 }],
+    rock: { id: 'sandstone-outcrop-75800b', scale: 0.8 },
+    scatter: [{ id: 'sagebrush-700b03', scale: 1.3 }, { id: 'creosote-bush-5b17d5', scale: 1 }, { id: 'tumbleweed-2caa1a', scale: 1.4 }],
+    town: { id: 'general-store-a2187a', scale: 0.4 },
+    barn: { id: 'livery-stable-c01ee0', scale: 0.32 },
+    silo: { id: 'windmill-pump-2993a4', scale: 0.42 },
+    hay: { id: 'plank-trough-baf3d5', scale: 1 },
+    spoil: { id: 'ore-chute-and-bin-8375ac', scale: 0.7 },
+    digger: { id: 'mine-headframe-735cf4', scale: 0.42 },
+    logs: { id: 'firewood-stack-810f49', scale: 0.9 },
+    stump: { id: 'dead-cottonwood-edbde8', scale: 0.4 },
+    vehicle: { id: 'stagecoach-94db88', scale: 0.75 },
+    port: 'freight',
+  },
+};
+
+const FREIGHT = { office: 'stage-and-freight-office-c5a38a', crates: 'freight-crate-and-sack-f49cbb' };
+const themeOf = (b: Board): ThemeDef => THEMES[b.level.theme ?? 'country'];
+
 export const WAGON_MODEL: Record<Cargo, string> = {
   milk: 'tank-wagon-d860fa',
   coal: 'hopper-wagon-b4c486',
@@ -58,19 +163,25 @@ export const WAGON_MODEL: Record<Cargo, string> = {
 
 /** Modelli che servono per disegnare un livello: si caricano solo questi. */
 export function modelsFor(board: Board): string[] {
-  const ids = new Set<string>(Object.values(M));
+  const th = themeOf(board);
   const lvl = board.level;
+  const ids = new Set<string>([M.straight, M.crossing, M.buffer, M.lever, M.shed, M.platform, M.lamp, M.loco]);
+  for (const p of [...th.trees, th.rock, ...th.scatter, th.town]) ids.add(p.id);
+  if (lvl.stations.some((s) => s.kind === 'port')) {
+    if (th.port === 'harbour') [M.pier, M.hut, M.crane, M.boat].forEach((id) => ids.add(id));
+    else ids.add(FREIGHT.office).add(FREIGHT.crates).add(M.crane);
+  }
   for (const t of lvl.trains) ids.add(WAGON_MODEL[wagonOf(t)]);
   const has = (tr: string) => lvl.terrain.some((r) => r.includes(tr));
   if (has('~') || (lvl.stock.bridge ?? 0) > 0) ids.add(X.bridge);
   if (has('^')) ids.add(X.portal);
   if (has('=') || (lvl.crossings ?? []).length > 0) ids.add(X.lane);
-  if ((lvl.crossings ?? []).length > 0) ids.add(X.levelCrossing).add(X.tractor);
-  if ((lvl.stock.signal ?? 0) > 0) ids.add(X.signal);
+  if ((lvl.crossings ?? []).length > 0) ids.add(X.levelCrossing).add(th.vehicle.id);
+  ids.add(X.signal); // anche per il bonus semaforo extra
   for (const p of lvl.pickups ?? []) {
-    if (p.kind === 'farm') ids.add(X.barn).add(X.silo).add(X.churns);
-    if (p.kind === 'mine') ids.add(X.gantry).add(X.spoil).add(X.excavator);
-    if (p.kind === 'forest') ids.add(X.firewood).add(X.stump);
+    if (p.kind === 'farm') [th.barn, th.silo, th.hay].forEach((q) => q && ids.add(q.id)), ids.add(X.churns);
+    if (p.kind === 'mine') ids.add(X.gantry).add(th.spoil.id).add(th.digger.id);
+    if (p.kind === 'forest') ids.add(th.logs.id).add(th.stump.id).add(th.trees[0].id);
   }
   for (const d of board.level.decorations ?? []) ids.add(d.model);
   return [...ids];
@@ -83,22 +194,6 @@ const DIR_VEC = (d: Dir) => new THREE.Vector3(DX[d], 0, DY[d]);
 /** Rotazione attorno a y che porta il nord nella direzione d. */
 const yawFor = (d: Dir) => (-d * Math.PI) / 2;
 
-const COLORS = {
-  sky: 0xbfe3f2,
-  grass: new THREE.Color('#95aa5d'),
-  grassDark: new THREE.Color('#87a052'),
-  margin: new THREE.Color('#7f9a4c'),
-  soil: new THREE.Color('#8d6741'),
-  soilDark: new THREE.Color('#6e4f33'),
-  rock: new THREE.Color('#8b8473'),
-  rockDark: new THREE.Color('#6d675a'),
-  water: new THREE.Color('#4fa3c7'),
-  waterDeep: new THREE.Color('#3f8fb5'),
-  fall: new THREE.Color('#8fd0ea'),
-  lot: new THREE.Color('#b59a6a'),
-  hill: new THREE.Color('#7d9a4f'),
-  hillDark: new THREE.Color('#6c8a43'),
-};
 
 // Generatore pseudo-casuale con seme: le decorazioni restano uguali a ogni partita.
 function rng(seed: number) {
@@ -151,7 +246,7 @@ export class GameScene {
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFShadowMap;
-    this.scene.background = new THREE.Color(COLORS.sky);
+    this.scene.background = new THREE.Color(THEMES.country.sky);
     this.camera = new THREE.OrthographicCamera(-10, 10, 10, -10, 1, 400);
 
     this.scene.add(new THREE.HemisphereLight(0xfff6e0, 0x6b7f8f, 1.6));
@@ -219,8 +314,13 @@ export class GameScene {
 
   // --- livello ---------------------------------------------------------------
 
+  /** Ambientazione del livello corrente. */
+  private th: ThemeDef = THEMES.country;
+
   setBoard(board: Board) {
     this.board = board;
+    this.th = themeOf(board);
+    (this.scene.background as THREE.Color).set(this.th.sky);
     for (const g of [this.levelGroup, this.trackGroup, this.trainGroup, this.signalGroup]) g.clear();
     this.vehicles = [];
     this.cargoTags = [];
@@ -278,7 +378,7 @@ export class GameScene {
         const ax = x0 + gx * CELL;
         const az = z0 + gy * CELL;
         if (isWater(cx, cy)) {
-          const c = ((cx + cy) % 2 === 0 ? COLORS.water : COLORS.waterDeep).clone();
+          const c = ((cx + cy) % 2 === 0 ? this.th.colors.water : this.th.colors.waterDeep).clone();
           quad(ax, az, ax + CELL, az + CELL, WATER_Y, c);
           // Sponde di terra verso le celle vicine asciutte.
           for (const d of [0, 1, 2, 3] as Dir[]) {
@@ -289,8 +389,8 @@ export class GameScene {
               // Cascata giù dal bordo dell'isola.
               const ex = d === 1 ? ax + CELL + 0.05 : d === 3 ? ax - 0.05 : null;
               const ez = d === 2 ? az + CELL + 0.05 : d === 0 ? az - 0.05 : null;
-              if (ex !== null) wall(ex, az + 0.4, ex, az + CELL - 0.4, WATER_Y, -5, COLORS.fall);
-              if (ez !== null) wall(ax + 0.4, ez, ax + CELL - 0.4, ez, WATER_Y, -5, COLORS.fall);
+              if (ex !== null) wall(ex, az + 0.4, ex, az + CELL - 0.4, WATER_Y, -5, this.th.colors.fall);
+              if (ez !== null) wall(ax + 0.4, ez, ax + CELL - 0.4, ez, WATER_Y, -5, this.th.colors.fall);
               continue;
             }
             if (isWater(nx, ny)) continue;
@@ -300,14 +400,14 @@ export class GameScene {
               [ax, az + CELL, ax + CELL, az + CELL],
               [ax, az, ax, az + CELL],
             ][d];
-            wall(e[0], e[1], e[2], e[3], 0, WATER_Y, COLORS.soil);
+            wall(e[0], e[1], e[2], e[3], 0, WATER_Y, this.th.colors.soil);
           }
           continue;
         }
         let c: THREE.Color;
-        if (!inGrid) c = COLORS.margin.clone();
-        else if (tr === 'lot') c = COLORS.lot.clone();
-        else c = ((cx + cy) % 2 === 0 ? COLORS.grass : COLORS.grassDark).clone();
+        if (!inGrid) c = this.th.colors.margin.clone();
+        else if (tr === 'lot') c = this.th.colors.lot.clone();
+        else c = ((cx + cy) % 2 === 0 ? this.th.colors.grass : this.th.colors.grassDark).clone();
         c.offsetHSL(0, 0, (rand() - 0.5) * 0.02);
         quad(ax, az, ax + CELL, az + CELL, 0, c);
       }
@@ -362,7 +462,7 @@ export class GameScene {
         const a1 = A[i];
         const a2 = A[(i + 1) % n];
         const shade = rand();
-        const c = r === 0 ? (shade > 0.5 ? COLORS.soil : COLORS.soilDark) : shade > 0.5 ? COLORS.rock : COLORS.rockDark;
+        const c = r === 0 ? (shade > 0.5 ? this.th.colors.soil : this.th.colors.soilDark) : shade > 0.5 ? this.th.colors.rock : this.th.colors.rockDark;
         if (B && B.length === n) {
           const b1 = B[i];
           const b2 = B[(i + 1) % n];
@@ -392,7 +492,8 @@ export class GameScene {
         const tr = b.terrain(x, y);
         if (tr === 'rock') {
           for (let i = 0; i < 2; i++) {
-            const r = this.prop(M.rock, null, i === 0 ? 2.6 + rand() * 0.5 : 1.4 + rand() * 0.4);
+            const rk = this.th.rock;
+            const r = this.prop(rk.id, null, rk.scale * (i === 0 ? 1 + rand() * 0.2 : 0.55 + rand() * 0.15));
             r.position.copy(this.cellCenter(x, y)).add(new THREE.Vector3((rand() - 0.5) * 1.6, 0, (rand() - 0.5) * 1.6));
             r.rotation.y = rand() * Math.PI * 2;
             this.levelGroup.add(r);
@@ -404,8 +505,8 @@ export class GameScene {
           continue;
         }
         if (tr !== 'tree') continue;
-        const isLineside = rand() > 0.35;
-        const t = this.prop(isLineside ? M.tree : M.apple, null, isLineside ? rand() * 0.12 + 0.42 : 0.9 + rand() * 0.2);
+        const tp = this.th.trees[Math.floor(rand() * this.th.trees.length)];
+        const t = this.prop(tp.id, null, tp.scale * (0.9 + rand() * 0.2));
         t.position.copy(this.cellCenter(x, y)).add(new THREE.Vector3((rand() - 0.5) * 1.2, 0, (rand() - 0.5) * 1.2));
         t.rotation.y = rand() * Math.PI * 2;
         this.levelGroup.add(t);
@@ -423,8 +524,9 @@ export class GameScene {
         if (b.inside(gx, gy) || reserved.has(`${gx},${gy}`) || isWater(gx, gy)) continue;
         const r = rand();
         if (r > 0.45) continue;
-        const id = r < 0.22 ? M.tree : r < 0.32 ? M.apple : r < 0.4 ? M.rock : M.hay;
-        const p = this.prop(id, null, id === M.tree ? 0.38 + rand() * 0.1 : id === M.rock ? 1.6 : 1);
+        const pick = r < 0.32 ? this.th.trees[Math.floor((r / 0.32) * this.th.trees.length)] : this.th.scatter[Math.floor(((r - 0.32) / 0.13) * this.th.scatter.length) % this.th.scatter.length];
+        const isTree = r < 0.32;
+        const p = this.prop(pick.id, null, pick.scale * (isTree ? 0.85 + rand() * 0.15 : 1));
         p.position.copy(this.cellCenter(gx, gy)).add(new THREE.Vector3((rand() - 0.5) * 2, 0, (rand() - 0.5) * 2));
         p.rotation.y = rand() * Math.PI * 2;
         this.levelGroup.add(p);
@@ -475,7 +577,23 @@ export class GameScene {
       stop.position.copy(c).addScaledVector(fwd, CELL);
       stop.rotation.y = yawFor(s.dir);
       this.levelGroup.add(stop);
-      if (s.kind === 'port') {
+      if (s.kind === 'port' && this.th.port === 'freight') {
+        // Deposito merci nel deserto: ufficio, gru e casse oltre il paraurti.
+        const office = this.prop(FREIGHT.office, null, 0.36);
+        office.position.copy(c).addScaledVector(fwd, CELL * 1.25);
+        office.rotation.y = yawFor(s.dir) + Math.PI;
+        this.levelGroup.add(office);
+        const crane = this.prop(M.crane, null, 0.7);
+        crane.position.copy(c).addScaledVector(right, CELL * 0.48);
+        crane.rotation.y = yawFor(s.dir);
+        this.levelGroup.add(crane);
+        for (const k of [-0.5, 0.5]) {
+          const cr = this.prop(FREIGHT.crates, null, 1.1);
+          cr.position.copy(c).addScaledVector(right, -CELL * 0.45).addScaledVector(fwd, k * 1.4);
+          cr.rotation.y = yawFor(s.dir) + k;
+          this.levelGroup.add(cr);
+        }
+      } else if (s.kind === 'port') {
         // Porto: molo oltre il paraurti, gru accanto al binario, capanno e barca sul lato destro.
         const pier = this.prop(M.pier, null, 1);
         pier.position.copy(c).addScaledVector(fwd, CELL * 1.1);
@@ -500,7 +618,7 @@ export class GameScene {
         plat.position.copy(c);
         plat.rotation.y = yawFor(s.dir);
         this.levelGroup.add(plat);
-        const bld = this.prop(M.stationBuilding, null, 0.3);
+        const bld = this.prop(this.th.town.id, null, this.th.town.scale);
         bld.position.copy(c).addScaledVector(fwd, CELL * 1.2);
         bld.rotation.y = yawFor(s.dir) + Math.PI / 2;
         this.levelGroup.add(bld);
@@ -655,13 +773,13 @@ export class GameScene {
             const a2 = ringPts[r][(i + 1) % n];
             const b1 = ringPts[r + 1][i];
             const b2 = ringPts[r + 1][(i + 1) % n];
-            const cc = rand() > 0.5 ? COLORS.hill : COLORS.hillDark;
+            const cc = rand() > 0.5 ? this.th.colors.hill : this.th.colors.hillDark;
             tri(a1, b1, a2, cc);
             tri(a2, b1, b2, cc);
           }
         }
         const topC = new THREE.Vector3(c.x, rings[2].y + 0.5, c.z);
-        for (let i = 0; i < n; i++) tri(ringPts[2][i], topC, ringPts[2][(i + 1) % n], COLORS.hill);
+        for (let i = 0; i < n; i++) tri(ringPts[2][i], topC, ringPts[2][(i + 1) % n], this.th.colors.hill);
       }
     }
     if (pos.length === 0) return;
@@ -706,24 +824,26 @@ export class GameScene {
     if (pk.kind === 'farm') {
       add(this.prop(X.churns, null, 0.55), c.clone().addScaledVector(sideVec(sides[0]), 1.55), yaw + Math.PI / 2);
       if (lots[0] !== undefined) {
-        add(this.prop(X.barn, null, 0.42), lotCenter(lots[0]).addScaledVector(along, -0.4), yaw + (lots[0] === sides[0] ? -Math.PI / 2 : Math.PI / 2));
-        add(this.prop(X.silo, null, 0.36), lotCenter(lots[0]).addScaledVector(along, 1.35).addScaledVector(sideVec(lots[0]), 0.6));
+        const th = this.th;
+        add(this.prop(th.barn.id, null, th.barn.scale), lotCenter(lots[0]).addScaledVector(along, -0.4), yaw + (lots[0] === sides[0] ? -Math.PI / 2 : Math.PI / 2));
+        if (th.silo) add(this.prop(th.silo.id, null, th.silo.scale), lotCenter(lots[0]).addScaledVector(along, 1.35).addScaledVector(sideVec(lots[0]), 0.6));
       }
-      if (lots[1] !== undefined) add(this.prop(M.hay, null, 1.1), lotCenter(lots[1]));
+      if (lots[1] !== undefined) add(this.prop(this.th.hay.id, null, this.th.hay.scale), lotCenter(lots[1]));
     } else if (pk.kind === 'mine') {
       add(this.prop(X.gantry, null, 0.95), c.clone());
       if (lots[0] !== undefined) {
-        add(this.prop(X.spoil, null, 1.0), lotCenter(lots[0]).addScaledVector(along, -0.6));
-        add(this.prop(X.excavator, null, 0.36), lotCenter(lots[0]).addScaledVector(along, 1.2), yaw + 0.6);
+        add(this.prop(this.th.spoil.id, null, this.th.spoil.scale), lotCenter(lots[0]).addScaledVector(along, -0.6));
+        add(this.prop(this.th.digger.id, null, this.th.digger.scale), lotCenter(lots[0]).addScaledVector(along, 1.2), yaw + 0.6);
       }
-      if (lots[1] !== undefined) add(this.prop(X.spoil, null, 0.7), lotCenter(lots[1]), 1.3);
+      if (lots[1] !== undefined) add(this.prop(this.th.spoil.id, null, this.th.spoil.scale * 0.7), lotCenter(lots[1]), 1.3);
     } else {
-      add(this.prop(X.firewood, null, 0.75), c.clone().addScaledVector(sideVec(sides[0]), 1.55));
+      const { logs, stump, trees } = this.th;
+      add(this.prop(logs.id, null, logs.scale * 0.83), c.clone().addScaledVector(sideVec(sides[0]), 1.55));
       for (const d of lots) {
-        add(this.prop(X.firewood, null, 0.9), lotCenter(d).addScaledVector(along, -0.8));
-        add(this.prop(X.firewood, null, 0.9), lotCenter(d).addScaledVector(along, 0.5).setY(0.55), yaw + 0.1);
-        add(this.prop(X.stump, null, 1.3), lotCenter(d).addScaledVector(along, 1.4).addScaledVector(sideVec(d), 0.8));
-        add(this.prop(M.tree, null, 0.45), lotCenter(d).addScaledVector(sideVec(d), 1.2).addScaledVector(along, -1.5));
+        add(this.prop(logs.id, null, logs.scale), lotCenter(d).addScaledVector(along, -0.8));
+        add(this.prop(logs.id, null, logs.scale), lotCenter(d).addScaledVector(along, 0.5).setY(0.55), yaw + 0.1);
+        add(this.prop(stump.id, null, stump.scale), lotCenter(d).addScaledVector(along, 1.4).addScaledVector(sideVec(d), 0.8));
+        add(this.prop(trees[0].id, null, trees[0].scale), lotCenter(d).addScaledVector(sideVec(d), 1.2).addScaledVector(along, -1.5));
       }
     }
     void across;
@@ -741,7 +861,7 @@ export class GameScene {
     m.position.copy(c);
     this.levelGroup.add(m);
     const road = lc.axis === 0 ? new THREE.Vector3(1, 0, 0) : new THREE.Vector3(0, 0, 1);
-    const tractor = this.prop(X.tractor, null, 0.95);
+    const tractor = this.prop(this.th.vehicle.id, null, this.th.vehicle.scale);
     this.levelGroup.add(tractor);
     this.tractors.push({ mesh: tractor, center: c, road, offset: lc.offset, period: lc.period });
     const times = [0, 1, 2].map((k) => lc.offset + k * lc.period);

@@ -1,0 +1,161 @@
+{
+  "id": "N08",
+  "theme": "snow",
+  "name": {
+    "it": "La cava di pietra",
+    "en": "The stone quarry"
+  },
+  "terrain": [
+    ".........",
+    ".o....~~.",
+    ".........",
+    ".o....~~.",
+    ".........",
+    "TT......."
+  ],
+  "fixed": [],
+  "depots": [
+    {
+      "x": 0,
+      "y": 0,
+      "dir": 2
+    }
+  ],
+  "stations": [
+    {
+      "id": "port",
+      "kind": "port",
+      "x": 8,
+      "y": 2,
+      "dir": 1,
+      "accepts": [
+        "coal"
+      ]
+    },
+    {
+      "id": "town",
+      "kind": "town",
+      "x": 8,
+      "y": 5,
+      "dir": 1,
+      "accepts": [
+        "passengers"
+      ]
+    }
+  ],
+  "trains": [
+    {
+      "cargo": null,
+      "wagons": 2,
+      "depart": 1,
+      "depot": 0,
+      "wagon": "coal"
+    },
+    {
+      "cargo": "passengers",
+      "wagons": 1,
+      "depart": 5,
+      "depot": 0
+    }
+  ],
+  "stock": {
+    "straight": 9,
+    "curve": 3,
+    "switch": 1,
+    "bridge": 1
+  },
+  "targets": {
+    "pieces": 11,
+    "ticks": 18
+  },
+  "pickups": [
+    {
+      "x": 1,
+      "y": 2,
+      "axis": 1,
+      "gives": "coal",
+      "kind": "mine"
+    }
+  ],
+  "solution": [
+    {
+      "kind": "straight",
+      "a": 0,
+      "b": 2,
+      "x": 0,
+      "y": 1
+    },
+    {
+      "kind": "curve",
+      "a": 0,
+      "b": 1,
+      "x": 0,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 2,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 3,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 4,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 5,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 6,
+      "y": 2
+    },
+    {
+      "kind": "switch",
+      "a": 3,
+      "b": 1,
+      "c": 2,
+      "route": "passengers",
+      "x": 7,
+      "y": 2
+    },
+    {
+      "kind": "bridge",
+      "a": 0,
+      "b": 2,
+      "x": 7,
+      "y": 3
+    },
+    {
+      "kind": "straight",
+      "a": 0,
+      "b": 2,
+      "x": 7,
+      "y": 4
+    },
+    {
+      "kind": "curve",
+      "a": 0,
+      "b": 1,
+      "x": 7,
+      "y": 5
+    }
+  ]
+}
