@@ -1,0 +1,873 @@
+[
+  {
+    "id": "straight-track-d4cf38",
+    "title": "Straight Track",
+    "kit": "countryside-railway-9b4c57",
+    "credit": "Straight Track by Polyfork (https://polyfork.dev/asset/straight-track-d4cf38), CC BY 4.0",
+    "size": {
+      "x": 4,
+      "y": 0.3,
+      "z": 4
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 394
+  },
+  {
+    "id": "curved-track-819ec6",
+    "title": "Curved Track",
+    "kit": "countryside-railway-9b4c57",
+    "credit": "Curved Track by Polyfork (https://polyfork.dev/asset/curved-track-819ec6), CC BY 4.0",
+    "size": {
+      "x": 5.76,
+      "y": 0.3,
+      "z": 7.07
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 624
+  },
+  {
+    "id": "set-of-points-610126",
+    "title": "Set of Points",
+    "kit": "countryside-railway-9b4c57",
+    "credit": "Set of Points by Polyfork (https://polyfork.dev/asset/set-of-points-610126), CC BY 4.0",
+    "size": {
+      "x": 5.69,
+      "y": 0.3,
+      "z": 8
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 886
+  },
+  {
+    "id": "point-lever-5b61ca",
+    "title": "Point Lever",
+    "kit": "countryside-railway-9b4c57",
+    "credit": "Point Lever by Polyfork (https://polyfork.dev/asset/point-lever-5b61ca), CC BY 4.0",
+    "size": {
+      "x": 1.1,
+      "y": 1.23,
+      "z": 0.26
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 550
+  },
+  {
+    "id": "diamond-crossing-436c20",
+    "title": "Diamond Crossing",
+    "kit": "countryside-railway-9b4c57",
+    "credit": "Diamond Crossing by Polyfork (https://polyfork.dev/asset/diamond-crossing-436c20), CC BY 4.0",
+    "size": {
+      "x": 4,
+      "y": 0.3,
+      "z": 4
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 658
+  },
+  {
+    "id": "steel-girder-bridge-d80bb4",
+    "title": "Steel Girder Bridge",
+    "kit": "countryside-railway-9b4c57",
+    "credit": "Steel Girder Bridge by Polyfork (https://polyfork.dev/asset/steel-girder-bridge-d80bb4), CC BY 4.0",
+    "size": {
+      "x": 6.14,
+      "y": 5.15,
+      "z": 12
+    },
+    "origin": "spans y=-4 to y=1.15 m: y=0 is this model's reference level, not its underside, so 4 m of it sits below the ground plane by design. Place it at y=0 as-is",
+    "triangles": 816
+  },
+  {
+    "id": "timber-trestle-bridge-c3cd88",
+    "title": "Timber Trestle Bridge",
+    "kit": "countryside-railway-9b4c57",
+    "credit": "Timber Trestle Bridge by Polyfork (https://polyfork.dev/asset/timber-trestle-bridge-c3cd88), CC BY 4.0",
+    "size": {
+      "x": 4.25,
+      "y": 5.27,
+      "z": 16
+    },
+    "origin": "spans y=-4 to y=1.27 m: y=0 is this model's reference level, not its underside, so 4 m of it sits below the ground plane by design. Place it at y=0 as-is",
+    "triangles": 750
+  },
+  {
+    "id": "stone-viaduct-span-0bd731",
+    "title": "Stone Viaduct Span",
+    "kit": "countryside-railway-9b4c57",
+    "credit": "Stone Viaduct Span by Polyfork (https://polyfork.dev/asset/stone-viaduct-span-0bd731), CC BY 4.0",
+    "size": {
+      "x": 5.92,
+      "y": 10,
+      "z": 24
+    },
+    "origin": "spans y=-8 to y=2 m: y=0 is this model's reference level, not its underside, so 8 m of it sits below the ground plane by design. Place it at y=0 as-is",
+    "triangles": 810
+  },
+  {
+    "id": "tunnel-portal-4ac9f3",
+    "title": "Tunnel Portal",
+    "kit": "countryside-railway-9b4c57",
+    "credit": "Tunnel Portal by Polyfork (https://polyfork.dev/asset/tunnel-portal-4ac9f3), CC BY 4.0",
+    "size": {
+      "x": 12,
+      "y": 7.95,
+      "z": 8.37
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 774
+  },
+  {
+    "id": "incline-track-b10620",
+    "title": "Incline Track",
+    "kit": "countryside-railway-9b4c57",
+    "credit": "Incline Track by Polyfork (https://polyfork.dev/asset/incline-track-b10620), CC BY 4.0",
+    "size": {
+      "x": 4,
+      "y": 0.8,
+      "z": 8
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 574
+  },
+  {
+    "id": "buffer-stop-4871fc",
+    "title": "Buffer Stop",
+    "kit": "countryside-railway-9b4c57",
+    "credit": "Buffer Stop by Polyfork (https://polyfork.dev/asset/buffer-stop-4871fc), CC BY 4.0",
+    "size": {
+      "x": 4,
+      "y": 1.77,
+      "z": 4
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 864
+  },
+  {
+    "id": "semaphore-signal-cb8968",
+    "title": "Semaphore Signal",
+    "kit": "countryside-railway-9b4c57",
+    "credit": "Semaphore Signal by Polyfork (https://polyfork.dev/asset/semaphore-signal-cb8968), CC BY 4.0",
+    "size": {
+      "x": 2.27,
+      "y": 7.05,
+      "z": 1
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 608
+  },
+  {
+    "id": "colour-light-signal-713276",
+    "title": "Colour-Light Signal",
+    "kit": "countryside-railway-9b4c57",
+    "credit": "Colour-Light Signal by Polyfork (https://polyfork.dev/asset/colour-light-signal-713276), CC BY 4.0",
+    "size": {
+      "x": 0.78,
+      "y": 4.65,
+      "z": 1.37
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 708
+  },
+  {
+    "id": "level-crossing-37d00b",
+    "title": "Level Crossing",
+    "kit": "countryside-railway-9b4c57",
+    "credit": "Level Crossing by Polyfork (https://polyfork.dev/asset/level-crossing-37d00b), CC BY 4.0",
+    "size": {
+      "x": 12,
+      "y": 1.48,
+      "z": 4
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 950
+  },
+  {
+    "id": "crossing-gate-50bcee",
+    "title": "Crossing Gate",
+    "kit": "countryside-railway-9b4c57",
+    "credit": "Crossing Gate by Polyfork (https://polyfork.dev/asset/crossing-gate-50bcee), CC BY 4.0",
+    "size": {
+      "x": 0.32,
+      "y": 1.8,
+      "z": 3.77
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 828
+  },
+  {
+    "id": "country-lane-tile-65e8ee",
+    "title": "Country Lane Tile",
+    "kit": "countryside-railway-9b4c57",
+    "credit": "Country Lane Tile by Polyfork (https://polyfork.dev/asset/country-lane-tile-65e8ee), CC BY 4.0",
+    "size": {
+      "x": 4,
+      "y": 0.06,
+      "z": 4
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 726
+  },
+  {
+    "id": "tank-steam-locomotive-314bb1",
+    "title": "Tank Steam Locomotive",
+    "kit": "countryside-railway-9b4c57",
+    "credit": "Tank Steam Locomotive by Polyfork (https://polyfork.dev/asset/tank-steam-locomotive-314bb1), CC BY 4.0",
+    "size": {
+      "x": 2.62,
+      "y": 4.16,
+      "z": 9
+    },
+    "origin": "already at installed height (minY = 0.265 m): the model is built where it belongs, so place it at y=0 and do not lift it",
+    "triangles": 3713
+  },
+  {
+    "id": "tender-steam-locomotive-8e2a82",
+    "title": "Tender Steam Locomotive",
+    "kit": "countryside-railway-9b4c57",
+    "credit": "Tender Steam Locomotive by Polyfork (https://polyfork.dev/asset/tender-steam-locomotive-8e2a82), CC BY 4.0",
+    "size": {
+      "x": 2.75,
+      "y": 4.22,
+      "z": 12
+    },
+    "origin": "already at installed height (minY = 0.265 m): the model is built where it belongs, so place it at y=0 and do not lift it",
+    "triangles": 4531
+  },
+  {
+    "id": "coal-tender-0e3647",
+    "title": "Coal Tender",
+    "kit": "countryside-railway-9b4c57",
+    "credit": "Coal Tender by Polyfork (https://polyfork.dev/asset/coal-tender-0e3647), CC BY 4.0",
+    "size": {
+      "x": 2.68,
+      "y": 3.5,
+      "z": 7.3
+    },
+    "origin": "already at installed height (minY = 0.27 m): the model is built where it belongs, so place it at y=0 and do not lift it",
+    "triangles": 3714
+  },
+  {
+    "id": "diesel-shunter-67094b",
+    "title": "Diesel Shunter",
+    "kit": "countryside-railway-9b4c57",
+    "credit": "Diesel Shunter by Polyfork (https://polyfork.dev/asset/diesel-shunter-67094b), CC BY 4.0",
+    "size": {
+      "x": 2.82,
+      "y": 3.98,
+      "z": 8.2
+    },
+    "origin": "already at installed height (minY = 0.265 m): the model is built where it belongs, so place it at y=0 and do not lift it",
+    "triangles": 3499
+  },
+  {
+    "id": "mainline-diesel-locomotive-33ef97",
+    "title": "Mainline Diesel Locomotive",
+    "kit": "countryside-railway-9b4c57",
+    "credit": "Mainline Diesel Locomotive by Polyfork (https://polyfork.dev/asset/mainline-diesel-locomotive-33ef97), CC BY 4.0",
+    "size": {
+      "x": 2.81,
+      "y": 4.16,
+      "z": 16
+    },
+    "origin": "already at installed height (minY = 0.26 m): the model is built where it belongs, so place it at y=0 and do not lift it",
+    "triangles": 3570
+  },
+  {
+    "id": "railbus-e972f3",
+    "title": "Railbus",
+    "kit": "countryside-railway-9b4c57",
+    "credit": "Railbus by Polyfork (https://polyfork.dev/asset/railbus-e972f3), CC BY 4.0",
+    "size": {
+      "x": 2.78,
+      "y": 3.45,
+      "z": 12
+    },
+    "origin": "already at installed height (minY = 0.27 m): the model is built where it belongs, so place it at y=0 and do not lift it",
+    "triangles": 3166
+  },
+  {
+    "id": "handcar-3e4083",
+    "title": "Handcar",
+    "kit": "countryside-railway-9b4c57",
+    "credit": "Handcar by Polyfork (https://polyfork.dev/asset/handcar-3e4083), CC BY 4.0",
+    "size": {
+      "x": 1.78,
+      "y": 1.91,
+      "z": 2.81
+    },
+    "origin": "already at installed height (minY = 0.27 m): the model is built where it belongs, so place it at y=0 and do not lift it",
+    "triangles": 3310
+  },
+  {
+    "id": "tank-wagon-d860fa",
+    "title": "Tank Wagon",
+    "kit": "countryside-railway-9b4c57",
+    "credit": "Tank Wagon by Polyfork (https://polyfork.dev/asset/tank-wagon-d860fa), CC BY 4.0",
+    "size": {
+      "x": 2.62,
+      "y": 3.79,
+      "z": 6.2
+    },
+    "origin": "already at installed height (minY = 0.27 m): the model is built where it belongs, so place it at y=0 and do not lift it",
+    "triangles": 3416
+  },
+  {
+    "id": "hopper-wagon-b4c486",
+    "title": "Hopper Wagon",
+    "kit": "countryside-railway-9b4c57",
+    "credit": "Hopper Wagon by Polyfork (https://polyfork.dev/asset/hopper-wagon-b4c486), CC BY 4.0",
+    "size": {
+      "x": 2.8,
+      "y": 3.72,
+      "z": 7
+    },
+    "origin": "already at installed height (minY = 0.27 m): the model is built where it belongs, so place it at y=0 and do not lift it",
+    "triangles": 3289
+  },
+  {
+    "id": "flatbed-wagon-53187a",
+    "title": "Flatbed Wagon",
+    "kit": "countryside-railway-9b4c57",
+    "credit": "Flatbed Wagon by Polyfork (https://polyfork.dev/asset/flatbed-wagon-53187a), CC BY 4.0",
+    "size": {
+      "x": 2.58,
+      "y": 1.58,
+      "z": 9
+    },
+    "origin": "already at installed height (minY = 0.27 m): the model is built where it belongs, so place it at y=0 and do not lift it",
+    "triangles": 2724
+  },
+  {
+    "id": "passenger-carriage-de9d58",
+    "title": "Passenger Carriage",
+    "kit": "countryside-railway-9b4c57",
+    "credit": "Passenger Carriage by Polyfork (https://polyfork.dev/asset/passenger-carriage-de9d58), CC BY 4.0",
+    "size": {
+      "x": 2.88,
+      "y": 4,
+      "z": 18
+    },
+    "origin": "already at installed height (minY = 0.27 m): the model is built where it belongs, so place it at y=0 and do not lift it",
+    "triangles": 3252
+  },
+  {
+    "id": "brake-coach-f83456",
+    "title": "Brake Coach",
+    "kit": "countryside-railway-9b4c57",
+    "credit": "Brake Coach by Polyfork (https://polyfork.dev/asset/brake-coach-f83456), CC BY 4.0",
+    "size": {
+      "x": 2.98,
+      "y": 3.92,
+      "z": 18
+    },
+    "origin": "already at installed height (minY = 0.27 m): the model is built where it belongs, so place it at y=0 and do not lift it",
+    "triangles": 3246
+  },
+  {
+    "id": "covered-goods-van-34fce3",
+    "title": "Covered Goods Van",
+    "kit": "countryside-railway-9b4c57",
+    "credit": "Covered Goods Van by Polyfork (https://polyfork.dev/asset/covered-goods-van-34fce3), CC BY 4.0",
+    "size": {
+      "x": 2.78,
+      "y": 3.8,
+      "z": 6.5
+    },
+    "origin": "already at installed height (minY = 0.27 m): the model is built where it belongs, so place it at y=0 and do not lift it",
+    "triangles": 3192
+  },
+  {
+    "id": "open-goods-wagon-998292",
+    "title": "Open Goods Wagon",
+    "kit": "countryside-railway-9b4c57",
+    "credit": "Open Goods Wagon by Polyfork (https://polyfork.dev/asset/open-goods-wagon-998292), CC BY 4.0",
+    "size": {
+      "x": 2.63,
+      "y": 2.58,
+      "z": 6
+    },
+    "origin": "already at installed height (minY = 0.27 m): the model is built where it belongs, so place it at y=0 and do not lift it",
+    "triangles": 3224
+  },
+  {
+    "id": "guard-s-van-6231d0",
+    "title": "Guard's Van",
+    "kit": "countryside-railway-9b4c57",
+    "credit": "Guard's Van by Polyfork (https://polyfork.dev/asset/guard-s-van-6231d0), CC BY 4.0",
+    "size": {
+      "x": 2.88,
+      "y": 3.79,
+      "z": 7.19
+    },
+    "origin": "already at installed height (minY = 0.27 m): the model is built where it belongs, so place it at y=0 and do not lift it",
+    "triangles": 3024
+  },
+  {
+    "id": "country-station-building-2d8f5e",
+    "title": "Country Station Building",
+    "kit": "countryside-railway-9b4c57",
+    "credit": "Country Station Building by Polyfork (https://polyfork.dev/asset/country-station-building-2d8f5e), CC BY 4.0",
+    "size": {
+      "x": 8.44,
+      "y": 10.61,
+      "z": 15.99
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 1881
+  },
+  {
+    "id": "platform-run-3738d0",
+    "title": "Platform Run",
+    "kit": "countryside-railway-9b4c57",
+    "credit": "Platform Run by Polyfork (https://polyfork.dev/asset/platform-run-3738d0), CC BY 4.0",
+    "size": {
+      "x": 4.4,
+      "y": 2.18,
+      "z": 4
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 899
+  },
+  {
+    "id": "platform-canopy-run-bc2275",
+    "title": "Platform Canopy Run",
+    "kit": "countryside-railway-9b4c57",
+    "credit": "Platform Canopy Run by Polyfork (https://polyfork.dev/asset/platform-canopy-run-bc2275), CC BY 4.0",
+    "size": {
+      "x": 4,
+      "y": 5.18,
+      "z": 4
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 889
+  },
+  {
+    "id": "station-bench-5f56b4",
+    "title": "Station Bench",
+    "kit": "countryside-railway-9b4c57",
+    "credit": "Station Bench by Polyfork (https://polyfork.dev/asset/station-bench-5f56b4), CC BY 4.0",
+    "size": {
+      "x": 1.5,
+      "y": 0.95,
+      "z": 0.74
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 866
+  },
+  {
+    "id": "timber-halt-platform-042fd8",
+    "title": "Timber Halt Platform",
+    "kit": "countryside-railway-9b4c57",
+    "credit": "Timber Halt Platform by Polyfork (https://polyfork.dev/asset/timber-halt-platform-042fd8), CC BY 4.0",
+    "size": {
+      "x": 2.4,
+      "y": 2.25,
+      "z": 4
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 776
+  },
+  {
+    "id": "engine-shed-eff627",
+    "title": "Engine Shed",
+    "kit": "countryside-railway-9b4c57",
+    "credit": "Engine Shed by Polyfork (https://polyfork.dev/asset/engine-shed-eff627), CC BY 4.0",
+    "size": {
+      "x": 12,
+      "y": 9.56,
+      "z": 16
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 1906
+  },
+  {
+    "id": "goods-shed-206be9",
+    "title": "Goods Shed",
+    "kit": "countryside-railway-9b4c57",
+    "credit": "Goods Shed by Polyfork (https://polyfork.dev/asset/goods-shed-206be9), CC BY 4.0",
+    "size": {
+      "x": 12,
+      "y": 8.73,
+      "z": 16
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 1364
+  },
+  {
+    "id": "yard-crane-316e4a",
+    "title": "Yard Crane",
+    "kit": "countryside-railway-9b4c57",
+    "credit": "Yard Crane by Polyfork (https://polyfork.dev/asset/yard-crane-316e4a), CC BY 4.0",
+    "size": {
+      "x": 4.94,
+      "y": 6.45,
+      "z": 2.4
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 850
+  },
+  {
+    "id": "coal-stage-2789f5",
+    "title": "Coal Stage",
+    "kit": "countryside-railway-9b4c57",
+    "credit": "Coal Stage by Polyfork (https://polyfork.dev/asset/coal-stage-2789f5), CC BY 4.0",
+    "size": {
+      "x": 4,
+      "y": 5.02,
+      "z": 8
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 1809
+  },
+  {
+    "id": "red-barn-d41683",
+    "title": "Red Barn",
+    "kit": "cozy-farm-cc979f",
+    "credit": "Red Barn by Polyfork (https://polyfork.dev/asset/red-barn-d41683), CC BY 4.0",
+    "size": {
+      "x": 6,
+      "y": 7.26,
+      "z": 7
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 652
+  },
+  {
+    "id": "grain-silo-58ca67",
+    "title": "Grain Silo",
+    "kit": "cozy-farm-cc979f",
+    "credit": "Grain Silo by Polyfork (https://polyfork.dev/asset/grain-silo-58ca67), CC BY 4.0",
+    "size": {
+      "x": 3,
+      "y": 7.31,
+      "z": 3
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 1290
+  },
+  {
+    "id": "milk-churn-stand-130fe2",
+    "title": "Milk Churn Stand",
+    "kit": "countryside-railway-9b4c57",
+    "credit": "Milk Churn Stand by Polyfork (https://polyfork.dev/asset/milk-churn-stand-130fe2), CC BY 4.0",
+    "size": {
+      "x": 3.62,
+      "y": 1.14,
+      "z": 1.58
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 672
+  },
+  {
+    "id": "milk-churn-895735",
+    "title": "Milk Churn",
+    "kit": "cozy-farm-cc979f",
+    "credit": "Milk Churn by Polyfork (https://polyfork.dev/asset/milk-churn-895735), CC BY 4.0",
+    "size": {
+      "x": 0.42,
+      "y": 0.8,
+      "z": 0.42
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 536
+  },
+  {
+    "id": "pier-head-platform-63662b",
+    "title": "Pier Head Platform",
+    "kit": "coast-and-boardwalk-d883fd",
+    "credit": "Pier Head Platform by Polyfork (https://polyfork.dev/asset/pier-head-platform-63662b), CC BY 4.0",
+    "size": {
+      "x": 4,
+      "y": 2.48,
+      "z": 4
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 1868
+  },
+  {
+    "id": "harbour-master-s-hut-226f34",
+    "title": "Harbour Master's Hut",
+    "kit": "coast-and-boardwalk-d883fd",
+    "credit": "Harbour Master's Hut by Polyfork (https://polyfork.dev/asset/harbour-master-s-hut-226f34), CC BY 4.0",
+    "size": {
+      "x": 4,
+      "y": 3.79,
+      "z": 4
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 1468
+  },
+  {
+    "id": "mooring-bollard-2d4bc9",
+    "title": "Mooring Bollard",
+    "kit": "coast-and-boardwalk-d883fd",
+    "credit": "Mooring Bollard by Polyfork (https://polyfork.dev/asset/mooring-bollard-2d4bc9), CC BY 4.0",
+    "size": {
+      "x": 0.82,
+      "y": 0.64,
+      "z": 0.6
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 770
+  },
+  {
+    "id": "small-fishing-boat-4ac0e3",
+    "title": "Small Fishing Boat",
+    "kit": "coast-and-boardwalk-d883fd",
+    "credit": "Small Fishing Boat by Polyfork (https://polyfork.dev/asset/small-fishing-boat-4ac0e3), CC BY 4.0",
+    "size": {
+      "x": 2.36,
+      "y": 2.85,
+      "z": 6.84
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 2999
+  },
+  {
+    "id": "spoil-heap-9aaa11",
+    "title": "Spoil Heap",
+    "kit": "construction-site-9e40b0",
+    "credit": "Spoil Heap by Polyfork (https://polyfork.dev/asset/spoil-heap-9aaa11), CC BY 4.0",
+    "size": {
+      "x": 3.37,
+      "y": 1.75,
+      "z": 3.19
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 516
+  },
+  {
+    "id": "tracked-excavator-8ebd3c",
+    "title": "Tracked Excavator",
+    "kit": "construction-site-9e40b0",
+    "credit": "Tracked Excavator by Polyfork (https://polyfork.dev/asset/tracked-excavator-8ebd3c), CC BY 4.0",
+    "size": {
+      "x": 3,
+      "y": 4.78,
+      "z": 7.21
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 2800
+  },
+  {
+    "id": "loading-gantry-34460f",
+    "title": "Loading Gantry",
+    "kit": "construction-site-9e40b0",
+    "credit": "Loading Gantry by Polyfork (https://polyfork.dev/asset/loading-gantry-34460f), CC BY 4.0",
+    "size": {
+      "x": 4,
+      "y": 4.2,
+      "z": 4
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 1596
+  },
+  {
+    "id": "lineside-tree-97e02a",
+    "title": "Lineside Tree",
+    "kit": "countryside-railway-9b4c57",
+    "credit": "Lineside Tree by Polyfork (https://polyfork.dev/asset/lineside-tree-97e02a), CC BY 4.0",
+    "size": {
+      "x": 6.03,
+      "y": 9.23,
+      "z": 5.04
+    },
+    "origin": "spans y=-0.3 to y=8.93 m: y=0 is this model's reference level, not its underside, so 0.3 m of it sits below the ground plane by design. Place it at y=0 as-is",
+    "triangles": 469
+  },
+  {
+    "id": "firewood-stack-810f49",
+    "title": "Firewood Stack",
+    "kit": "cozy-farm-cc979f",
+    "credit": "Firewood Stack by Polyfork (https://polyfork.dev/asset/firewood-stack-810f49), CC BY 4.0",
+    "size": {
+      "x": 2,
+      "y": 1.1,
+      "z": 0.98
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 580
+  },
+  {
+    "id": "log-stump-1d65a5",
+    "title": "Log Stump",
+    "kit": "cozy-farm-cc979f",
+    "credit": "Log Stump by Polyfork (https://polyfork.dev/asset/log-stump-1d65a5), CC BY 4.0",
+    "size": {
+      "x": 0.61,
+      "y": 0.49,
+      "z": 0.6
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 531
+  },
+  {
+    "id": "sleeper-stack-67628e",
+    "title": "Sleeper Stack",
+    "kit": "countryside-railway-9b4c57",
+    "credit": "Sleeper Stack by Polyfork (https://polyfork.dev/asset/sleeper-stack-67628e), CC BY 4.0",
+    "size": {
+      "x": 2.7,
+      "y": 1.26,
+      "z": 2.69
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 760
+  },
+  {
+    "id": "grass-tile-37e1a7",
+    "title": "Grass Tile",
+    "kit": "cozy-farm-cc979f",
+    "credit": "Grass Tile by Polyfork (https://polyfork.dev/asset/grass-tile-37e1a7), CC BY 4.0",
+    "size": {
+      "x": 1,
+      "y": 0.1,
+      "z": 1
+    },
+    "origin": "spans y=-0.05 to y=0.05 m: y=0 is this model's reference level, not its underside, so 0.05 m of it sits below the ground plane by design. Place it at y=0 as-is",
+    "triangles": 663
+  },
+  {
+    "id": "dirt-tile-6f4470",
+    "title": "Dirt Tile",
+    "kit": "cozy-farm-cc979f",
+    "credit": "Dirt Tile by Polyfork (https://polyfork.dev/asset/dirt-tile-6f4470), CC BY 4.0",
+    "size": {
+      "x": 1,
+      "y": 0.07,
+      "z": 1
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 518
+  },
+  {
+    "id": "cobbled-yard-tile-d00544",
+    "title": "Cobbled Yard Tile",
+    "kit": "countryside-railway-9b4c57",
+    "credit": "Cobbled Yard Tile by Polyfork (https://polyfork.dev/asset/cobbled-yard-tile-d00544), CC BY 4.0",
+    "size": {
+      "x": 4,
+      "y": 0.06,
+      "z": 4
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 756
+  },
+  {
+    "id": "water-tower-dd6200",
+    "title": "Water Tower",
+    "kit": "countryside-railway-9b4c57",
+    "credit": "Water Tower by Polyfork (https://polyfork.dev/asset/water-tower-dd6200), CC BY 4.0",
+    "size": {
+      "x": 3.92,
+      "y": 7.89,
+      "z": 3.98
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 2024
+  },
+  {
+    "id": "signal-box-f57a2d",
+    "title": "Signal Box",
+    "kit": "countryside-railway-9b4c57",
+    "credit": "Signal Box by Polyfork (https://polyfork.dev/asset/signal-box-f57a2d), CC BY 4.0",
+    "size": {
+      "x": 7.96,
+      "y": 8.18,
+      "z": 3.97
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 2264
+  },
+  {
+    "id": "turntable-6415d2",
+    "title": "Turntable",
+    "kit": "countryside-railway-9b4c57",
+    "credit": "Turntable by Polyfork (https://polyfork.dev/asset/turntable-6415d2), CC BY 4.0",
+    "size": {
+      "x": 20,
+      "y": 2.2,
+      "z": 20
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 928
+  },
+  {
+    "id": "station-garden-bed-d369e3",
+    "title": "Station Garden Bed",
+    "kit": "countryside-railway-9b4c57",
+    "credit": "Station Garden Bed by Polyfork (https://polyfork.dev/asset/station-garden-bed-d369e3), CC BY 4.0",
+    "size": {
+      "x": 4,
+      "y": 0.85,
+      "z": 1.62
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 924
+  },
+  {
+    "id": "lineside-fence-run-3a64f5",
+    "title": "Lineside Fence Run",
+    "kit": "countryside-railway-9b4c57",
+    "credit": "Lineside Fence Run by Polyfork (https://polyfork.dev/asset/lineside-fence-run-3a64f5), CC BY 4.0",
+    "size": {
+      "x": 0.14,
+      "y": 1.2,
+      "z": 4
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 456
+  },
+  {
+    "id": "compact-tractor-35b84b",
+    "title": "Compact Tractor",
+    "kit": "cozy-farm-cc979f",
+    "credit": "Compact Tractor by Polyfork (https://polyfork.dev/asset/compact-tractor-35b84b), CC BY 4.0",
+    "size": {
+      "x": 1.71,
+      "y": 2,
+      "z": 2.83
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 3034
+  },
+  {
+    "id": "apple-tree-ef0ba0",
+    "title": "Apple Tree",
+    "kit": "cozy-farm-cc979f",
+    "credit": "Apple Tree by Polyfork (https://polyfork.dev/asset/apple-tree-ef0ba0), CC BY 4.0",
+    "size": {
+      "x": 2.73,
+      "y": 3.39,
+      "z": 2.67
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 679
+  },
+  {
+    "id": "hay-bale-079e8c",
+    "title": "Hay Bale",
+    "kit": "cozy-farm-cc979f",
+    "credit": "Hay Bale by Polyfork (https://polyfork.dev/asset/hay-bale-079e8c), CC BY 4.0",
+    "size": {
+      "x": 0.94,
+      "y": 0.52,
+      "z": 0.46
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 582
+  },
+  {
+    "id": "garden-rock-7f5d60",
+    "title": "Garden Rock",
+    "kit": "cozy-farm-cc979f",
+    "credit": "Garden Rock by Polyfork (https://polyfork.dev/asset/garden-rock-7f5d60), CC BY 4.0",
+    "size": {
+      "x": 0.72,
+      "y": 0.42,
+      "z": 0.64
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 140
+  }
+]

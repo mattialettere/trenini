@@ -1,0 +1,28 @@
+{
+  "id": "02",
+  "name": { "it": "Il boschetto", "en": "The little wood" },
+  "terrain": ["..TTT..", "...T...", "...T...", ".......", ".T....."],
+  "fixed": [{ "x": 1, "y": 1, "kind": "straight", "a": 3, "b": 1 }],
+  "depots": [{ "x": 0, "y": 1, "dir": 1 }],
+  "stations": [{ "id": "town", "kind": "town", "x": 6, "y": 3, "dir": 1, "accepts": ["milk"] }],
+  "trains": [{ "cargo": "milk", "wagons": 1, "depart": 1, "depot": 0 }],
+  "stock": { "straight": 6, "curve": 3 },
+  "targets": { "pieces": 6, "ticks": 9 },
+  "tutorial": [
+    { "it": "Gli alberi bloccano la strada. Trascina il dito girando attorno: le curve si posano da sole.", "en": "Trees block the way. Drag around them: curves are laid automatically." },
+    { "it": "Sbagliato? Tieni premuto su un binario per toglierlo, oppure usa Annulla.", "en": "Made a mistake? Press and hold a track to remove it, or use Undo." }
+  ],
+  "decorations": [
+    { "model": "apple-tree-ef0ba0", "x": 0, "y": 3, "rot": 0, "scale": 0.8 },
+    { "model": "hay-bale-079e8c", "x": 0, "y": 4, "rot": 1, "scale": 1.2 },
+    { "model": "log-stump-1d65a5", "x": 4, "y": 1, "rot": 0, "scale": 1.4 }
+  ],
+  "solution": [
+    { "x": 2, "y": 1, "kind": "curve", "a": 3, "b": 2 },
+    { "x": 2, "y": 2, "kind": "straight", "a": 0, "b": 2 },
+    { "x": 2, "y": 3, "kind": "curve", "a": 0, "b": 1 },
+    { "x": 3, "y": 3, "kind": "straight", "a": 3, "b": 1 },
+    { "x": 4, "y": 3, "kind": "straight", "a": 3, "b": 1 },
+    { "x": 5, "y": 3, "kind": "straight", "a": 3, "b": 1 }
+  ]
+}

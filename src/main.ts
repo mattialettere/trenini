@@ -1,0 +1,500 @@
+import { Board, dirBetween } from './core/board';
+import { Result, SimSnapshot, Simulation, scoreRun } from './core/sim';
+import { Cell, LevelDef, PieceKind } from './core/types';
+import { getLang, setLang, t } from './i18n';
+import { LEVELS } from './levels';
+import { GameScene } from './render/scene';
+import { levelSave, load, update } from './save';
+import credits from './assets/credits.json';
+
+const canvas = document.getElementById('view') as HTMLCanvasElement;
+const ui = document.getElementById('ui') as HTMLDivElement;
+const scene = new GameScene(canvas);
+
+type Mode = 'home' | 'build' | 'run' | 'result';
+let mode: Mode = 'home';
+let level: LevelDef = LEVELS[0];
+let board = new Board(level);
+let sim: Simulation | null = null;
+let prevSnap: SimSnapshot | null = null;
+let curSnap: SimSnapshot | null = null;
+let tickTime = 0;
+let speed = 1;
+let endTimer = -1;
+let tutorialStep = 0;
+const TICKS_PER_SECOND = 3;
+
+// --- piccoli aiuti DOM ---------------------------------------------------------
+
+function h<K extends keyof HTMLElementTagNameMap>(tag: K, attrs: Record<string, any> = {}, ...kids: (Node | string | null)[]) {
+  const el = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (k.startsWith('on')) el.addEventListener(k.slice(2), v);
+    else if (k === 'class') el.className = v;
+    else if (k === 'html') el.innerHTML = v;
+    else if (v !== false && v != null) el.setAttribute(k, String(v));
+  }
+  for (const kid of kids) if (kid != null) el.append(kid);
+  return el;
+}
+
+function starsHtml(n: number, total = 3) {
+  return `<span class="stars">${Array.from({ length: total }, (_, i) => `<span class="${i < n ? 'on' : ''}">★</span>`).join('')}</span>`;
+}
+
+const PIECE_ICON: Record<PieceKind, string> = {
+  straight: '<svg viewBox="0 0 32 32"><g stroke="#7b5b3f" stroke-width="3"><path d="M9 6h14M9 12h14M9 18h14M9 24h14"/></g><g stroke="#3f4140" stroke-width="2.6"><path d="M12 3v26M20 3v26"/></g></svg>',
+  curve: '<svg viewBox="0 0 32 32" fill="none"><g stroke="#3f4140" stroke-width="2.6"><path d="M12 30a18 18 0 0 1 18-18"/><path d="M20 30a10 10 0 0 1 10-10"/></g></svg>',
+  switch: '<svg viewBox="0 0 32 32" fill="none"><g stroke="#3f4140" stroke-width="2.6"><path d="M12 30V2M20 30V2"/><path d="M12 30c0-9 6-14 18-16" stroke="#d9643a"/></g></svg>',
+  crossing: '<svg viewBox="0 0 32 32" fill="none"><g stroke="#3f4140" stroke-width="2.6"><path d="M12 2v28M20 2v28M2 12h28M2 20h28"/></g></svg>',
+};
+
+let toastTimer = 0;
+function toast(msg: string) {
+  let el = ui.querySelector('.toast') as HTMLDivElement | null;
+  if (!el) {
+    el = h('div', { class: 'toast panel' });
+    ui.append(el);
+  }
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = window.setTimeout(() => el!.classList.remove('show'), 1800);
+}
+
+// --- schermate -----------------------------------------------------------------
+
+function unlocked(i: number) {
+  return i === 0 || levelSave(LEVELS[i - 1].id).stars > 0;
+}
+
+function showHome() {
+  mode = 'home';
+  ui.innerHTML = '';
+  scene.setGridVisible(false);
+  const grid = h('div', { class: 'level-grid' });
+  LEVELS.forEach((l, i) => {
+    const s = levelSave(l.id).stars;
+    const open = unlocked(i);
+    grid.append(
+      h(
+        'button',
+        { class: 'level-btn', disabled: !open, title: open ? '' : t('locked'), onclick: () => startLevel(i) },
+        h('span', { class: 'num' }, String(i + 1)),
+        h('span', { class: 'name' }, l.name[getLang()]),
+        h('span', { html: starsHtml(s) }),
+      ),
+    );
+  });
+  ui.append(
+    h(
+      'div',
+      { class: 'home' },
+      h('h1', {}, 'Trainland'),
+      h('p', { class: 'tagline' }, t('tagline')),
+      grid,
+      h(
+        'div',
+        { class: 'home-row' },
+        h('button', { onclick: () => { setLang(getLang() === 'it' ? 'en' : 'it'); showHome(); } }, getLang() === 'it' ? 'English' : 'Italiano'),
+        h('button', { onclick: showCredits }, t('credits')),
+      ),
+      h('p', { class: 'small' }, t('prototype')),
+    ),
+  );
+}
+
+function showCredits() {
+  const list = h('ul', { class: 'credits' });
+  for (const c of credits as { credit: string; id: string }[]) {
+    const m = c.credit.match(/^(.*) by Polyfork \((https:[^)]+)\), CC BY 4\.0$/);
+    if (m) {
+      list.append(h('li', {}, h('a', { href: m[2], target: '_blank', rel: 'noopener' }, m[1]), ' by Polyfork, ', h('a', { href: 'https://creativecommons.org/licenses/by/4.0/', target: '_blank', rel: 'noopener' }, 'CC BY 4.0')));
+    } else list.append(h('li', {}, c.credit));
+  }
+  const back = h('div', { class: 'modal-back' });
+  back.append(h('div', { class: 'modal panel' }, h('h2', {}, t('credits')), h('p', {}, t('creditsIntro')), list, h('button', { class: 'primary', onclick: () => back.remove() }, t('back'))));
+  ui.append(back);
+}
+
+async function startLevel(i: number) {
+  level = LEVELS[i];
+  board = new Board(level);
+  const saved = levelSave(level.id).build;
+  if (saved) board.loadPieces(saved);
+  ui.innerHTML = '';
+  const loading = h('div', { class: 'loading panel' }, t('loading'));
+  ui.append(loading);
+  await scene.load(board, (d, n) => (loading.textContent = `${t('loading')} ${Math.round((d / n) * 100)}%`));
+  scene.resetTrains();
+  scene.setBoard(board);
+  scene.resize();
+  tutorialStep = levelSave(level.id).stars > 0 ? 99 : 0;
+  enterBuild();
+}
+
+function enterBuild() {
+  mode = 'build';
+  sim = null;
+  prevSnap = curSnap = null;
+  scene.resetTrains();
+  scene.setGridVisible(true);
+  renderGameUi();
+}
+
+function goalsHtml() {
+  const s = levelSave(level.id).stars;
+  return `${starsHtml(s)} <span>★ ${t('starPieces', { n: level.targets.pieces })}</span><span>★ ${t('starTime', { n: level.targets.ticks })}</span>`;
+}
+
+function renderGameUi() {
+  ui.innerHTML = '';
+  const idx = LEVELS.indexOf(level);
+  ui.append(
+    h(
+      'div',
+      { class: 'topbar' },
+      h('button', { onclick: () => { scene.resetTrains(); showHome(); }, 'aria-label': t('back') }, '‹'),
+      h('div', { class: 'level-info panel' }, h('div', { class: 'title' }, `${idx + 1}. ${level.name[getLang()]}`), h('div', { class: 'goals', html: goalsHtml() })),
+    ),
+    h(
+      'div',
+      { class: 'cam' },
+      h('button', { onclick: () => scene.rotate(1), 'aria-label': 'rotate left' }, '⟲'),
+      h('button', { onclick: () => scene.rotate(-1), 'aria-label': 'rotate right' }, '⟳'),
+      h('button', { onclick: () => scene.zoomBy(1.25), 'aria-label': 'zoom in' }, '+'),
+      h('button', { onclick: () => scene.zoomBy(0.8), 'aria-label': 'zoom out' }, '−'),
+    ),
+  );
+  const toolbar = h('div', { class: 'toolbar' });
+  if (mode === 'build') {
+    const stock = h('div', { class: 'stock panel' });
+    for (const k of Object.keys(level.stock) as PieceKind[]) {
+      const n = board.available(k);
+      stock.append(h('div', { class: `item${n <= 0 ? ' empty' : ''}`, title: t(k) }, h('span', { html: PIECE_ICON[k] }), h('span', { class: 'count' }, String(n))));
+    }
+    toolbar.append(
+      stock,
+      h(
+        'div',
+        { class: 'actions' },
+        h('button', { onclick: doUndo, disabled: !board.canUndo(), 'aria-label': t('undo'), title: t('undo') }, '↶'),
+        h('button', { onclick: () => { board.clear(); afterEdit(); }, disabled: board.piecesUsed() === 0, title: t('clear') }, '✕'),
+        h('button', { class: 'go', onclick: startRun }, t('go')),
+      ),
+    );
+  } else if (mode === 'run') {
+    toolbar.append(
+      h('div', {}),
+      h(
+        'div',
+        { class: 'actions' },
+        h('button', { onclick: () => { speed = speed >= 4 ? 1 : speed * 2; renderGameUi(); } }, `×${speed}`),
+        h('button', { class: 'primary', onclick: enterBuild }, t('stop')),
+      ),
+    );
+  }
+  ui.append(toolbar);
+  const tut = level.tutorial;
+  if (mode === 'build' && tut && tutorialStep < tut.length) {
+    ui.append(
+      h('div', { class: 'tutorial panel' }, h('p', {}, tut[tutorialStep][getLang()]), h('button', { class: 'primary', onclick: () => { tutorialStep++; renderGameUi(); } }, t('ok'))),
+    );
+  }
+}
+
+function afterEdit() {
+  scene.updateTracks();
+  update((s) => {
+    s.levels[level.id] = { ...levelSave(level.id), build: board.exportPieces() };
+  });
+  renderGameUi();
+}
+
+function doUndo() {
+  if (board.undo()) afterEdit();
+}
+
+function startRun() {
+  if (mode !== 'build') return;
+  if (level.tutorial && tutorialStep < level.tutorial.length) tutorialStep = level.tutorial.length;
+  mode = 'run';
+  scene.setGridVisible(false);
+  scene.setHighlight(null);
+  sim = new Simulation(board);
+  prevSnap = null;
+  curSnap = sim.snapshot();
+  tickTime = 0;
+  endTimer = -1;
+  renderGameUi();
+}
+
+function showResult(r: Result) {
+  mode = 'result';
+  const idx = LEVELS.indexOf(level);
+  const back = h('div', { class: 'modal-back' });
+  const modal = h('div', { class: 'modal panel' });
+  if (r.outcome === 'won') {
+    const best = Math.max(r.stars, levelSave(level.id).stars);
+    update((s) => {
+      s.levels[level.id] = { ...levelSave(level.id), stars: best };
+    });
+    const li = (ok: boolean, text: string) => h('li', { html: `${ok ? '<span class="stars"><span class="on">★</span></span>' : '<span class="stars">★</span>'} ${text}` });
+    modal.append(
+      h('h2', {}, t('won')),
+      h('div', { class: 'big-stars', html: starsHtml(r.stars) }),
+      h(
+        'ul',
+        {},
+        li(true, t('starAll')),
+        li(r.starPieces, `${t('starPieces', { n: level.targets.pieces })} · ${t('piecesUsed')}: ${r.pieces}`),
+        li(r.starTime, `${t('starTime', { n: level.targets.ticks })} · ${t('time')}: ${r.ticks}`),
+      ),
+    );
+    const buttons = h('div', { class: 'buttons' });
+    if (idx + 1 < LEVELS.length) buttons.append(h('button', { class: 'primary', onclick: () => startLevel(idx + 1) }, t('next')));
+    buttons.append(h('button', { onclick: () => { back.remove(); enterBuild(); } }, t('retry')), h('button', { onclick: () => { scene.resetTrains(); showHome(); } }, t('levels')));
+    modal.append(buttons);
+  } else {
+    const reason = r.failure?.reason ?? 'derail';
+    modal.append(h('h2', {}, '!'), h('p', {}, t(`fail.${reason}` as any)), h('div', { class: 'buttons' }, h('button', { class: 'primary', onclick: () => { back.remove(); enterBuild(); } }, t('edit'))));
+  }
+  back.append(modal);
+  ui.append(back);
+}
+
+// --- input: dito, mouse, tastiera ---------------------------------------------------
+
+interface Pointer {
+  x: number;
+  y: number;
+}
+const pointers = new Map<number, Pointer>();
+let drawPath: Cell[] | null = null;
+let drawStart: { x: number; y: number; time: number; cell: Cell | null } | null = null;
+let gestureChanged = false;
+let longPressTimer = 0;
+let pinchDist = 0;
+let panMode = false;
+
+function extendPath(cell: Cell) {
+  if (!drawPath) return;
+  const last = drawPath[drawPath.length - 1];
+  if (last.x === cell.x && last.y === cell.y) return;
+  // Riempie i salti (dito veloce) muovendosi una cella alla volta.
+  let cur = { ...last };
+  let guard = 0;
+  while ((cur.x !== cell.x || cur.y !== cell.y) && guard++ < 50) {
+    const dx = cell.x - cur.x;
+    const dy = cell.y - cur.y;
+    if (Math.abs(dx) >= Math.abs(dy)) cur = { x: cur.x + Math.sign(dx), y: cur.y };
+    else cur = { x: cur.x, y: cur.y + Math.sign(dy) };
+    // Tornare indietro sulla cella precedente accorcia il tracciato.
+    const prev = drawPath[drawPath.length - 2];
+    if (prev && prev.x === cur.x && prev.y === cur.y) drawPath.pop();
+    else drawPath.push({ ...cur });
+  }
+  const before = board.piecesUsed() + JSON.stringify(board.exportPieces());
+  board.placePath(drawPath);
+  const after = board.piecesUsed() + JSON.stringify(board.exportPieces());
+  if (before !== after) {
+    gestureChanged = true;
+    scene.updateTracks();
+    renderStockOnly();
+  } else if (drawPath.length > 1 && (Object.keys(level.stock) as PieceKind[]).every((k) => board.available(k) <= 0)) {
+    toast(t('noPieces'));
+  }
+}
+
+function renderStockOnly() {
+  const stock = ui.querySelector('.stock');
+  if (!stock) return;
+  const items = stock.querySelectorAll('.item');
+  (Object.keys(level.stock) as PieceKind[]).forEach((k, i) => {
+    const n = board.available(k);
+    items[i]?.classList.toggle('empty', n <= 0);
+    const c = items[i]?.querySelector('.count');
+    if (c) c.textContent = String(n);
+  });
+}
+
+canvas.addEventListener('contextmenu', (e) => e.preventDefault());
+
+canvas.addEventListener('pointerdown', (e) => {
+  canvas.setPointerCapture(e.pointerId);
+  pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+  if (pointers.size === 2) {
+    // Secondo dito: il gesto diventa zoom/spostamento; annulla il tracciato appena iniziato.
+    if (drawPath && gestureChanged) {
+      board.undo();
+      scene.updateTracks();
+      renderStockOnly();
+    } else if (drawPath) board.endEdit();
+    drawPath = null;
+    drawStart = null;
+    clearTimeout(longPressTimer);
+    const [a, b] = [...pointers.values()];
+    pinchDist = Math.hypot(a.x - b.x, a.y - b.y);
+    return;
+  }
+  panMode = e.button === 1 || e.button === 2 || mode !== 'build';
+  if (panMode) return;
+  const cell = scene.pick(e.clientX, e.clientY);
+  drawStart = { x: e.clientX, y: e.clientY, time: performance.now(), cell };
+  gestureChanged = false;
+  if (cell && board.inside(cell.x, cell.y)) {
+    board.beginEdit();
+    drawPath = [cell];
+    scene.setHighlight(cell, true);
+    longPressTimer = window.setTimeout(() => {
+      if (drawPath && drawPath.length === 1 && board.remove(cell.x, cell.y)) {
+        gestureChanged = true;
+        navigator.vibrate?.(15);
+        afterEdit();
+        board.endEdit();
+        drawPath = null;
+      }
+    }, 550);
+  }
+});
+
+canvas.addEventListener('pointermove', (e) => {
+  const p = pointers.get(e.pointerId);
+  if (!p) {
+    if (mode === 'build' && e.pointerType === 'mouse') {
+      const c = scene.pick(e.clientX, e.clientY);
+      scene.setHighlight(c && board.buildable(c.x, c.y) ? c : null);
+    }
+    return;
+  }
+  const dx = e.clientX - p.x;
+  const dy = e.clientY - p.y;
+  if (pointers.size === 2) {
+    const before = [...pointers.values()];
+    const cx0 = (before[0].x + before[1].x) / 2;
+    const cy0 = (before[0].y + before[1].y) / 2;
+    p.x = e.clientX;
+    p.y = e.clientY;
+    const [a, b] = [...pointers.values()];
+    const d = Math.hypot(a.x - b.x, a.y - b.y);
+    if (pinchDist > 0) scene.zoomBy(d / pinchDist);
+    pinchDist = d;
+    scene.pan((a.x + b.x) / 2 - cx0, (a.y + b.y) / 2 - cy0);
+    return;
+  }
+  p.x = e.clientX;
+  p.y = e.clientY;
+  if (panMode) {
+    scene.pan(dx, dy);
+    return;
+  }
+  if (drawPath && drawStart) {
+    if (Math.hypot(e.clientX - drawStart.x, e.clientY - drawStart.y) > 8) clearTimeout(longPressTimer);
+    const c = scene.pick(e.clientX, e.clientY);
+    if (c && board.inside(c.x, c.y) || (c && board.stationAt(c.x, c.y))) {
+      extendPath(c);
+      scene.setHighlight(c, board.buildable(c.x, c.y) || !!board.stationAt(c.x, c.y));
+    }
+  }
+});
+
+function endPointer(e: PointerEvent) {
+  pointers.delete(e.pointerId);
+  clearTimeout(longPressTimer);
+  if (pointers.size > 0) return;
+  pinchDist = 0;
+  if (drawPath && drawStart) {
+    const moved = Math.hypot(e.clientX - drawStart.x, e.clientY - drawStart.y);
+    if (drawPath.length === 1 && moved < 10 && performance.now() - drawStart.time < 500) {
+      const c = drawPath[0];
+      const p = board.pieceAt(c.x, c.y);
+      if (p?.kind === 'switch' && board.cycleSwitch(c.x, c.y)) gestureChanged = true;
+      else if (!p) toast(t('hintTap'));
+    }
+    board.endEdit();
+    if (gestureChanged) afterEdit();
+  }
+  drawPath = null;
+  drawStart = null;
+  if (e.pointerType !== 'mouse') scene.setHighlight(null);
+}
+
+canvas.addEventListener('pointerup', endPointer);
+canvas.addEventListener('pointercancel', endPointer);
+
+canvas.addEventListener(
+  'wheel',
+  (e) => {
+    e.preventDefault();
+    scene.zoomBy(e.deltaY < 0 ? 1.1 : 0.9);
+  },
+  { passive: false },
+);
+
+window.addEventListener('keydown', (e) => {
+  if (mode === 'home') return;
+  if (e.key === 'q' || e.key === 'Q') scene.rotate(1);
+  else if (e.key === 'e' || e.key === 'E') scene.rotate(-1);
+  else if (e.key === '+' || e.key === '=') scene.zoomBy(1.2);
+  else if (e.key === '-') scene.zoomBy(0.83);
+  else if (e.key === ' ' || e.key === 'Enter') {
+    e.preventDefault();
+    if (mode === 'build') startRun();
+    else if (mode === 'run') enterBuild();
+  } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z' && mode === 'build') doUndo();
+  else if (e.key === 'Escape' && mode === 'run') enterBuild();
+});
+
+window.addEventListener('resize', () => scene.resize());
+
+// Evita che il dito rimbalzi la pagina su iOS.
+document.addEventListener('touchmove', (e) => e.preventDefault(), { passive: false });
+
+// --- ciclo principale --------------------------------------------------------------
+
+let last = performance.now();
+function frame(now: number) {
+  const dt = Math.min(0.1, (now - last) / 1000);
+  last = now;
+  if (mode === 'run' || mode === 'result') {
+    if (sim && curSnap) {
+      if (sim.outcome === 'running') {
+        tickTime += dt * TICKS_PER_SECOND * speed;
+        while (tickTime >= 1 && sim.outcome === 'running') {
+          tickTime -= 1;
+          prevSnap = curSnap;
+          sim.step();
+          curSnap = sim.snapshot();
+        }
+        if (sim.outcome !== 'running') {
+          endTimer = 0;
+          if (sim.failure) scene.showFailure(sim.failure.x, sim.failure.y);
+        }
+      } else if (endTimer >= 0) {
+        tickTime = Math.min(1, tickTime + dt * TICKS_PER_SECOND * speed);
+        endTimer += dt;
+        if (endTimer > 0.9 && mode === 'run') {
+          endTimer = -1;
+          showResult(scoreRun(board, sim));
+        }
+      }
+      // In caso di scontro i treni restano fermi dove sono.
+      const alpha = sim.outcome === 'failed' ? 0.5 : Math.min(1, tickTime);
+      scene.drawTrains(prevSnap, curSnap, alpha);
+    }
+  }
+  scene.render(dt);
+  requestAnimationFrame(frame);
+}
+
+// Avvio: mostra l'isola del primo livello dietro il menu.
+(async () => {
+  load();
+  await scene.load(board);
+  scene.setBoard(board);
+  scene.resize();
+  showHome();
+  requestAnimationFrame(frame);
+  // Utile per i test automatici e per il debug da console.
+  (window as any).trainland = { board: () => board, startLevel, startRun, scene, dirBetween };
+})();
