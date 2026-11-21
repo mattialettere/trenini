@@ -651,7 +651,7 @@ export class GameScene {
     // La vista inquadra sempre tutta l'isola, sia in verticale sia in orizzontale.
     const b = this.board;
     const span = b ? (b.width + b.height + MARGIN * 2) * CELL * 0.7071 : this.extent * 2;
-    const halfW = span * 0.5;
+    const halfW = span * 0.58;
     const halfH = span * 0.34 + 6;
     const half = Math.max(halfW / aspect, halfH);
     this.camera.left = -half * aspect;

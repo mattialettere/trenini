@@ -13,11 +13,25 @@ const cache = new Map<string, Promise<ModelGeo>>();
 
 export const modelUrl = (id: string) => `${import.meta.env.BASE_URL}models/${id}.glb`;
 
+/**
+ * Alcuni hosting di anteprima non servono i .glb: in quel caso (VITE_MODELS_AS_JSON=1)
+ * ogni modello è un .json con il GLB in base64.
+ */
+const MODELS_AS_JSON = import.meta.env.VITE_MODELS_AS_JSON === '1';
+
+async function fetchGltf(id: string) {
+  if (!MODELS_AS_JSON) return loader.loadAsync(modelUrl(id));
+  const res = await fetch(`${import.meta.env.BASE_URL}models/${id}.json`);
+  const { b64 } = (await res.json()) as { b64: string };
+  const bin = Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
+  return loader.parseAsync(bin.buffer, '');
+}
+
 /** Carica un GLB e unisce tutte le sue mesh (con le trasformazioni dei nodi) in una geometria. */
 export function loadModel(id: string): Promise<ModelGeo> {
   let p = cache.get(id);
   if (!p) {
-    p = loader.loadAsync(modelUrl(id)).then((gltf) => {
+    p = fetchGltf(id).then((gltf) => {
       gltf.scene.updateMatrixWorld(true);
       const parts: THREE.BufferGeometry[] = [];
       gltf.scene.traverse((o) => {
