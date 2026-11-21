@@ -1,0 +1,160 @@
+{
+  "id": "08",
+  "name": {
+    "it": "Fiume e collina",
+    "en": "River and hill"
+  },
+  "terrain": [
+    "...^^..~..",
+    "...^^..~..",
+    "T....o.~..",
+    ".......~..",
+    "..T....~..",
+    ".......~.."
+  ],
+  "fixed": [],
+  "depots": [
+    {
+      "x": 0,
+      "y": 1,
+      "dir": 1
+    }
+  ],
+  "stations": [
+    {
+      "id": "town",
+      "kind": "town",
+      "x": 9,
+      "y": 1,
+      "dir": 1,
+      "accepts": [
+        "milk"
+      ]
+    },
+    {
+      "id": "port",
+      "kind": "port",
+      "x": 9,
+      "y": 4,
+      "dir": 1,
+      "accepts": [
+        "coal"
+      ]
+    }
+  ],
+  "trains": [
+    {
+      "cargo": null,
+      "wagons": 1,
+      "depart": 1,
+      "depot": 0,
+      "wagon": "milk"
+    },
+    {
+      "cargo": "coal",
+      "wagons": 1,
+      "depart": 4,
+      "depot": 0
+    }
+  ],
+  "stock": {
+    "straight": 6,
+    "curve": 2,
+    "switch": 1,
+    "tunnel": 2,
+    "bridge": 1
+  },
+  "targets": {
+    "pieces": 10,
+    "ticks": 16
+  },
+  "pickups": [
+    {
+      "x": 5,
+      "y": 1,
+      "axis": 1,
+      "gives": "milk",
+      "kind": "farm"
+    }
+  ],
+  "tutorial": [
+    {
+      "it": "Galleria, fattoria, ponte: un solo ponte per due treni. Dividi le strade dopo il fiume.",
+      "en": "Tunnel, farm, bridge: one bridge for two trains. Split the routes after the river."
+    }
+  ],
+  "solution": [
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 1,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 2,
+      "y": 1
+    },
+    {
+      "kind": "tunnel",
+      "a": 3,
+      "b": 1,
+      "x": 3,
+      "y": 1
+    },
+    {
+      "kind": "tunnel",
+      "a": 3,
+      "b": 1,
+      "x": 4,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 6,
+      "y": 1
+    },
+    {
+      "kind": "bridge",
+      "a": 3,
+      "b": 1,
+      "x": 7,
+      "y": 1
+    },
+    {
+      "kind": "switch",
+      "a": 3,
+      "b": 1,
+      "c": 2,
+      "route": "coal",
+      "x": 8,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 0,
+      "b": 2,
+      "x": 8,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 0,
+      "b": 2,
+      "x": 8,
+      "y": 3
+    },
+    {
+      "kind": "curve",
+      "a": 0,
+      "b": 1,
+      "x": 8,
+      "y": 4
+    }
+  ]
+}

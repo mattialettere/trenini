@@ -1,0 +1,211 @@
+{
+  "id": "18",
+  "name": {
+    "it": "Carbone e legna",
+    "en": "Coal and wood"
+  },
+  "terrain": [
+    "...o....~.",
+    "........~.",
+    "...o....~.",
+    "T.......~.",
+    "...o....~.",
+    "........~.",
+    "...o..T.~."
+  ],
+  "fixed": [],
+  "depots": [
+    {
+      "x": 0,
+      "y": 1,
+      "dir": 1
+    },
+    {
+      "x": 0,
+      "y": 5,
+      "dir": 1
+    }
+  ],
+  "stations": [
+    {
+      "id": "port",
+      "kind": "port",
+      "x": 9,
+      "y": 3,
+      "dir": 1,
+      "accepts": [
+        "coal",
+        "timber"
+      ]
+    }
+  ],
+  "trains": [
+    {
+      "cargo": null,
+      "wagons": 1,
+      "depart": 1,
+      "depot": 0,
+      "wagon": "coal"
+    },
+    {
+      "cargo": null,
+      "wagons": 1,
+      "depart": 1,
+      "depot": 1,
+      "wagon": "timber"
+    },
+    {
+      "cargo": null,
+      "wagons": 1,
+      "depart": 4,
+      "depot": 0,
+      "wagon": "coal"
+    }
+  ],
+  "stock": {
+    "straight": 12,
+    "curve": 4,
+    "switch": 1,
+    "bridge": 1,
+    "signal": 2
+  },
+  "targets": {
+    "pieces": 17,
+    "ticks": 18
+  },
+  "pickups": [
+    {
+      "x": 3,
+      "y": 1,
+      "axis": 1,
+      "gives": "coal",
+      "kind": "mine"
+    },
+    {
+      "x": 3,
+      "y": 5,
+      "axis": 1,
+      "gives": "timber",
+      "kind": "forest"
+    }
+  ],
+  "solution": [
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 1,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 2,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 4,
+      "y": 1
+    },
+    {
+      "kind": "curve",
+      "a": 3,
+      "b": 2,
+      "x": 5,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 0,
+      "b": 2,
+      "x": 5,
+      "y": 2
+    },
+    {
+      "kind": "curve",
+      "a": 0,
+      "b": 1,
+      "x": 5,
+      "y": 3
+    },
+    {
+      "kind": "switch",
+      "a": 1,
+      "b": 3,
+      "c": 2,
+      "route": "none",
+      "x": 6,
+      "y": 3
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 7,
+      "y": 3
+    },
+    {
+      "kind": "bridge",
+      "a": 3,
+      "b": 1,
+      "x": 8,
+      "y": 3
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 1,
+      "y": 5
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 2,
+      "y": 5
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 4,
+      "y": 5
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 5,
+      "y": 5
+    },
+    {
+      "kind": "curve",
+      "a": 3,
+      "b": 0,
+      "x": 6,
+      "y": 5
+    },
+    {
+      "kind": "straight",
+      "a": 2,
+      "b": 0,
+      "x": 6,
+      "y": 4
+    }
+  ],
+  "solutionSignals": [
+    {
+      "x": 6,
+      "y": 4
+    },
+    {
+      "x": 5,
+      "y": 3
+    }
+  ]
+}

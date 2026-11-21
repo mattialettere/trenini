@@ -14,7 +14,8 @@ export type TrainStatus = 'waiting' | 'running' | 'arriving' | 'done' | 'crashed
 
 export interface TrainState {
   index: number;
-  cargo: Cargo;
+  /** Merce a bordo; null = vuoto. */
+  cargo: Cargo | null;
   /** Locomotiva + vagoni. */
   length: number;
   status: TrainStatus;
@@ -24,12 +25,14 @@ export interface TrainState {
   emerged: number;
   /** Quanti veicoli sono già entrati nella stazione di arrivo. */
   absorbed: number;
+  /** Fermo davanti a un semaforo in questo tick. */
+  held: boolean;
   stationId?: string;
   deliveredAt?: number;
   doneAt?: number;
 }
 
-export type FailReason = 'collision' | 'derail' | 'wrong-station' | 'timeout';
+export type FailReason = 'collision' | 'derail' | 'wrong-station' | 'level-crossing' | 'timeout';
 
 export interface Failure {
   reason: FailReason;
@@ -44,12 +47,19 @@ export interface SimSnapshot {
   trains: {
     index: number;
     status: TrainStatus;
+    cargo: Cargo | null;
+    held: boolean;
     /** Veicoli visibili: indice del veicolo e cella. */
     vehicles: { v: number; step: TrackStep; inside?: boolean }[];
   }[];
+  /** Per ogni passaggio a livello: tick di inizio e di fine del passaggio del trattore (fine < tick = libero). */
+  tractors: { start: number; until: number }[];
 }
 
 export type Outcome = 'running' | 'won' | 'failed';
+
+/** Quante celle al massimo controlla un semaforo davanti a sé. */
+const SIGNAL_REACH = 16;
 
 /**
  * Simulazione deterministica a tick. Ogni tick ogni treno avanza di una cella.
@@ -61,6 +71,7 @@ export class Simulation {
   failure: Failure | null = null;
   readonly trains: TrainState[];
   readonly maxTicks: number;
+  private tractors: { start: number; until: number }[];
 
   constructor(private board: Board) {
     const lvl = board.level;
@@ -72,14 +83,84 @@ export class Simulation {
       trail: [],
       emerged: 0,
       absorbed: 0,
+      held: false,
     }));
     this.maxTicks = Math.max(60, lvl.targets.ticks * 3);
+    this.tractors = (lvl.crossings ?? []).map(() => ({ start: -1, until: -1 }));
   }
 
   /** Celle occupate dai veicoli visibili di ogni treno. */
   private occupied(t: TrainState): TrackStep[] {
     if (t.status === 'waiting' || t.status === 'done') return [];
     return t.trail.slice(t.absorbed, t.emerged);
+  }
+
+  private trainAt(x: number, y: number, except?: TrainState): boolean {
+    return this.trains.some((o) => o !== except && this.occupied(o).some((s) => s.x === x && s.y === y));
+  }
+
+  private tractorOn(x: number, y: number): boolean {
+    const i = (this.board.level.crossings ?? []).findIndex((c) => c.x === x && c.y === y);
+    return i >= 0 && this.tick <= this.tractors[i].until;
+  }
+
+  /** Merce che conta per gli scambi: un treno vuoto vale come la merce che andrà a caricare (il suo vagone). */
+  private routeCargo(t: TrainState): Cargo | null {
+    return t.cargo ?? this.board.level.trains[t.index].wagon ?? null;
+  }
+
+  /** Un altro treno (non fermo a un semaforo) sta per entrare nella cella (x,y) con la locomotiva? */
+  private approaching(x: number, y: number, except: TrainState): boolean {
+    return this.trains.some((o) => {
+      if (o === except || o.status !== 'running' || o.held || !o.trail[0]) return false;
+      const h = o.trail[0];
+      return h.x + DX[h.exit] === x && h.y + DY[h.exit] === y;
+    });
+  }
+
+  /**
+   * Il trattore sarà sul passaggio a livello (x,y) al tick `at`? Vale sia per quello già in strada
+   * sia per uno che deve ancora partire: il semaforo lo vede arrivare.
+   */
+  private tractorThreat(x: number, y: number, at: number): boolean {
+    const lvl = this.board.level.crossings ?? [];
+    const i = lvl.findIndex((c) => c.x === x && c.y === y);
+    if (i < 0) return false;
+    if (at <= this.tractors[i].until) return true;
+    const c = lvl[i];
+    for (let s = this.tick + 1; s <= at; s++) {
+      if (s >= c.offset && (s - c.offset) % c.period === 0) return true;
+    }
+    return false;
+  }
+
+  /**
+   * Il tratto protetto da un semaforo: dalla cella del semaforo in avanti, seguendo il percorso
+   * che farebbe questo treno, fino al primo scambio, incrocio o stazione (compresi)
+   * oppure fino al semaforo successivo (escluso).
+   */
+  private blockAhead(t: TrainState, x: number, y: number, entry: Dir): { x: number; y: number }[] {
+    const cells: { x: number; y: number }[] = [];
+    let cx = x;
+    let cy = y;
+    let ent = entry;
+    for (let i = 0; i < SIGNAL_REACH; i++) {
+      // Il tratto finisce al semaforo successivo: da lì comincia il suo.
+      if (i > 0 && this.board.hasSignal(cx, cy)) break;
+      cells.push({ x: cx, y: cy });
+      if (this.board.stationAt(cx, cy)) break;
+      const p = this.board.pieceAt(cx, cy);
+      if (!p) break;
+      if (i > 0 && (p.kind === 'switch' || p.kind === 'crossing')) break;
+      const pick = this.board.pickupAt(cx, cy);
+      const exit = exitSide(p, ent, pick && t.cargo === null ? pick.gives : this.routeCargo(t));
+      if (exit === null) break;
+      cx += DX[exit];
+      cy += DY[exit];
+      ent = opposite(exit);
+      if (cx === x && cy === y) break;
+    }
+    return cells;
   }
 
   /**
@@ -100,8 +181,9 @@ export class Simulation {
             }
           }
         }
-        return { index: t.index, status: t.status, vehicles };
+        return { index: t.index, status: t.status, cargo: t.cargo, held: t.held, vehicles };
       }),
+      tractors: this.tractors.map((x) => ({ ...x })),
     };
   }
 
@@ -116,16 +198,24 @@ export class Simulation {
     if (this.outcome !== 'running') return this.outcome;
     this.tick++;
     const lvl = this.board.level;
+
+    // I trattori partono a orari fissi, ma aspettano se c'è un treno sul passaggio a livello.
+    (lvl.crossings ?? []).forEach((c, i) => {
+      if (this.tick >= c.offset && (this.tick - c.offset) % c.period === 0 && !this.trainAt(c.x, c.y)) {
+        this.tractors[i] = { start: this.tick, until: this.tick + c.duration - 1 };
+      }
+    });
+
     const prevHeads = new Map<number, string>();
     for (const t of this.trains) if (t.trail[0] && t.status === 'running') prevHeads.set(t.index, cellKey(t.trail[0].x, t.trail[0].y));
 
     for (const t of this.trains) {
+      t.held = false;
       if (t.status === 'waiting') {
         if (this.tick < lvl.trains[t.index].depart) continue;
         const d = lvl.depots[lvl.trains[t.index].depot];
         // Il deposito deve essere libero.
-        const busy = this.trains.some((o) => o !== t && this.occupied(o).some((s) => s.x === d.x && s.y === d.y));
-        if (busy) continue;
+        if (this.trainAt(d.x, d.y, t)) continue;
         t.status = 'running';
         t.trail = [{ x: d.x, y: d.y, entry: opposite(d.dir), exit: d.dir }];
         t.emerged = 1;
@@ -149,7 +239,7 @@ export class Simulation {
       const entry = opposite(head.exit);
       const station = this.board.stationAt(nx, ny);
       if (station && opposite(station.dir) === entry) {
-        if (!station.accepts.includes(t.cargo)) {
+        if (t.cargo === null || !station.accepts.includes(t.cargo)) {
           this.fail('wrong-station', nx, ny, [t.index]);
           return this.outcome;
         }
@@ -162,10 +252,27 @@ export class Simulation {
         t.deliveredAt = this.tick;
         continue;
       }
+      // Semaforo: si entra solo se il tratto dopo è libero, nessun treno sta per entrarci
+      // e il trattore non c'è né sta per arrivare.
+      if (this.board.hasSignal(nx, ny)) {
+        const block = this.blockAhead(t, nx, ny, entry);
+        const busy = (c: { x: number; y: number }, i: number) =>
+          this.trainAt(c.x, c.y, t) || this.approaching(c.x, c.y, t) || this.tractorThreat(c.x, c.y, this.tick + i);
+        if (block.some(busy)) {
+          t.held = true;
+          continue;
+        }
+      }
       const piece = this.board.pieceAt(nx, ny);
-      const exit = piece ? exitSide(piece, entry, t.cargo) : null;
+      const pickup = this.board.pickupAt(nx, ny);
+      if (pickup && t.cargo === null) t.cargo = pickup.gives;
+      const exit = piece ? exitSide(piece, entry, this.routeCargo(t)) : null;
       if (exit === null) {
         this.fail('derail', nx, ny, [t.index]);
+        return this.outcome;
+      }
+      if (this.tractorOn(nx, ny)) {
+        this.fail('level-crossing', nx, ny, [t.index]);
         return this.outcome;
       }
       t.trail.unshift({ x: nx, y: ny, entry, exit });

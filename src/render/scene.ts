@@ -1,9 +1,9 @@
 import * as THREE from 'three';
 import { Board } from '../core/board';
 import type { SimSnapshot, TrackStep } from '../core/sim';
-import { Cargo, Cell, DX, DY, Dir, Piece, opposite } from '../core/types';
+import { Cargo, Cell, DX, DY, Dir, Piece, TrainDef, opposite } from '../core/types';
 import { ModelGeo, bendTrack, centered, loadModel } from './assets';
-import { cargoSprite, markerSprite, switchSprite } from './icons';
+import { cargoSprite, emptySprite, lightSprite, markerSprite, scheduleSprite } from './icons';
 
 /** Lato di una cella in metri: quanto il binario dritto Polyfork. */
 export const CELL = 4;
@@ -31,6 +31,24 @@ const M = {
   loco: 'tank-steam-locomotive-314bb1',
 } as const;
 
+/** Modelli che servono solo ad alcuni livelli. */
+const X = {
+  bridge: 'steel-girder-bridge-d80bb4',
+  portal: 'tunnel-portal-4ac9f3',
+  levelCrossing: 'level-crossing-37d00b',
+  signal: 'colour-light-signal-713276',
+  gantry: 'loading-gantry-34460f',
+  lane: 'country-lane-tile-65e8ee',
+  tractor: 'compact-tractor-35b84b',
+  barn: 'red-barn-d41683',
+  silo: 'grain-silo-58ca67',
+  churns: 'milk-churn-stand-130fe2',
+  spoil: 'spoil-heap-9aaa11',
+  excavator: 'tracked-excavator-8ebd3c',
+  firewood: 'firewood-stack-810f49',
+  stump: 'log-stump-1d65a5',
+} as const;
+
 export const WAGON_MODEL: Record<Cargo, string> = {
   milk: 'tank-wagon-d860fa',
   coal: 'hopper-wagon-b4c486',
@@ -41,10 +59,25 @@ export const WAGON_MODEL: Record<Cargo, string> = {
 /** Modelli che servono per disegnare un livello: si caricano solo questi. */
 export function modelsFor(board: Board): string[] {
   const ids = new Set<string>(Object.values(M));
-  for (const t of board.level.trains) ids.add(WAGON_MODEL[t.cargo]);
+  const lvl = board.level;
+  for (const t of lvl.trains) ids.add(WAGON_MODEL[wagonOf(t)]);
+  const has = (tr: string) => lvl.terrain.some((r) => r.includes(tr));
+  if (has('~') || (lvl.stock.bridge ?? 0) > 0) ids.add(X.bridge);
+  if (has('^')) ids.add(X.portal);
+  if (has('=') || (lvl.crossings ?? []).length > 0) ids.add(X.lane);
+  if ((lvl.crossings ?? []).length > 0) ids.add(X.levelCrossing).add(X.tractor);
+  if ((lvl.stock.signal ?? 0) > 0) ids.add(X.signal);
+  for (const p of lvl.pickups ?? []) {
+    if (p.kind === 'farm') ids.add(X.barn).add(X.silo).add(X.churns);
+    if (p.kind === 'mine') ids.add(X.gantry).add(X.spoil).add(X.excavator);
+    if (p.kind === 'forest') ids.add(X.firewood).add(X.stump);
+  }
   for (const d of board.level.decorations ?? []) ids.add(d.model);
   return [...ids];
 }
+
+/** Merce da disegnare sui vagoni: quella a bordo, o quella che il treno vuoto andrà a prendere. */
+const wagonOf = (t: TrainDef): Cargo => t.wagon ?? t.cargo ?? 'coal';
 
 const DIR_VEC = (d: Dir) => new THREE.Vector3(DX[d], 0, DY[d]);
 /** Rotazione attorno a y che porta il nord nella direzione d. */
@@ -59,6 +92,12 @@ const COLORS = {
   soilDark: new THREE.Color('#6e4f33'),
   rock: new THREE.Color('#8b8473'),
   rockDark: new THREE.Color('#6d675a'),
+  water: new THREE.Color('#4fa3c7'),
+  waterDeep: new THREE.Color('#3f8fb5'),
+  fall: new THREE.Color('#8fd0ea'),
+  lot: new THREE.Color('#b59a6a'),
+  hill: new THREE.Color('#7d9a4f'),
+  hillDark: new THREE.Color('#6c8a43'),
 };
 
 // Generatore pseudo-casuale con seme: le decorazioni restano uguali a ogni partita.
@@ -94,6 +133,10 @@ export class GameScene {
   private board: Board | null = null;
   private vehicles: VehicleView[] = [];
   private cargoTags: THREE.Sprite[] = [];
+  private tagCargo: (Cargo | null | undefined)[] = [];
+  private signalGroup = new THREE.Group();
+  private signalLights = new Map<string, THREE.Sprite>();
+  private tractors: { mesh: THREE.Mesh; center: THREE.Vector3; road: THREE.Vector3; offset: number; period: number }[] = [];
   private sun: THREE.DirectionalLight;
 
   // Camera isometrica: angolo a scatti di 90 gradi, zoom e spostamento.
@@ -119,7 +162,7 @@ export class GameScene {
     this.sun.shadow.normalBias = 0.05;
     this.scene.add(this.sun, this.sun.target);
 
-    this.scene.add(this.levelGroup, this.trackGroup, this.trainGroup, this.overlayGroup);
+    this.scene.add(this.levelGroup, this.trackGroup, this.signalGroup, this.trainGroup, this.overlayGroup);
     this.highlight = new THREE.Mesh(
       new THREE.PlaneGeometry(CELL * 0.96, CELL * 0.96).rotateX(-Math.PI / 2),
       new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.35, depthWrite: false }),
@@ -178,8 +221,11 @@ export class GameScene {
 
   setBoard(board: Board) {
     this.board = board;
-    for (const g of [this.levelGroup, this.trackGroup, this.trainGroup]) g.clear();
+    for (const g of [this.levelGroup, this.trackGroup, this.trainGroup, this.signalGroup]) g.clear();
     this.vehicles = [];
+    this.cargoTags = [];
+    this.tagCargo = [];
+    this.tractors = [];
     this.buildIsland();
     this.buildFeatures();
     this.updateTracks();
@@ -204,14 +250,66 @@ export class GameScene {
       pos.push(ax, y, az, ax, y, bz, bx, y, bz, ax, y, az, bx, y, bz, bx, y, az);
       for (let i = 0; i < 6; i++) col.push(c.r, c.g, c.b);
     };
+    // Acqua: le celle '~' e, sul bordo, la cella di margine subito fuori (il fiume esce dall'isola).
+    const isWater = (cx: number, cy: number): boolean => {
+      if (b.terrain(cx, cy) === 'water') return true;
+      if (b.inside(cx, cy)) return false;
+      const inX = cx >= 0 && cx < b.width;
+      const inY = cy >= 0 && cy < b.height;
+      if (inX && cy === -1) return b.terrain(cx, 0) === 'water';
+      if (inX && cy === b.height) return b.terrain(cx, b.height - 1) === 'water';
+      if (inY && cx === -1) return b.terrain(0, cy) === 'water';
+      if (inY && cx === b.width) return b.terrain(b.width - 1, cy) === 'water';
+      return false;
+    };
+    const WATER_Y = -0.55;
+    const wall = (ax: number, az: number, bx: number, bz: number, y1: number, y2: number, c: THREE.Color) => {
+      // Due facce, così si vede da entrambi i lati.
+      pos.push(ax, y1, az, bx, y1, bz, bx, y2, bz, ax, y1, az, bx, y2, bz, ax, y2, az);
+      pos.push(ax, y1, az, bx, y2, bz, bx, y1, bz, ax, y1, az, ax, y2, az, bx, y2, bz);
+      for (let i = 0; i < 12; i++) col.push(c.r, c.g, c.b);
+    };
     for (let gy = 0; gy < H; gy++) {
       for (let gx = 0; gx < W; gx++) {
         const cx = gx - MARGIN;
         const cy = gy - MARGIN;
         const inGrid = b.inside(cx, cy);
-        const c = (inGrid ? ((cx + cy) % 2 === 0 ? COLORS.grass : COLORS.grassDark) : COLORS.margin).clone();
+        const tr = b.terrain(cx, cy);
+        const ax = x0 + gx * CELL;
+        const az = z0 + gy * CELL;
+        if (isWater(cx, cy)) {
+          const c = ((cx + cy) % 2 === 0 ? COLORS.water : COLORS.waterDeep).clone();
+          quad(ax, az, ax + CELL, az + CELL, WATER_Y, c);
+          // Sponde di terra verso le celle vicine asciutte.
+          for (const d of [0, 1, 2, 3] as Dir[]) {
+            const nx = cx + DX[d];
+            const ny = cy + DY[d];
+            const outside = nx < -MARGIN || ny < -MARGIN || nx >= b.width + MARGIN || ny >= b.height + MARGIN;
+            if (outside) {
+              // Cascata giù dal bordo dell'isola.
+              const ex = d === 1 ? ax + CELL + 0.05 : d === 3 ? ax - 0.05 : null;
+              const ez = d === 2 ? az + CELL + 0.05 : d === 0 ? az - 0.05 : null;
+              if (ex !== null) wall(ex, az + 0.4, ex, az + CELL - 0.4, WATER_Y, -5, COLORS.fall);
+              if (ez !== null) wall(ax + 0.4, ez, ax + CELL - 0.4, ez, WATER_Y, -5, COLORS.fall);
+              continue;
+            }
+            if (isWater(nx, ny)) continue;
+            const e = [
+              [ax, az, ax + CELL, az],
+              [ax + CELL, az, ax + CELL, az + CELL],
+              [ax, az + CELL, ax + CELL, az + CELL],
+              [ax, az, ax, az + CELL],
+            ][d];
+            wall(e[0], e[1], e[2], e[3], 0, WATER_Y, COLORS.soil);
+          }
+          continue;
+        }
+        let c: THREE.Color;
+        if (!inGrid) c = COLORS.margin.clone();
+        else if (tr === 'lot') c = COLORS.lot.clone();
+        else c = ((cx + cy) % 2 === 0 ? COLORS.grass : COLORS.grassDark).clone();
         c.offsetHSL(0, 0, (rand() - 0.5) * 0.02);
-        quad(x0 + gx * CELL, z0 + gy * CELL, x0 + (gx + 1) * CELL, z0 + (gy + 1) * CELL, 0, c);
+        quad(ax, az, ax + CELL, az + CELL, 0, c);
       }
     }
     const top = new THREE.BufferGeometry();
@@ -288,9 +386,24 @@ export class GameScene {
     this.levelGroup.add(this.mesh(under, false, false));
 
     // Alberi sulle celle "T" e qualche decoro sul bordo.
+    this.buildHills(rand);
     for (let y = 0; y < b.height; y++) {
       for (let x = 0; x < b.width; x++) {
-        if (b.terrain(x, y) !== 'tree') continue;
+        const tr = b.terrain(x, y);
+        if (tr === 'rock') {
+          for (let i = 0; i < 2; i++) {
+            const r = this.prop(M.rock, null, i === 0 ? 2.6 + rand() * 0.5 : 1.4 + rand() * 0.4);
+            r.position.copy(this.cellCenter(x, y)).add(new THREE.Vector3((rand() - 0.5) * 1.6, 0, (rand() - 0.5) * 1.6));
+            r.rotation.y = rand() * Math.PI * 2;
+            this.levelGroup.add(r);
+          }
+          continue;
+        }
+        if (tr === 'road') {
+          if (!b.levelCrossingAt(x, y)) this.addRoad(x, y);
+          continue;
+        }
+        if (tr !== 'tree') continue;
         const isLineside = rand() > 0.35;
         const t = this.prop(isLineside ? M.tree : M.apple, null, isLineside ? rand() * 0.12 + 0.42 : 0.9 + rand() * 0.2);
         t.position.copy(this.cellCenter(x, y)).add(new THREE.Vector3((rand() - 0.5) * 1.2, 0, (rand() - 0.5) * 1.2));
@@ -307,7 +420,7 @@ export class GameScene {
     }
     for (let gy = -MARGIN; gy < b.height + MARGIN; gy++) {
       for (let gx = -MARGIN; gx < b.width + MARGIN; gx++) {
-        if (b.inside(gx, gy) || reserved.has(`${gx},${gy}`)) continue;
+        if (b.inside(gx, gy) || reserved.has(`${gx},${gy}`) || isWater(gx, gy)) continue;
         const r = rand();
         if (r > 0.45) continue;
         const id = r < 0.22 ? M.tree : r < 0.32 ? M.apple : r < 0.4 ? M.rock : M.hay;
@@ -401,6 +514,8 @@ export class GameScene {
       tag.position.copy(c).add(new THREE.Vector3(0, 6.5, 0)).addScaledVector(fwd, CELL * 0.6);
       this.levelGroup.add(tag);
     }
+    for (const pk of b.level.pickups ?? []) this.buildPickup(pk);
+    for (const lc of b.level.crossings ?? []) this.buildLevelCrossing(lc);
     for (const d of b.level.decorations ?? []) {
       const p = this.prop(d.model, null, d.scale ?? 1);
       p.position.copy(this.cellCenter(d.x, d.y));
@@ -413,21 +528,24 @@ export class GameScene {
   updateTracks() {
     const b = this.board!;
     this.trackGroup.clear();
+    this.signalGroup.clear();
+    this.signalLights.clear();
+    for (const k of b.signals) {
+      const [x, y] = k.split(',').map(Number);
+      const p = b.pieceAt(x, y);
+      if (p) this.addSignal(p);
+    }
     for (const p of b.pieces.values()) {
+      if (b.levelCrossingAt(p.x, p.y)) continue; // il modello del passaggio a livello ha già i binari
       const c = this.cellCenter(p.x, p.y);
       for (const mesh of this.pieceMeshes(p)) {
         mesh.position.add(c);
         this.trackGroup.add(mesh);
       }
-      if (p.kind === 'switch') {
-        const sign = switchSprite(p.route ?? 'none');
-        sign.position.copy(c).add(new THREE.Vector3(0, 3.2, 0));
-        this.trackGroup.add(sign);
-      }
     }
   }
 
-  private pieceMeshes(p: Piece): THREE.Mesh[] {
+  private pieceMeshes(p: Piece & Cell): THREE.Mesh[] {
     const straight = (a: Dir) => {
       const m = this.mesh(this.straightGeo!, false, true);
       m.rotation.y = yawFor(a);
@@ -449,6 +567,32 @@ export class GameScene {
     switch (p.kind) {
       case 'straight':
         return [straight(p.a)];
+      case 'bridge': {
+        const deck = this.mesh(this.geo(X.bridge), true, true);
+        deck.scale.set(0.62, 0.55, CELL / 12);
+        deck.rotation.y = yawFor(p.a);
+        const t = straight(p.a);
+        t.position.y = 0.04;
+        return [deck, t];
+      }
+      case 'tunnel': {
+        // Dentro la collina non si vede nulla: solo i portali dove il binario entra ed esce.
+        const out: THREE.Mesh[] = [];
+        for (const side of [p.a, p.b]) {
+          if (this.board!.terrain(p.x + DX[side], p.y + DY[side]) === 'hill') continue;
+          const portal = this.prop(X.portal, null, 1);
+          portal.scale.set(0.34, 0.34, 0.2);
+          portal.position.copy(DIR_VEC(side).multiplyScalar(CELL * 0.42));
+          portal.rotation.y = yawFor(side) + Math.PI;
+          out.push(portal, (() => {
+            const t = straight(p.a);
+            t.scale.set(1, 1, 0.3);
+            t.position.copy(DIR_VEC(side).multiplyScalar(CELL * 0.4));
+            return t;
+          })());
+        }
+        return out;
+      }
       case 'curve':
         return [curve(p.a, p.b)];
       case 'crossing': {
@@ -468,6 +612,165 @@ export class GameScene {
     }
   }
 
+  // --- terreni e luoghi speciali ---------------------------------------------------
+
+  /** Colline: un cumulo a gradini per cella, alto abbastanza da nascondere il treno in galleria. */
+  private buildHills(rand: () => number) {
+    const b = this.board!;
+    const pos: number[] = [];
+    const col: number[] = [];
+    for (let y = 0; y < b.height; y++) {
+      for (let x = 0; x < b.width; x++) {
+        if (b.terrain(x, y) !== 'hill') continue;
+        const c = this.cellCenter(x, y);
+        const hillAt = (d: Dir) => b.terrain(x + DX[d], y + DY[d]) === 'hill';
+        // Anelli: base quadrata (si allarga verso le colline vicine), poi sempre più stretti.
+        const rings: { r: number; y: number }[] = [
+          { r: 1, y: 0 },
+          { r: 0.8, y: 2.1 + rand() * 0.4 },
+          { r: 0.45, y: 3.6 + rand() * 0.6 },
+        ];
+        const n = 8;
+        const ringPts = rings.map((rg, ri) =>
+          Array.from({ length: n }, (_, i) => {
+            const ang = (i / n) * Math.PI * 2 + Math.PI / 4;
+            const dx = Math.cos(ang);
+            const dz = Math.sin(ang);
+            // Sul quadrato della cella per la base, altrimenti un ottagono che si gonfia verso le colline vicine.
+            const sq = 1 / Math.max(Math.abs(dx), Math.abs(dz));
+            let k = ri === 0 ? sq : rg.r * (1 + (sq - 1) * 0.5);
+            const toward = (Math.abs(dx) > 0.5 && hillAt(dx > 0 ? 1 : 3)) || (Math.abs(dz) > 0.5 && hillAt(dz > 0 ? 2 : 0));
+            if (ri > 0 && toward) k = Math.min(sq, k * 1.25);
+            const j = ri === 0 ? 0 : (rand() - 0.5) * 0.25;
+            return new THREE.Vector3(c.x + dx * k * (CELL / 2) * (1 + j), rg.y, c.z + dz * k * (CELL / 2) * (1 + j));
+          }),
+        );
+        const tri = (a: THREE.Vector3, b2: THREE.Vector3, c2: THREE.Vector3, cc: THREE.Color) => {
+          pos.push(a.x, a.y, a.z, b2.x, b2.y, b2.z, c2.x, c2.y, c2.z);
+          for (let i = 0; i < 3; i++) col.push(cc.r, cc.g, cc.b);
+        };
+        for (let r = 0; r < rings.length - 1; r++) {
+          for (let i = 0; i < n; i++) {
+            const a1 = ringPts[r][i];
+            const a2 = ringPts[r][(i + 1) % n];
+            const b1 = ringPts[r + 1][i];
+            const b2 = ringPts[r + 1][(i + 1) % n];
+            const cc = rand() > 0.5 ? COLORS.hill : COLORS.hillDark;
+            tri(a1, b1, a2, cc);
+            tri(a2, b1, b2, cc);
+          }
+        }
+        const topC = new THREE.Vector3(c.x, rings[2].y + 0.5, c.z);
+        for (let i = 0; i < n; i++) tri(ringPts[2][i], topC, ringPts[2][(i + 1) % n], COLORS.hill);
+      }
+    }
+    if (pos.length === 0) return;
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+    g.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
+    g.computeVertexNormals();
+    const m = this.mesh(g, true, true);
+    m.material = new THREE.MeshLambertMaterial({ vertexColors: true, flatShading: true, side: THREE.DoubleSide });
+    this.levelGroup.add(m);
+  }
+
+  /** Tratto di strada di campagna; si orienta verso le strade e i passaggi a livello vicini. */
+  private addRoad(x: number, y: number) {
+    const b = this.board!;
+    const roadish = (xx: number, yy: number) => b.terrain(xx, yy) === 'road' || !!b.levelCrossingAt(xx, yy) || !b.inside(xx, yy);
+    const ew = (roadish(x - 1, y) && b.inside(x - 1, y)) || (roadish(x + 1, y) && b.inside(x + 1, y));
+    const ns = (roadish(x, y - 1) && b.inside(x, y - 1)) || (roadish(x, y + 1) && b.inside(x, y + 1));
+    const lane = this.mesh(this.geo(X.lane), false, true);
+    lane.position.copy(this.cellCenter(x, y)).setY(0.01);
+    lane.rotation.y = ew && !ns ? Math.PI / 2 : 0;
+    this.levelGroup.add(lane);
+  }
+
+  /** Stazione di carico passante: fattoria, miniera o bosco, con la merce sopra. */
+  private buildPickup(pk: { x: number; y: number; axis: 0 | 1; gives: Cargo; kind: 'farm' | 'mine' | 'forest' }) {
+    const b = this.board!;
+    const c = this.cellCenter(pk.x, pk.y);
+    const along = pk.axis === 0 ? new THREE.Vector3(0, 0, 1) : new THREE.Vector3(1, 0, 0);
+    const across = pk.axis === 0 ? new THREE.Vector3(1, 0, 0) : new THREE.Vector3(0, 0, 1);
+    const yaw = pk.axis === 0 ? 0 : Math.PI / 2;
+    const sides = pk.axis === 0 ? ([1, 3] as Dir[]) : ([2, 0] as Dir[]);
+    const lots = sides.filter((d) => b.terrain(pk.x + DX[d], pk.y + DY[d]) === 'lot');
+    const add = (m: THREE.Mesh, at: THREE.Vector3, rot = yaw) => {
+      m.position.copy(at);
+      m.rotation.y = rot;
+      this.levelGroup.add(m);
+      return m;
+    };
+    const lotCenter = (d: Dir) => this.cellCenter(pk.x + DX[d], pk.y + DY[d]);
+    const sideVec = (d: Dir) => DIR_VEC(d);
+    if (pk.kind === 'farm') {
+      add(this.prop(X.churns, null, 0.55), c.clone().addScaledVector(sideVec(sides[0]), 1.55), yaw + Math.PI / 2);
+      if (lots[0] !== undefined) {
+        add(this.prop(X.barn, null, 0.42), lotCenter(lots[0]).addScaledVector(along, -0.4), yaw + (lots[0] === sides[0] ? -Math.PI / 2 : Math.PI / 2));
+        add(this.prop(X.silo, null, 0.36), lotCenter(lots[0]).addScaledVector(along, 1.35).addScaledVector(sideVec(lots[0]), 0.6));
+      }
+      if (lots[1] !== undefined) add(this.prop(M.hay, null, 1.1), lotCenter(lots[1]));
+    } else if (pk.kind === 'mine') {
+      add(this.prop(X.gantry, null, 0.95), c.clone());
+      if (lots[0] !== undefined) {
+        add(this.prop(X.spoil, null, 1.0), lotCenter(lots[0]).addScaledVector(along, -0.6));
+        add(this.prop(X.excavator, null, 0.36), lotCenter(lots[0]).addScaledVector(along, 1.2), yaw + 0.6);
+      }
+      if (lots[1] !== undefined) add(this.prop(X.spoil, null, 0.7), lotCenter(lots[1]), 1.3);
+    } else {
+      add(this.prop(X.firewood, null, 0.75), c.clone().addScaledVector(sideVec(sides[0]), 1.55));
+      for (const d of lots) {
+        add(this.prop(X.firewood, null, 0.9), lotCenter(d).addScaledVector(along, -0.8));
+        add(this.prop(X.firewood, null, 0.9), lotCenter(d).addScaledVector(along, 0.5).setY(0.55), yaw + 0.1);
+        add(this.prop(X.stump, null, 1.3), lotCenter(d).addScaledVector(along, 1.4).addScaledVector(sideVec(d), 0.8));
+        add(this.prop(M.tree, null, 0.45), lotCenter(d).addScaledVector(sideVec(d), 1.2).addScaledVector(along, -1.5));
+      }
+    }
+    void across;
+    const tag = cargoSprite(pk.gives, 2.2);
+    tag.position.copy(c).add(new THREE.Vector3(0, 6.5, 0));
+    this.levelGroup.add(tag);
+  }
+
+  private buildLevelCrossing(lc: { x: number; y: number; axis: 0 | 1; period: number; offset: number; duration: number }) {
+    const c = this.cellCenter(lc.x, lc.y);
+    const m = this.mesh(this.geo(X.levelCrossing), false, true);
+    m.scale.set(CELL / 12, 1, 1);
+    // Il modello ha la strada lungo x e i binari lungo z.
+    m.rotation.y = lc.axis === 0 ? 0 : Math.PI / 2;
+    m.position.copy(c);
+    this.levelGroup.add(m);
+    const road = lc.axis === 0 ? new THREE.Vector3(1, 0, 0) : new THREE.Vector3(0, 0, 1);
+    const tractor = this.prop(X.tractor, null, 0.95);
+    this.levelGroup.add(tractor);
+    this.tractors.push({ mesh: tractor, center: c, road, offset: lc.offset, period: lc.period });
+    const times = [0, 1, 2].map((k) => lc.offset + k * lc.period);
+    const sign = scheduleSprite(times);
+    sign.position.copy(c).addScaledVector(road, CELL * 1.1).add(new THREE.Vector3(0, 4.5, 0));
+    this.levelGroup.add(sign);
+    this.drawTractors(null, 0);
+  }
+
+  /** Semaforo accanto al binario, con la luce verde (o rossa se un treno aspetta). */
+  private addSignal(p: Piece & Cell) {
+    const c = this.cellCenter(p.x, p.y);
+    const pole = this.prop(X.signal, null, 0.85);
+    let offset: THREE.Vector3;
+    if (p.a === opposite(p.b)) {
+      offset = DIR_VEC(((p.a + 1) % 4) as Dir).multiplyScalar(1.7);
+      pole.rotation.y = yawFor(p.a);
+    } else {
+      offset = DIR_VEC(p.a).add(DIR_VEC(p.b)).multiplyScalar(-1.2);
+      pole.rotation.y = yawFor(p.a);
+    }
+    pole.position.copy(c).add(offset);
+    this.signalGroup.add(pole);
+    const light = lightSprite('green');
+    light.position.copy(pole.position).add(new THREE.Vector3(0, 4.4, 0));
+    this.signalGroup.add(light);
+    this.signalLights.set(`${p.x},${p.y}`, light);
+  }
+
   // --- treni -----------------------------------------------------------------
 
   private ensureVehicles(snap: SimSnapshot) {
@@ -475,7 +778,7 @@ export class GameScene {
     if (this.vehicles.length > 0) return;
     for (const t of snap.trains) {
       const def = b.level.trains[t.index];
-      const ids = [M.loco, ...Array.from({ length: def.wagons }, () => WAGON_MODEL[def.cargo])];
+      const ids = [M.loco, ...Array.from({ length: def.wagons }, () => WAGON_MODEL[wagonOf(def)])];
       ids.forEach((id, v) => {
         const m = this.models.get(id)!;
         const size = new THREE.Vector3();
@@ -488,10 +791,11 @@ export class GameScene {
         this.trainGroup.add(mesh);
         this.vehicles.push({ mesh, train: t.index, v });
       });
-      const tag = cargoSprite(def.cargo, 1.7);
+      const tag = def.cargo ? cargoSprite(def.cargo, 1.7) : emptySprite(1.7);
       tag.visible = false;
       this.trainGroup.add(tag);
       this.cargoTags[t.index] = tag;
+      this.tagCargo[t.index] = def.cargo;
     }
   }
 
@@ -500,6 +804,9 @@ export class GameScene {
     for (const t of this.cargoTags) if (t) this.trainGroup.remove(t);
     this.vehicles = [];
     this.cargoTags = [];
+    this.tagCargo = [];
+    for (const k of this.signalLights.keys()) this.setSignalLight(k, 'green');
+    this.drawTractors(null, 0);
     this.overlayGroup.children.filter((c) => c !== this.highlight).forEach((c) => this.overlayGroup.remove(c));
   }
 
@@ -553,10 +860,19 @@ export class GameScene {
       if (t + 0.02 > 1) this.pointOn(step, t - 0.02, q).sub(p).negate().add(p);
       view.mesh.position.copy(p);
       view.mesh.rotation.y = Math.atan2(q.x - p.x, q.z - p.z);
-      view.mesh.visible = true;
+      // Dentro una galleria il treno sparisce.
+      const b = this.board!;
+      const inHill = b.terrain(Math.floor(p.x / CELL + b.width / 2), Math.floor(p.z / CELL + b.height / 2)) === 'hill';
+      view.mesh.visible = !inHill;
       if (view.v === 0) {
         const tag = this.cargoTags[view.train];
-        tag.visible = true;
+        const cargo = cur.trains[view.train].cargo;
+        if (this.tagCargo[view.train] !== cargo) {
+          // Il treno vuoto ha caricato: cambia l'etichetta.
+          tag.material = (cargo ? cargoSprite(cargo) : emptySprite()).material;
+          this.tagCargo[view.train] = cargo;
+        }
+        tag.visible = !inHill;
         tag.position.copy(p).add(new THREE.Vector3(0, 4.6, 0));
       }
     }
@@ -569,10 +885,60 @@ export class GameScene {
     }
   }
 
+  /** Rosso ai semafori dove un treno aspetta. */
+  drawSignals(cur: SimSnapshot) {
+    const red = new Set<string>();
+    for (const t of cur.trains) {
+      if (!t.held) continue;
+      const head = t.vehicles.find((v) => v.v === 0);
+      if (head) red.add(`${head.step.x + DX[head.step.exit]},${head.step.y + DY[head.step.exit]}`);
+    }
+    for (const k of this.signalLights.keys()) this.setSignalLight(k, red.has(k) ? 'red' : 'green');
+  }
+
+  private setSignalLight(key: string, color: 'red' | 'green') {
+    const s = this.signalLights.get(key);
+    if (s) s.material = lightSprite(color).material;
+  }
+
+  /**
+   * Trattori dei passaggi a livello. `tick` può essere frazionario (tra due stati della simulazione).
+   * Senza simulazione (cur = null) il trattore aspetta parcheggiato.
+   */
+  drawTractors(cur: SimSnapshot | null, tick: number) {
+    this.tractors.forEach((tr, i) => {
+      const w = cur?.tractors[i];
+      const side = CELL * 0.95;
+      const from = (k: number) => (k % 2 === 0 ? -side : side);
+      let off = from(0);
+      let dir = 1;
+      if (w && w.start >= 0) {
+        const k = Math.round((w.start - tr.offset) / tr.period);
+        const a = from(k);
+        const z = -a;
+        dir = a < 0 ? 1 : -1;
+        if (tick < w.start - 1) off = a;
+        else if (tick < w.start) off = a * (w.start - tick);
+        else if (tick <= w.until) off = 0;
+        else if (tick < w.until + 1) off = z * (tick - w.until);
+        else off = z;
+      }
+      tr.mesh.position.copy(tr.center).addScaledVector(tr.road, off);
+      tr.mesh.rotation.y = Math.atan2(tr.road.x * dir, tr.road.z * dir);
+    });
+  }
+
   showFailure(x: number, y: number) {
     const m = markerSprite('#e0322b');
     m.position.copy(this.cellCenter(x, y)).add(new THREE.Vector3(0, 3, 0));
     this.overlayGroup.add(m);
+  }
+
+  /** Posizione sullo schermo (pixel CSS) di un punto sopra una cella. */
+  screenPos(x: number, y: number, height = 0): { x: number; y: number } {
+    const v = this.cellCenter(x, y).setY(height).project(this.camera);
+    const r = this.canvas.getBoundingClientRect();
+    return { x: r.left + ((v.x + 1) / 2) * r.width, y: r.top + ((1 - v.y) / 2) * r.height };
   }
 
   setGridVisible(v: boolean) {

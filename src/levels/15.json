@@ -1,0 +1,230 @@
+{
+  "id": "15",
+  "name": {
+    "it": "Due rive",
+    "en": "Two banks"
+  },
+  "terrain": [
+    ".........",
+    ".........",
+    "......T..",
+    "~~~~~~~~~",
+    ".........",
+    ".T......."
+  ],
+  "fixed": [],
+  "depots": [
+    {
+      "x": 0,
+      "y": 1,
+      "dir": 1
+    },
+    {
+      "x": 0,
+      "y": 4,
+      "dir": 1
+    }
+  ],
+  "stations": [
+    {
+      "id": "port",
+      "kind": "port",
+      "x": 8,
+      "y": 4,
+      "dir": 1,
+      "accepts": [
+        "coal"
+      ]
+    },
+    {
+      "id": "town",
+      "kind": "town",
+      "x": 8,
+      "y": 1,
+      "dir": 1,
+      "accepts": [
+        "passengers"
+      ]
+    }
+  ],
+  "trains": [
+    {
+      "cargo": "coal",
+      "wagons": 1,
+      "depart": 3,
+      "depot": 0
+    },
+    {
+      "cargo": "passengers",
+      "wagons": 1,
+      "depart": 1,
+      "depot": 1
+    }
+  ],
+  "stock": {
+    "straight": 12,
+    "curve": 6,
+    "bridge": 2,
+    "crossing": 1,
+    "signal": 1
+  },
+  "targets": {
+    "pieces": 22,
+    "ticks": 16
+  },
+  "solution": [
+    {
+      "kind": "crossing",
+      "a": 0,
+      "b": 2,
+      "x": 1,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 2,
+      "y": 1
+    },
+    {
+      "kind": "curve",
+      "a": 3,
+      "b": 2,
+      "x": 3,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 0,
+      "b": 2,
+      "x": 3,
+      "y": 2
+    },
+    {
+      "kind": "bridge",
+      "a": 0,
+      "b": 2,
+      "x": 3,
+      "y": 3
+    },
+    {
+      "kind": "curve",
+      "a": 0,
+      "b": 1,
+      "x": 3,
+      "y": 4
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 4,
+      "y": 4
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 5,
+      "y": 4
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 6,
+      "y": 4
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 7,
+      "y": 4
+    },
+    {
+      "kind": "curve",
+      "a": 3,
+      "b": 0,
+      "x": 1,
+      "y": 4
+    },
+    {
+      "kind": "bridge",
+      "a": 2,
+      "b": 0,
+      "x": 1,
+      "y": 3
+    },
+    {
+      "kind": "straight",
+      "a": 2,
+      "b": 0,
+      "x": 1,
+      "y": 2
+    },
+    {
+      "kind": "curve",
+      "a": 2,
+      "b": 1,
+      "x": 1,
+      "y": 0
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 2,
+      "y": 0
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 3,
+      "y": 0
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 4,
+      "y": 0
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 5,
+      "y": 0
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 6,
+      "y": 0
+    },
+    {
+      "kind": "curve",
+      "a": 3,
+      "b": 2,
+      "x": 7,
+      "y": 0
+    },
+    {
+      "kind": "curve",
+      "a": 0,
+      "b": 1,
+      "x": 7,
+      "y": 1
+    }
+  ],
+  "solutionSignals": [
+    {
+      "x": 1,
+      "y": 2
+    }
+  ]
+}

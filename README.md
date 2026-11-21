@@ -3,7 +3,8 @@
 Un puzzle rilassante di treni su isole sospese, giocabile nel browser (prima di tutto dal telefono).
 Posi pochi binari sulla griglia, premi **Via!** e guardi i treni consegnare latte, carbone, legname e passeggeri.
 
-Stato: **prototipo con 3 livelli tutorial**.
+Stato: **20 livelli** di difficoltà crescente: scambi, ponti, gallerie, incroci, fattorie, miniere e boschi
+dove i treni vuoti caricano la merce, semafori e passaggi a livello con il trattore.
 
 ## Sviluppo
 
@@ -21,6 +22,9 @@ Il sito viene pubblicato su GitHub Pages da `.github/workflows/pages.yml`.
 - `src/core/` logica di gioco pura e deterministica: griglia, pezzi, simulazione a tick, stelle. Nessuna dipendenza da Three.js.
 - `src/render/` scena Three.js: isola, binari, treni, camera isometrica.
 - `src/levels/` livelli in JSON, ognuno con una soluzione di riferimento da 3 stelle verificata dai test.
+- `scripts/solve.ts` strumento per chi crea livelli: disegna la soluzione da `scripts/solutions.json` come farebbe
+  un giocatore, la simula e con `--write` aggiorna soluzione e obiettivi del livello
+  (`npx vite-node scripts/solve.ts [id] --write`).
 - `src/i18n/` testi in italiano e inglese.
 - `tests/` test unitari della logica.
 

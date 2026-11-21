@@ -1,0 +1,142 @@
+{
+  "id": "06",
+  "name": {
+    "it": "La fattoria",
+    "en": "The farm"
+  },
+  "terrain": [
+    "........",
+    "..ooo...",
+    "........",
+    "..o.o..T",
+    "........"
+  ],
+  "fixed": [],
+  "depots": [
+    {
+      "x": 0,
+      "y": 4,
+      "dir": 0
+    }
+  ],
+  "stations": [
+    {
+      "id": "town",
+      "kind": "town",
+      "x": 7,
+      "y": 0,
+      "dir": 1,
+      "accepts": [
+        "milk",
+        "passengers"
+      ]
+    }
+  ],
+  "trains": [
+    {
+      "cargo": null,
+      "wagons": 1,
+      "depart": 1,
+      "depot": 0,
+      "wagon": "milk"
+    },
+    {
+      "cargo": "passengers",
+      "wagons": 1,
+      "depart": 4,
+      "depot": 0
+    }
+  ],
+  "stock": {
+    "straight": 8,
+    "curve": 3
+  },
+  "targets": {
+    "pieces": 9,
+    "ticks": 15
+  },
+  "pickups": [
+    {
+      "x": 3,
+      "y": 2,
+      "axis": 1,
+      "gives": "milk",
+      "kind": "farm"
+    }
+  ],
+  "tutorial": [
+    {
+      "it": "Il primo treno parte vuoto (vedi il punto di domanda). Fallo passare dalla fattoria: carica il latte e poi va in paese.",
+      "en": "The first train leaves empty (see the question mark). Run it through the farm: it loads milk and then goes to the village."
+    },
+    {
+      "it": "Un treno già pieno attraversa la fattoria senza fermarsi.",
+      "en": "A train that is already full rolls through the farm without stopping."
+    }
+  ],
+  "solution": [
+    {
+      "kind": "straight",
+      "a": 2,
+      "b": 0,
+      "x": 0,
+      "y": 3
+    },
+    {
+      "kind": "curve",
+      "a": 2,
+      "b": 1,
+      "x": 0,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 1,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 2,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 4,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 5,
+      "y": 2
+    },
+    {
+      "kind": "curve",
+      "a": 3,
+      "b": 0,
+      "x": 6,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 2,
+      "b": 0,
+      "x": 6,
+      "y": 1
+    },
+    {
+      "kind": "curve",
+      "a": 2,
+      "b": 1,
+      "x": 6,
+      "y": 0
+    }
+  ]
+}
