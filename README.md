@@ -23,6 +23,14 @@ npm run build    # sito statico in dist/
 
 Il sito viene pubblicato su GitHub Pages da `.github/workflows/pages.yml`.
 
+## itch.io
+
+La build è già pronta per itch.io: `vite.config.ts` usa `base: './'`, quindi tutti i percorsi sono relativi e il gioco funziona anche dentro l'iframe di itch.
+
+- `.github/workflows/itch.yml` (manuale da Actions, o con un tag `v*`) fa test e build, salva lo zip `trainland-itch-html5` tra gli artefatti del run e, se configurato, lo carica con butler nel canale `html5`.
+- Configurazione nel repo: segreto `BUTLER_API_KEY` (chiave API di itch.io) e variabile `ITCH_TARGET` (es. `utente/trainland`).
+- I `.glb` vanno solo dentro lo zip HTML5 giocabile nel browser: non caricarli mai come download separati. I crediti CC BY 4.0 vanno anche nella descrizione della pagina (vedi `CREDITS.md`).
+
 ## Struttura
 
 - `src/core/` logica di gioco pura e deterministica: griglia, pezzi, simulazione a tick, stelle. Nessuna dipendenza da Three.js.
