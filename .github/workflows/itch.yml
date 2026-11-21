@@ -1,0 +1,50 @@
+name: Pubblica su itch.io
+
+# Parte a mano (Actions > Pubblica su itch.io > Run workflow) oppure con un tag v* (es. v1.0.0).
+# Prepara sempre lo zip HTML5 come artefatto scaricabile dalla pagina del run.
+# Se il segreto BUTLER_API_KEY e la variabile ITCH_TARGET (es. "utente/trainland") ci sono,
+# lo carica anche su itch.io con butler, nel canale "html5".
+on:
+  workflow_dispatch:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+
+jobs:
+  itch:
+    runs-on: ubuntu-latest
+    env:
+      BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
+      ITCH_TARGET: ${{ vars.ITCH_TARGET }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+
+      # Lo zip ha index.html nella radice, come vuole itch.io.
+      - uses: actions/upload-artifact@v4
+        with:
+          name: trainland-itch-html5
+          path: dist
+          retention-days: 14
+
+      - name: Carica su itch.io con butler
+        if: env.BUTLER_API_KEY != '' && env.ITCH_TARGET != ''
+        run: |
+          curl -fsSL -o butler.zip https://broth.itch.zone/butler/linux-amd64/LATEST/archive/default
+          unzip -q butler.zip -d butler-bin
+          chmod +x butler-bin/butler
+          VERSION=$(node -p "require('./package.json').version")
+          if [[ "$GITHUB_REF_TYPE" == "tag" ]]; then VERSION="${GITHUB_REF_NAME#v}"; fi
+          ./butler-bin/butler push dist "$ITCH_TARGET:html5" --userversion "$VERSION-${GITHUB_SHA::7}"
+
+      - name: Avviso se butler non è configurato
+        if: env.BUTLER_API_KEY == '' || env.ITCH_TARGET == ''
+        run: echo "::notice::Caricamento su itch.io saltato. Aggiungi il segreto BUTLER_API_KEY e la variabile ITCH_TARGET. Lo zip è tra gli artefatti del run."
