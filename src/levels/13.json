@@ -1,0 +1,188 @@
+{
+  "id": "13",
+  "name": {
+    "it": "Il bosco",
+    "en": "The woods"
+  },
+  "terrain": [
+    "TT.....~..",
+    "T......~..",
+    "..o.o^^~..",
+    ".....^.~..",
+    ".......~..",
+    "T......~.."
+  ],
+  "fixed": [],
+  "depots": [
+    {
+      "x": 0,
+      "y": 4,
+      "dir": 1
+    }
+  ],
+  "stations": [
+    {
+      "id": "port",
+      "kind": "port",
+      "x": 9,
+      "y": 1,
+      "dir": 1,
+      "accepts": [
+        "timber"
+      ]
+    },
+    {
+      "id": "town",
+      "kind": "town",
+      "x": 9,
+      "y": 4,
+      "dir": 1,
+      "accepts": [
+        "passengers"
+      ]
+    }
+  ],
+  "trains": [
+    {
+      "cargo": null,
+      "wagons": 2,
+      "depart": 1,
+      "depot": 0,
+      "wagon": "timber"
+    },
+    {
+      "cargo": "passengers",
+      "wagons": 1,
+      "depart": 5,
+      "depot": 0
+    }
+  ],
+  "stock": {
+    "straight": 11,
+    "curve": 2,
+    "switch": 1,
+    "bridge": 2
+  },
+  "targets": {
+    "pieces": 15,
+    "ticks": 14
+  },
+  "pickups": [
+    {
+      "x": 3,
+      "y": 2,
+      "axis": 0,
+      "gives": "timber",
+      "kind": "forest"
+    }
+  ],
+  "solution": [
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 1,
+      "y": 4
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 2,
+      "y": 4
+    },
+    {
+      "kind": "switch",
+      "a": 3,
+      "b": 1,
+      "c": 0,
+      "route": "timber",
+      "x": 3,
+      "y": 4
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 4,
+      "y": 4
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 5,
+      "y": 4
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 6,
+      "y": 4
+    },
+    {
+      "kind": "bridge",
+      "a": 3,
+      "b": 1,
+      "x": 7,
+      "y": 4
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 8,
+      "y": 4
+    },
+    {
+      "kind": "straight",
+      "a": 2,
+      "b": 0,
+      "x": 3,
+      "y": 3
+    },
+    {
+      "kind": "curve",
+      "a": 2,
+      "b": 1,
+      "x": 3,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 4,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 5,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 6,
+      "y": 1
+    },
+    {
+      "kind": "bridge",
+      "a": 3,
+      "b": 1,
+      "x": 7,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 8,
+      "y": 1
+    }
+  ]
+}

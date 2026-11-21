@@ -1,0 +1,127 @@
+{
+  "id": "11",
+  "name": {
+    "it": "Passaggio a livello",
+    "en": "Level crossing"
+  },
+  "terrain": [
+    "....=....",
+    "....=....",
+    "....=....",
+    "....=....",
+    "....=...."
+  ],
+  "fixed": [],
+  "depots": [
+    {
+      "x": 0,
+      "y": 2,
+      "dir": 1
+    }
+  ],
+  "stations": [
+    {
+      "id": "town",
+      "kind": "town",
+      "x": 8,
+      "y": 2,
+      "dir": 1,
+      "accepts": [
+        "passengers",
+        "milk"
+      ]
+    }
+  ],
+  "trains": [
+    {
+      "cargo": "passengers",
+      "wagons": 1,
+      "depart": 1,
+      "depot": 0
+    },
+    {
+      "cargo": "milk",
+      "wagons": 1,
+      "depart": 6,
+      "depot": 0
+    }
+  ],
+  "stock": {
+    "straight": 7,
+    "signal": 1
+  },
+  "targets": {
+    "pieces": 7,
+    "ticks": 16
+  },
+  "crossings": [
+    {
+      "x": 4,
+      "y": 2,
+      "axis": 1,
+      "period": 6,
+      "offset": 4,
+      "duration": 2
+    }
+  ],
+  "tutorial": [
+    {
+      "it": "Un trattore attraversa i binari agli orari scritti sul cartello. Se il treno arriva mentre passa: incidente!",
+      "en": "A tractor crosses the tracks at the times on the sign. If a train arrives while it is crossing: accident!"
+    },
+    {
+      "it": "Un semaforo prima del passaggio a livello vede arrivare il trattore e ferma il treno.",
+      "en": "A signal before the level crossing sees the tractor coming and stops the train."
+    }
+  ],
+  "solution": [
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 1,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 2,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 3,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 5,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 6,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 7,
+      "y": 2
+    }
+  ],
+  "solutionSignals": [
+    {
+      "x": 3,
+      "y": 2
+    }
+  ]
+}

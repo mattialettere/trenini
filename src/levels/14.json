@@ -1,0 +1,245 @@
+{
+  "id": "14",
+  "name": {
+    "it": "Ora di punta",
+    "en": "Rush hour"
+  },
+  "terrain": [
+    ".........",
+    ".T.......",
+    "......T..",
+    ".........",
+    "..T......",
+    "......T..",
+    "........."
+  ],
+  "fixed": [],
+  "depots": [
+    {
+      "x": 0,
+      "y": 3,
+      "dir": 1
+    }
+  ],
+  "stations": [
+    {
+      "id": "north",
+      "kind": "town",
+      "x": 8,
+      "y": 0,
+      "dir": 1,
+      "accepts": [
+        "passengers"
+      ]
+    },
+    {
+      "id": "port",
+      "kind": "port",
+      "x": 8,
+      "y": 3,
+      "dir": 1,
+      "accepts": [
+        "coal",
+        "timber"
+      ]
+    },
+    {
+      "id": "south",
+      "kind": "town",
+      "x": 8,
+      "y": 6,
+      "dir": 1,
+      "accepts": [
+        "milk"
+      ]
+    }
+  ],
+  "trains": [
+    {
+      "cargo": "passengers",
+      "wagons": 1,
+      "depart": 1,
+      "depot": 0
+    },
+    {
+      "cargo": "coal",
+      "wagons": 1,
+      "depart": 3,
+      "depot": 0
+    },
+    {
+      "cargo": "milk",
+      "wagons": 1,
+      "depart": 5,
+      "depot": 0
+    },
+    {
+      "cargo": "timber",
+      "wagons": 1,
+      "depart": 7,
+      "depot": 0
+    }
+  ],
+  "stock": {
+    "straight": 18,
+    "curve": 3,
+    "switch": 2
+  },
+  "targets": {
+    "pieces": 21,
+    "ticks": 16
+  },
+  "solution": [
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 1,
+      "y": 3
+    },
+    {
+      "kind": "switch",
+      "a": 3,
+      "b": 1,
+      "c": 0,
+      "route": "passengers",
+      "x": 2,
+      "y": 3
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 3,
+      "y": 3
+    },
+    {
+      "kind": "switch",
+      "a": 3,
+      "b": 1,
+      "c": 2,
+      "route": "milk",
+      "x": 4,
+      "y": 3
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 5,
+      "y": 3
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 6,
+      "y": 3
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 7,
+      "y": 3
+    },
+    {
+      "kind": "straight",
+      "a": 2,
+      "b": 0,
+      "x": 2,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 2,
+      "b": 0,
+      "x": 2,
+      "y": 1
+    },
+    {
+      "kind": "curve",
+      "a": 2,
+      "b": 1,
+      "x": 2,
+      "y": 0
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 3,
+      "y": 0
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 4,
+      "y": 0
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 5,
+      "y": 0
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 6,
+      "y": 0
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 7,
+      "y": 0
+    },
+    {
+      "kind": "straight",
+      "a": 0,
+      "b": 2,
+      "x": 4,
+      "y": 4
+    },
+    {
+      "kind": "straight",
+      "a": 0,
+      "b": 2,
+      "x": 4,
+      "y": 5
+    },
+    {
+      "kind": "curve",
+      "a": 0,
+      "b": 1,
+      "x": 4,
+      "y": 6
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 5,
+      "y": 6
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 6,
+      "y": 6
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 7,
+      "y": 6
+    }
+  ]
+}

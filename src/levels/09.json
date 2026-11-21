@@ -1,0 +1,144 @@
+{
+  "id": "09",
+  "name": {
+    "it": "L'incrocio",
+    "en": "The crossing"
+  },
+  "terrain": [
+    ".......",
+    ".T.....",
+    ".......",
+    ".......",
+    ".....T.",
+    ".......",
+    "......."
+  ],
+  "fixed": [],
+  "depots": [
+    {
+      "x": 0,
+      "y": 3,
+      "dir": 1
+    },
+    {
+      "x": 3,
+      "y": 6,
+      "dir": 0
+    }
+  ],
+  "stations": [
+    {
+      "id": "town",
+      "kind": "town",
+      "x": 6,
+      "y": 3,
+      "dir": 1,
+      "accepts": [
+        "passengers"
+      ]
+    },
+    {
+      "id": "port",
+      "kind": "port",
+      "x": 3,
+      "y": 0,
+      "dir": 0,
+      "accepts": [
+        "coal"
+      ]
+    }
+  ],
+  "trains": [
+    {
+      "cargo": "passengers",
+      "wagons": 2,
+      "depart": 1,
+      "depot": 0
+    },
+    {
+      "cargo": "coal",
+      "wagons": 1,
+      "depart": 4,
+      "depot": 1
+    }
+  ],
+  "stock": {
+    "straight": 8,
+    "crossing": 1
+  },
+  "targets": {
+    "pieces": 9,
+    "ticks": 10
+  },
+  "tutorial": [
+    {
+      "it": "Due depositi, due linee che si tagliano. Disegna una linea sopra l'altra: nasce un incrocio. Attenti agli orari!",
+      "en": "Two depots, two lines that cut across. Draw one line over the other to make a crossing. Mind the timing!"
+    }
+  ],
+  "solution": [
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 1,
+      "y": 3
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 2,
+      "y": 3
+    },
+    {
+      "kind": "crossing",
+      "a": 0,
+      "b": 2,
+      "x": 3,
+      "y": 3
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 4,
+      "y": 3
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 5,
+      "y": 3
+    },
+    {
+      "kind": "straight",
+      "a": 2,
+      "b": 0,
+      "x": 3,
+      "y": 5
+    },
+    {
+      "kind": "straight",
+      "a": 2,
+      "b": 0,
+      "x": 3,
+      "y": 4
+    },
+    {
+      "kind": "straight",
+      "a": 2,
+      "b": 0,
+      "x": 3,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 2,
+      "b": 0,
+      "x": 3,
+      "y": 1
+    }
+  ]
+}

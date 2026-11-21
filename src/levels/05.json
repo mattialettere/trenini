@@ -1,0 +1,141 @@
+{
+  "id": "05",
+  "name": {
+    "it": "Il ruscello",
+    "en": "The stream"
+  },
+  "terrain": [
+    "....~...",
+    "....~...",
+    "....~...",
+    "T...~...",
+    "....~..."
+  ],
+  "fixed": [],
+  "depots": [
+    {
+      "x": 0,
+      "y": 1,
+      "dir": 1
+    }
+  ],
+  "stations": [
+    {
+      "id": "town",
+      "kind": "town",
+      "x": 7,
+      "y": 1,
+      "dir": 1,
+      "accepts": [
+        "milk"
+      ]
+    },
+    {
+      "id": "port",
+      "kind": "port",
+      "x": 7,
+      "y": 3,
+      "dir": 1,
+      "accepts": [
+        "coal"
+      ]
+    }
+  ],
+  "trains": [
+    {
+      "cargo": "milk",
+      "wagons": 1,
+      "depart": 1,
+      "depot": 0
+    },
+    {
+      "cargo": "coal",
+      "wagons": 1,
+      "depart": 4,
+      "depot": 0
+    }
+  ],
+  "stock": {
+    "straight": 6,
+    "curve": 3,
+    "switch": 1,
+    "bridge": 1
+  },
+  "targets": {
+    "pieces": 9,
+    "ticks": 13
+  },
+  "tutorial": [
+    {
+      "it": "Un ruscello taglia l'isola. Trascina un binario dritto sopra l'acqua: diventa un ponte. Ne hai uno solo!",
+      "en": "A stream cuts the island. Drag a straight track over the water: it becomes a bridge. You only have one!"
+    }
+  ],
+  "solution": [
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 1,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 2,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 3,
+      "y": 1
+    },
+    {
+      "kind": "bridge",
+      "a": 3,
+      "b": 1,
+      "x": 4,
+      "y": 1
+    },
+    {
+      "kind": "switch",
+      "a": 3,
+      "b": 1,
+      "c": 2,
+      "route": "coal",
+      "x": 5,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 6,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 0,
+      "b": 2,
+      "x": 5,
+      "y": 2
+    },
+    {
+      "kind": "curve",
+      "a": 0,
+      "b": 1,
+      "x": 5,
+      "y": 3
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 6,
+      "y": 3
+    }
+  ]
+}

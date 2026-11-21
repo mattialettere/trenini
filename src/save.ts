@@ -1,10 +1,11 @@
-import type { PlacedPiece } from './core/types';
+import type { Cell, PlacedPiece } from './core/types';
 
 const KEY = 'trainland.save.v1';
 
 export interface LevelSave {
   stars: number;
   build?: PlacedPiece[];
+  signals?: Cell[];
 }
 
 export interface SaveData {

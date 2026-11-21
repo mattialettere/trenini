@@ -1,6 +1,6 @@
 import { Board, dirBetween } from './core/board';
 import { Result, SimSnapshot, Simulation, scoreRun } from './core/sim';
-import { Cell, LevelDef, PieceKind } from './core/types';
+import { Cell, LevelDef, StockKind } from './core/types';
 import { getLang, setLang, t } from './i18n';
 import { LEVELS } from './levels';
 import { GameScene } from './render/scene';
@@ -37,6 +37,8 @@ let tickTime = 0;
 let speed = 1;
 let endTimer = -1;
 let tutorialStep = 0;
+/** Strumento semaforo attivo: un tocco mette o toglie un semaforo invece di disegnare. */
+let signalMode = false;
 const TICKS_PER_SECOND = 3;
 
 // --- piccoli aiuti DOM ---------------------------------------------------------
@@ -57,15 +59,18 @@ function starsHtml(n: number, total = 3) {
   return `<span class="stars">${Array.from({ length: total }, (_, i) => `<span class="${i < n ? 'on' : ''}">★</span>`).join('')}</span>`;
 }
 
-const PIECE_ICON: Record<PieceKind, string> = {
+const PIECE_ICON: Record<StockKind, string> = {
   straight: '<svg viewBox="0 0 32 32"><g stroke="#7b5b3f" stroke-width="3"><path d="M9 6h14M9 12h14M9 18h14M9 24h14"/></g><g stroke="#3f4140" stroke-width="2.6"><path d="M12 3v26M20 3v26"/></g></svg>',
   curve: '<svg viewBox="0 0 32 32" fill="none"><g stroke="#3f4140" stroke-width="2.6"><path d="M12 30a18 18 0 0 1 18-18"/><path d="M20 30a10 10 0 0 1 10-10"/></g></svg>',
   switch: '<svg viewBox="0 0 32 32" fill="none"><g stroke="#3f4140" stroke-width="2.6"><path d="M12 30V2M20 30V2"/><path d="M12 30c0-9 6-14 18-16" stroke="#d9643a"/></g></svg>',
   crossing: '<svg viewBox="0 0 32 32" fill="none"><g stroke="#3f4140" stroke-width="2.6"><path d="M12 2v28M20 2v28M2 12h28M2 20h28"/></g></svg>',
+  bridge: '<svg viewBox="0 0 32 32" fill="none"><path d="M0 24c4-3 6-3 10 0s6 3 10 0 6-3 12 0v8H0z" fill="#5aa6c8"/><g stroke="#8a4b2a" stroke-width="2.4"><path d="M3 14h26M3 14l5-7h16l5 7M8 7l5 7 5-7 5 7"/><path d="M6 14v12M26 14v12"/></g></svg>',
+  tunnel: '<svg viewBox="0 0 32 32" fill="none"><path d="M1 30C4 12 10 4 16 4s12 8 15 26z" fill="#7d9a4f"/><path d="M9 30v-8a7 7 0 0 1 14 0v8z" fill="#3b2f25" stroke="#8b8473" stroke-width="2.4"/></svg>',
+  signal: '<svg viewBox="0 0 32 32" fill="none"><path d="M16 22v9" stroke="#3f4140" stroke-width="2.6"/><rect x="10" y="2" width="12" height="21" rx="4" fill="#3f4140"/><circle cx="16" cy="8" r="3.4" fill="#e0322b"/><circle cx="16" cy="17" r="3.4" fill="#3fbf4a"/></svg>',
 };
 
 let toastTimer = 0;
-function toast(msg: string) {
+function toast(msg: string, ms = 1800) {
   let el = ui.querySelector('.toast') as HTMLDivElement | null;
   if (!el) {
     el = h('div', { class: 'toast panel' });
@@ -74,7 +79,7 @@ function toast(msg: string) {
   el.textContent = msg;
   el.classList.add('show');
   clearTimeout(toastTimer);
-  toastTimer = window.setTimeout(() => el!.classList.remove('show'), 1800);
+  toastTimer = window.setTimeout(() => el!.classList.remove('show'), ms);
 }
 
 const SOUND_ON = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg>';
@@ -169,7 +174,7 @@ function showHome() {
         h('button', { onclick: showCredits }, t('credits')),
         muteButton(),
       ),
-      h('p', { class: 'small' }, t('prototype')),
+      h('p', { class: 'small' }, t('prototype', { n: LEVELS.length })),
     ),
   );
 }
@@ -191,7 +196,8 @@ async function startLevel(i: number) {
   level = LEVELS[i];
   board = new Board(level);
   const saved = levelSave(level.id).build;
-  if (saved) board.loadPieces(saved);
+  if (saved) board.loadPieces(saved, levelSave(level.id).signals ?? []);
+  signalMode = false;
   ui.innerHTML = '';
   const loading = h('div', { class: 'loading panel' }, t('loading'));
   ui.append(loading);
@@ -228,7 +234,12 @@ function renderGameUi() {
       'div',
       { class: 'topbar' },
       h('button', { onclick: () => { scene.resetTrains(); showHome(); }, 'aria-label': t('back') }, '‹'),
-      h('div', { class: 'level-info panel' }, h('div', { class: 'title' }, `${idx + 1}. ${level.name[getLang()]}`), h('div', { class: 'goals', html: goalsHtml() })),
+      h(
+        'div',
+        { class: 'level-info panel' },
+        h('div', { class: 'title' }, `${idx + 1}. ${level.name[getLang()]}`),
+        h('div', { class: 'goals', html: goalsHtml() + (mode === 'build' ? '' : ` <span class="tick-count">⏱ ${curSnap?.tick ?? 0}</span>`) }),
+      ),
       muteButton(),
     ),
     h(
@@ -243,9 +254,15 @@ function renderGameUi() {
   const toolbar = h('div', { class: 'toolbar' });
   if (mode === 'build') {
     const stock = h('div', { class: 'stock panel' });
-    for (const k of Object.keys(level.stock) as PieceKind[]) {
+    for (const k of Object.keys(level.stock) as StockKind[]) {
       const n = board.available(k);
-      stock.append(h('div', { class: `item${n <= 0 ? ' empty' : ''}`, title: t(k) }, h('span', { html: PIECE_ICON[k] }), h('span', { class: 'count' }, String(n))));
+      const kids = [h('span', { html: PIECE_ICON[k] }), h('span', { class: 'count' }, String(n))];
+      if (k === 'signal') {
+        // Il semaforo è uno strumento: si tocca l'icona e poi i binari.
+        stock.append(
+          h('button', { class: `item tool${n <= 0 ? ' empty' : ''}${signalMode ? ' active' : ''}`, title: t(k), 'aria-pressed': signalMode, onclick: () => { signalMode = !signalMode; if (signalMode) toast(t('signalMode'), 3500); renderGameUi(); } }, ...kids),
+        );
+      } else stock.append(h('div', { class: `item${n <= 0 ? ' empty' : ''}`, title: t(k) }, ...kids));
     }
     toolbar.append(
       stock,
@@ -281,7 +298,7 @@ function renderGameUi() {
 function afterEdit() {
   scene.updateTracks();
   update((s) => {
-    s.levels[level.id] = { ...levelSave(level.id), build: board.exportPieces() };
+    s.levels[level.id] = { ...levelSave(level.id), build: board.exportPieces(), signals: board.exportSignals() };
   });
   renderGameUi();
 }
@@ -381,7 +398,7 @@ function extendPath(cell: Cell) {
     scene.updateTracks();
     renderStockOnly();
     renderSwitchButtons();
-  } else if (drawPath.length > 1 && (Object.keys(level.stock) as PieceKind[]).every((k) => board.available(k) <= 0)) {
+  } else if (drawPath.length > 1 && (Object.keys(level.stock) as StockKind[]).every((k) => board.available(k) <= 0)) {
     toast(t('noPieces'));
   }
 }
@@ -390,7 +407,7 @@ function renderStockOnly() {
   const stock = ui.querySelector('.stock');
   if (!stock) return;
   const items = stock.querySelectorAll('.item');
-  (Object.keys(level.stock) as PieceKind[]).forEach((k, i) => {
+  (Object.keys(level.stock) as StockKind[]).forEach((k, i) => {
     const n = board.available(k);
     items[i]?.classList.toggle('empty', n <= 0);
     const c = items[i]?.querySelector('.count');
@@ -470,7 +487,7 @@ canvas.addEventListener('pointermove', (e) => {
     scene.pan(dx, dy);
     return;
   }
-  if (drawPath && drawStart) {
+  if (drawPath && drawStart && !signalMode) {
     if (Math.hypot(e.clientX - drawStart.x, e.clientY - drawStart.y) > 8) clearTimeout(longPressTimer);
     const c = scene.pick(e.clientX, e.clientY);
     if (c && board.inside(c.x, c.y) || (c && board.stationAt(c.x, c.y))) {
@@ -490,7 +507,13 @@ function endPointer(e: PointerEvent) {
     if (drawPath.length === 1 && moved < 10 && performance.now() - drawStart.time < 500) {
       const c = drawPath[0];
       const p = board.pieceAt(c.x, c.y);
-      if (p?.kind === 'switch' && board.cycleSwitch(c.x, c.y)) {
+      if (signalMode) {
+        if (board.toggleSignal(c.x, c.y)) {
+          gestureChanged = true;
+          switchClack();
+        } else if (board.available('signal') <= 0) toast(t('noPieces'));
+        else toast(t('signalNo'));
+      } else if (p?.kind === 'switch' && board.cycleSwitch(c.x, c.y)) {
         gestureChanged = true;
         switchClack();
       }
@@ -551,6 +574,8 @@ function frame(now: number) {
           const before = sim.trains.map((tr) => tr.status);
           sim.step();
           curSnap = sim.snapshot();
+          const tc = ui.querySelector('.tick-count');
+          if (tc) tc.textContent = `⏱ ${curSnap.tick}`;
           sim.trains.forEach((tr, i) => {
             if (before[i] === 'waiting' && tr.status === 'running') whistle();
             if (before[i] === 'running' && (tr.status === 'arriving' || tr.status === 'done')) bell();
@@ -576,6 +601,8 @@ function frame(now: number) {
       // In caso di scontro i treni restano fermi dove sono.
       const alpha = sim.outcome === 'failed' ? 0.5 : Math.min(1, tickTime);
       scene.drawTrains(prevSnap, curSnap, alpha);
+      scene.drawSignals(curSnap);
+      scene.drawTractors(curSnap, curSnap.tick - 1 + alpha);
     }
   }
   scene.render(dt);

@@ -1,0 +1,154 @@
+{
+  "id": "10",
+  "name": {
+    "it": "Il semaforo",
+    "en": "The signal"
+  },
+  "terrain": [
+    "........",
+    "........",
+    "........",
+    "........",
+    "...TT..."
+  ],
+  "fixed": [],
+  "depots": [
+    {
+      "x": 0,
+      "y": 1,
+      "dir": 1
+    },
+    {
+      "x": 0,
+      "y": 3,
+      "dir": 1
+    }
+  ],
+  "stations": [
+    {
+      "id": "port",
+      "kind": "port",
+      "x": 7,
+      "y": 2,
+      "dir": 1,
+      "accepts": [
+        "coal",
+        "timber"
+      ]
+    }
+  ],
+  "trains": [
+    {
+      "cargo": "coal",
+      "wagons": 1,
+      "depart": 1,
+      "depot": 0
+    },
+    {
+      "cargo": "timber",
+      "wagons": 1,
+      "depart": 1,
+      "depot": 1
+    }
+  ],
+  "stock": {
+    "straight": 6,
+    "curve": 4,
+    "switch": 1,
+    "signal": 1
+  },
+  "targets": {
+    "pieces": 11,
+    "ticks": 12
+  },
+  "tutorial": [
+    {
+      "it": "I due treni arrivano insieme allo scambio: scontro! Tocca il semaforo in basso e poi un binario prima dello scambio.",
+      "en": "Both trains reach the switch together: crash! Tap the signal below, then a track before the switch."
+    },
+    {
+      "it": "Il semaforo tiene fermo il treno finché il tratto dopo è libero.",
+      "en": "The signal holds the train until the track ahead is clear."
+    }
+  ],
+  "solution": [
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 1,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 2,
+      "y": 1
+    },
+    {
+      "kind": "curve",
+      "a": 3,
+      "b": 2,
+      "x": 3,
+      "y": 1
+    },
+    {
+      "kind": "switch",
+      "a": 1,
+      "b": 3,
+      "c": 0,
+      "route": "none",
+      "x": 3,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 4,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 5,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 6,
+      "y": 2
+    },
+    {
+      "kind": "curve",
+      "a": 3,
+      "b": 0,
+      "x": 1,
+      "y": 3
+    },
+    {
+      "kind": "curve",
+      "a": 2,
+      "b": 1,
+      "x": 1,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 2,
+      "y": 2
+    }
+  ],
+  "solutionSignals": [
+    {
+      "x": 2,
+      "y": 2
+    }
+  ]
+}

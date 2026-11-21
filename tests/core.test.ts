@@ -2,14 +2,14 @@ import { describe, expect, it } from 'vitest';
 import { Board } from '../src/core/board';
 import { combine, exitSide } from '../src/core/pieces';
 import { Simulation, scoreRun } from '../src/core/sim';
-import { LevelDef } from '../src/core/types';
+import { Cell, LevelDef } from '../src/core/types';
 import { LEVELS } from '../src/levels';
 
 const lvl = (id: string) => LEVELS.find((l) => l.id === id)!;
 
 function solved(level: LevelDef) {
   const b = new Board(level);
-  b.loadPieces(level.solution);
+  b.loadSolution();
   return b;
 }
 
@@ -37,6 +37,7 @@ describe('livelli', () => {
     it(`il livello ${level.id} con la soluzione di riferimento dà 3 stelle`, () => {
       const b = solved(level);
       expect(b.exportPieces().length).toBe(level.solution.length);
+      expect(b.signals.size).toBe(level.solutionSignals?.length ?? 0);
       for (const k of Object.keys(level.stock) as (keyof typeof level.stock)[]) expect(b.available(k)).toBeGreaterThanOrEqual(0);
       const sim = new Simulation(b);
       expect(sim.runToEnd()).toBe('won');
@@ -142,5 +143,82 @@ describe('costruzione col dito', () => {
     b.placePath([[1, 0], [2, 0], [3, 0], [4, 0], [5, 0], [6, 0]].map(([x, y]) => ({ x, y })));
     b.placePath([[1, 2], [2, 2], [3, 2]].map(([x, y]) => ({ x, y })));
     expect(b.piecesUsed()).toBe(4);
+  });
+});
+
+const cells = (pts: number[][]): Cell[] => pts.map(([x, y]) => ({ x, y }));
+const run = (b: Board) => {
+  const s = new Simulation(b);
+  s.runToEnd();
+  return s;
+};
+
+describe('ponti e gallerie', () => {
+  it('sull\'acqua un dritto diventa un ponte, una curva non si può posare', () => {
+    const b = new Board(lvl('05'));
+    b.placePath(cells([[3, 1], [4, 1], [5, 1]]));
+    expect(b.pieceAt(4, 1)?.kind).toBe('bridge');
+    expect(b.available('bridge')).toBe(0);
+    const c = new Board(lvl('05'));
+    c.placePath(cells([[3, 1], [4, 1], [4, 2]]));
+    expect(c.pieceAt(4, 1)?.kind).not.toBe('curve');
+  });
+  it('nella collina un dritto diventa una galleria', () => {
+    const b = new Board(lvl('07'));
+    b.placePath(cells([[1, 2], [2, 2], [3, 2], [4, 2]]));
+    expect(b.pieceAt(2, 2)?.kind).toBe('tunnel');
+    expect(b.pieceAt(3, 2)?.kind).toBe('tunnel');
+  });
+});
+
+describe('carico merci', () => {
+  it('un treno vuoto carica alla fattoria', () => {
+    const s = run(solved(lvl('06')));
+    expect(s.outcome).toBe('won');
+    expect(s.trains[0].cargo).toBe('milk');
+  });
+  it('un treno vuoto che non passa dalla fattoria è rifiutato in stazione', () => {
+    const level = lvl('06');
+    const b = new Board({ ...level, pickups: [], fixed: [{ x: 3, y: 2, kind: 'straight', a: 3, b: 1 }] });
+    b.loadSolution();
+    const s = run(b);
+    expect(s.failure?.reason).toBe('wrong-station');
+  });
+});
+
+describe('semafori', () => {
+  it('senza semaforo i due treni si scontrano allo scambio', () => {
+    const b = new Board(lvl('10'));
+    b.loadPieces(lvl('10').solution);
+    expect(run(b).failure?.reason).toBe('collision');
+  });
+  it('il semaforo trattiene un treno finché il tratto è libero', () => {
+    const b = solved(lvl('10'));
+    const s = new Simulation(b);
+    let held = 0;
+    while (s.step() === 'running') if (s.trains.some((t) => t.held)) held++;
+    expect(s.outcome).toBe('won');
+    expect(held).toBeGreaterThan(0);
+  });
+  it('si mette solo su binari semplici e conta come pezzo', () => {
+    const b = solved(lvl('10'));
+    expect(b.canHoldSignal(3, 2)).toBe(false); // scambio
+    expect(b.piecesUsed()).toBe(lvl('10').targets.pieces);
+    b.toggleSignal(2, 2);
+    expect(b.signals.size).toBe(0);
+  });
+});
+
+describe('passaggi a livello', () => {
+  it('il treno che arriva col trattore sul binario fa incidente', () => {
+    const b = new Board(lvl('11'));
+    b.loadPieces(lvl('11').solution);
+    expect(run(b).failure?.reason).toBe('level-crossing');
+  });
+  it('il trattore passa agli orari del livello', () => {
+    const s = new Simulation(solved(lvl('11')));
+    const c = lvl('11').crossings![0];
+    for (let i = 0; i < c.offset; i++) s.step();
+    expect(s.snapshot().tractors[0]).toEqual({ start: c.offset, until: c.offset + c.duration - 1 });
   });
 });

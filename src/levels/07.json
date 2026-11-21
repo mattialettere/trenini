@@ -1,0 +1,141 @@
+{
+  "id": "07",
+  "name": {
+    "it": "La galleria",
+    "en": "The tunnel"
+  },
+  "terrain": [
+    ".........",
+    "...^^^...",
+    "..^^^^^..",
+    "...^^^...",
+    "........."
+  ],
+  "fixed": [],
+  "depots": [
+    {
+      "x": 0,
+      "y": 2,
+      "dir": 1
+    }
+  ],
+  "stations": [
+    {
+      "id": "port",
+      "kind": "port",
+      "x": 8,
+      "y": 2,
+      "dir": 1,
+      "accepts": [
+        "coal"
+      ]
+    },
+    {
+      "id": "town",
+      "kind": "town",
+      "x": 8,
+      "y": 4,
+      "dir": 1,
+      "accepts": [
+        "passengers"
+      ]
+    }
+  ],
+  "trains": [
+    {
+      "cargo": "coal",
+      "wagons": 2,
+      "depart": 1,
+      "depot": 0
+    },
+    {
+      "cargo": "passengers",
+      "wagons": 1,
+      "depart": 5,
+      "depot": 0
+    }
+  ],
+  "stock": {
+    "straight": 5,
+    "curve": 3,
+    "switch": 1,
+    "tunnel": 5
+  },
+  "targets": {
+    "pieces": 9,
+    "ticks": 15
+  },
+  "tutorial": [
+    {
+      "it": "Una collina in mezzo! Trascina un binario dritto dentro la collina: scavi una galleria. È più corta del giro largo.",
+      "en": "A hill in the way! Drag a straight track into the hill to dig a tunnel. It is shorter than going around."
+    }
+  ],
+  "solution": [
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 1,
+      "y": 2
+    },
+    {
+      "kind": "tunnel",
+      "a": 3,
+      "b": 1,
+      "x": 2,
+      "y": 2
+    },
+    {
+      "kind": "tunnel",
+      "a": 3,
+      "b": 1,
+      "x": 3,
+      "y": 2
+    },
+    {
+      "kind": "tunnel",
+      "a": 3,
+      "b": 1,
+      "x": 4,
+      "y": 2
+    },
+    {
+      "kind": "tunnel",
+      "a": 3,
+      "b": 1,
+      "x": 5,
+      "y": 2
+    },
+    {
+      "kind": "tunnel",
+      "a": 3,
+      "b": 1,
+      "x": 6,
+      "y": 2
+    },
+    {
+      "kind": "switch",
+      "a": 3,
+      "b": 1,
+      "c": 2,
+      "route": "passengers",
+      "x": 7,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 0,
+      "b": 2,
+      "x": 7,
+      "y": 3
+    },
+    {
+      "kind": "curve",
+      "a": 0,
+      "b": 1,
+      "x": 7,
+      "y": 4
+    }
+  ]
+}

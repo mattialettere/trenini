@@ -5,6 +5,8 @@ export function sides(p: Piece): Dir[] {
   switch (p.kind) {
     case 'straight':
     case 'curve':
+    case 'bridge':
+    case 'tunnel':
       return [p.a, p.b];
     case 'switch':
       return [p.a, p.b, p.c as Dir];
@@ -33,6 +35,8 @@ export function exitSide(p: Piece, entry: Dir, cargo: Cargo | null): Dir | null 
   switch (p.kind) {
     case 'straight':
     case 'curve':
+    case 'bridge':
+    case 'tunnel':
       if (entry === p.a) return p.b;
       if (entry === p.b) return p.a;
       return null;
@@ -78,6 +82,6 @@ export function combine(old: Piece, a: Dir, b: Dir): Piece | null {
 export function samePiece(p: Piece, q: Piece): boolean {
   if (p.kind !== q.kind) return false;
   if (p.kind === 'crossing') return true;
-  if (p.kind === 'switch') return p.a === q.a && p.b === q.b && p.c === q.c;
+  if (p.kind === 'switch') return p.a === q.a && p.b === q.b && p.c === q.c && (p.route ?? 'none') === (q.route ?? 'none');
   return (p.a === q.a && p.b === q.b) || (p.a === q.b && p.b === q.a);
 }

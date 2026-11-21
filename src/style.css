@@ -431,3 +431,62 @@ button.go {
     transform: scale(1.12);
   }
 }
+
+/* --- strumento semaforo --- */
+.stock button.item {
+  background: transparent;
+  box-shadow: none;
+  padding: 2px 4px;
+  min-height: 0;
+  border-radius: 10px;
+  border: 2px dashed #c9b48f;
+}
+
+.stock button.item.active {
+  background: #fde7b0;
+  border: 2px solid var(--accent);
+}
+
+.tick-count {
+  font-weight: 800;
+}
+
+/* --- tanti livelli: griglia compatta e scorrevole sui telefoni --- */
+.home {
+  overflow-y: auto;
+}
+
+.home > :first-child {
+  margin-top: auto;
+}
+
+.home {
+  justify-content: flex-start;
+}
+
+@media (max-width: 600px) {
+  .level-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    width: 100%;
+    max-width: 420px;
+    gap: 7px;
+  }
+  .level-btn {
+    padding: 6px 2px;
+    min-height: 0;
+  }
+  .level-btn .num {
+    font-size: 1.15rem;
+  }
+  .level-btn .name {
+    font-size: 0.62rem;
+    line-height: 1.1;
+    min-height: 2.2em;
+    display: flex;
+    align-items: center;
+    text-align: center;
+  }
+  .level-btn .stars {
+    font-size: 0.75rem;
+  }
+}

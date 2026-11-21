@@ -1,0 +1,314 @@
+{
+  "id": "20",
+  "name": {
+    "it": "Il gran finale",
+    "en": "The grand finale"
+  },
+  "terrain": [
+    "......^^....",
+    "..o...^^....",
+    "......^^....",
+    "..o..o^^...T",
+    ".....=...~..",
+    "...o.=...~..",
+    ".....=...~..",
+    "T..o.=...~.."
+  ],
+  "fixed": [],
+  "depots": [
+    {
+      "x": 0,
+      "y": 2,
+      "dir": 1
+    },
+    {
+      "x": 0,
+      "y": 6,
+      "dir": 1
+    }
+  ],
+  "stations": [
+    {
+      "id": "dairy",
+      "kind": "town",
+      "x": 11,
+      "y": 2,
+      "dir": 1,
+      "accepts": [
+        "milk"
+      ]
+    },
+    {
+      "id": "village",
+      "kind": "town",
+      "x": 11,
+      "y": 0,
+      "dir": 1,
+      "accepts": [
+        "passengers"
+      ]
+    },
+    {
+      "id": "port",
+      "kind": "port",
+      "x": 11,
+      "y": 6,
+      "dir": 1,
+      "accepts": [
+        "coal",
+        "timber"
+      ]
+    }
+  ],
+  "trains": [
+    {
+      "cargo": null,
+      "wagons": 1,
+      "depart": 1,
+      "depot": 0,
+      "wagon": "milk"
+    },
+    {
+      "cargo": "passengers",
+      "wagons": 1,
+      "depart": 3,
+      "depot": 0
+    },
+    {
+      "cargo": null,
+      "wagons": 1,
+      "depart": 1,
+      "depot": 1,
+      "wagon": "coal"
+    },
+    {
+      "cargo": null,
+      "wagons": 1,
+      "depart": 4,
+      "depot": 1,
+      "wagon": "coal"
+    },
+    {
+      "cargo": "timber",
+      "wagons": 1,
+      "depart": 7,
+      "depot": 1
+    }
+  ],
+  "stock": {
+    "straight": 24,
+    "curve": 4,
+    "switch": 2,
+    "tunnel": 2,
+    "bridge": 1,
+    "signal": 4
+  },
+  "targets": {
+    "pieces": 25,
+    "ticks": 22
+  },
+  "pickups": [
+    {
+      "x": 2,
+      "y": 2,
+      "axis": 1,
+      "gives": "milk",
+      "kind": "farm"
+    },
+    {
+      "x": 3,
+      "y": 6,
+      "axis": 1,
+      "gives": "coal",
+      "kind": "mine"
+    }
+  ],
+  "crossings": [
+    {
+      "x": 5,
+      "y": 6,
+      "axis": 1,
+      "period": 6,
+      "offset": 6,
+      "duration": 2
+    }
+  ],
+  "decorations": [
+    {
+      "model": "red-barn-d41683",
+      "x": 5,
+      "y": 3,
+      "rot": 1,
+      "scale": 0.4
+    }
+  ],
+  "solution": [
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 1,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 3,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 4,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 5,
+      "y": 2
+    },
+    {
+      "kind": "tunnel",
+      "a": 3,
+      "b": 1,
+      "x": 6,
+      "y": 2
+    },
+    {
+      "kind": "tunnel",
+      "a": 3,
+      "b": 1,
+      "x": 7,
+      "y": 2
+    },
+    {
+      "kind": "switch",
+      "a": 3,
+      "b": 1,
+      "c": 0,
+      "route": "passengers",
+      "x": 8,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 9,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 10,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 2,
+      "b": 0,
+      "x": 8,
+      "y": 1
+    },
+    {
+      "kind": "curve",
+      "a": 2,
+      "b": 1,
+      "x": 8,
+      "y": 0
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 9,
+      "y": 0
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 10,
+      "y": 0
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 1,
+      "y": 6
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 2,
+      "y": 6
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 4,
+      "y": 6
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 6,
+      "y": 6
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 7,
+      "y": 6
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 8,
+      "y": 6
+    },
+    {
+      "kind": "bridge",
+      "a": 3,
+      "b": 1,
+      "x": 9,
+      "y": 6
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 10,
+      "y": 6
+    }
+  ],
+  "solutionSignals": [
+    {
+      "x": 2,
+      "y": 6
+    },
+    {
+      "x": 4,
+      "y": 6
+    },
+    {
+      "x": 6,
+      "y": 6
+    },
+    {
+      "x": 8,
+      "y": 6
+    }
+  ]
+}

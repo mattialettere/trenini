@@ -1,0 +1,186 @@
+{
+  "id": "12",
+  "name": {
+    "it": "Miniera e porto",
+    "en": "Mine and harbour"
+  },
+  "terrain": [
+    ".........",
+    "..o......",
+    ".........",
+    "..o...T..",
+    ".........",
+    "T........"
+  ],
+  "fixed": [],
+  "depots": [
+    {
+      "x": 0,
+      "y": 2,
+      "dir": 1
+    }
+  ],
+  "stations": [
+    {
+      "id": "port",
+      "kind": "port",
+      "x": 8,
+      "y": 0,
+      "dir": 1,
+      "accepts": [
+        "coal"
+      ]
+    },
+    {
+      "id": "town",
+      "kind": "town",
+      "x": 8,
+      "y": 5,
+      "dir": 1,
+      "accepts": [
+        "passengers"
+      ]
+    }
+  ],
+  "trains": [
+    {
+      "cargo": null,
+      "wagons": 2,
+      "depart": 1,
+      "depot": 0,
+      "wagon": "coal"
+    },
+    {
+      "cargo": "passengers",
+      "wagons": 1,
+      "depart": 5,
+      "depot": 0
+    },
+    {
+      "cargo": null,
+      "wagons": 1,
+      "depart": 8,
+      "depot": 0,
+      "wagon": "coal"
+    }
+  ],
+  "stock": {
+    "straight": 10,
+    "curve": 4,
+    "switch": 1
+  },
+  "targets": {
+    "pieces": 13,
+    "ticks": 18
+  },
+  "pickups": [
+    {
+      "x": 2,
+      "y": 2,
+      "axis": 1,
+      "gives": "coal",
+      "kind": "mine"
+    }
+  ],
+  "tutorial": [
+    {
+      "it": "Due treni vuoti vanno a caricare carbone in miniera. Per gli scambi un treno vuoto conta già come la merce che andrà a prendere.",
+      "en": "Two empty trains go to load coal at the mine. For switches, an empty train already counts as the cargo it will pick up."
+    }
+  ],
+  "solution": [
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 1,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 3,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 4,
+      "y": 2
+    },
+    {
+      "kind": "switch",
+      "a": 3,
+      "b": 1,
+      "c": 2,
+      "route": "passengers",
+      "x": 5,
+      "y": 2
+    },
+    {
+      "kind": "curve",
+      "a": 3,
+      "b": 0,
+      "x": 6,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 2,
+      "b": 0,
+      "x": 6,
+      "y": 1
+    },
+    {
+      "kind": "curve",
+      "a": 2,
+      "b": 1,
+      "x": 6,
+      "y": 0
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 7,
+      "y": 0
+    },
+    {
+      "kind": "straight",
+      "a": 0,
+      "b": 2,
+      "x": 5,
+      "y": 3
+    },
+    {
+      "kind": "straight",
+      "a": 0,
+      "b": 2,
+      "x": 5,
+      "y": 4
+    },
+    {
+      "kind": "curve",
+      "a": 0,
+      "b": 1,
+      "x": 5,
+      "y": 5
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 6,
+      "y": 5
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 7,
+      "y": 5
+    }
+  ]
+}

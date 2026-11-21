@@ -143,3 +143,89 @@ export function markerSprite(color: string): THREE.Sprite {
   s.renderOrder = 11;
   return s;
 }
+
+/** Treno vuoto: un cerchio tratteggiato, la merce arriverà al carico. */
+export function emptySprite(scale = 1.6): THREE.Sprite {
+  const s = new THREE.Sprite(
+    spriteMaterial('cargo-empty', (ctx, n) => {
+      ctx.fillStyle = 'rgba(255,250,240,0.9)';
+      ctx.strokeStyle = '#8b7a62';
+      ctx.lineWidth = n * 0.06;
+      ctx.setLineDash([n * 0.08, n * 0.06]);
+      ctx.beginPath();
+      ctx.arc(n / 2, n / 2, n * 0.4, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = '#8b7a62';
+      ctx.font = `bold ${n * 0.42}px sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('?', n / 2, n / 2 + n * 0.02);
+    }),
+  );
+  s.scale.set(scale, scale, 1);
+  s.renderOrder = 10;
+  return s;
+}
+
+/** Luce del semaforo, verde o rossa, sopra il palo. */
+export function lightSprite(color: 'red' | 'green'): THREE.Sprite {
+  const c = color === 'red' ? '#ff3b2f' : '#3fdc55';
+  const s = new THREE.Sprite(
+    spriteMaterial(`light-${color}`, (ctx, n) => {
+      const g = ctx.createRadialGradient(n / 2, n / 2, 0, n / 2, n / 2, n / 2);
+      g.addColorStop(0, '#fff');
+      g.addColorStop(0.25, c);
+      g.addColorStop(1, 'rgba(255,255,255,0)');
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, n, n);
+    }),
+  );
+  s.scale.set(1.8, 1.8, 1);
+  s.renderOrder = 9;
+  return s;
+}
+
+/** Cartello con gli orari del trattore: un orologio e i primi tempi in cui passa. */
+export function scheduleSprite(times: number[]): THREE.Sprite {
+  const text = `${times.join(' · ')} …`;
+  const key = `sched-${text}`;
+  const s = new THREE.Sprite(
+    spriteMaterial(key, (ctx, n) => {
+      const h = n * 0.36;
+      const y0 = (n - h) / 2;
+      ctx.fillStyle = '#fffaf0';
+      ctx.strokeStyle = '#e0a21b';
+      ctx.lineWidth = n * 0.03;
+      ctx.beginPath();
+      ctx.roundRect(n * 0.02, y0, n * 0.96, h, h / 2);
+      ctx.fill();
+      ctx.stroke();
+      // orologio
+      const cx = n * 0.02 + h / 2;
+      const cy = n / 2;
+      ctx.beginPath();
+      ctx.arc(cx, cy, h * 0.3, 0, Math.PI * 2);
+      ctx.strokeStyle = '#3b2f25';
+      ctx.lineWidth = n * 0.025;
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(cx, cy - h * 0.2);
+      ctx.lineTo(cx, cy);
+      ctx.lineTo(cx + h * 0.15, cy);
+      ctx.stroke();
+      ctx.fillStyle = '#3b2f25';
+      ctx.font = `bold ${h * 0.5}px sans-serif`;
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'middle';
+      const maxW = n * 0.96 - h * 1.05;
+      const w = ctx.measureText(text).width;
+      if (w > maxW) ctx.font = `bold ${(h * 0.5 * maxW) / w}px sans-serif`;
+      ctx.fillText(text, n * 0.02 + h * 0.95, cy + n * 0.005);
+    }),
+  );
+  s.scale.set(7, 7, 1);
+  s.renderOrder = 10;
+  return s;
+}
