@@ -490,3 +490,9 @@ button.go {
     font-size: 0.75rem;
   }
 }
+
+/* Livelli sopra la scena che non devono intercettare il dito: senza #ui vincerebbe "#ui > *". */
+#ui > .switch-layer,
+#ui > .toast {
+  pointer-events: none;
+}
