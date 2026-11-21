@@ -1,0 +1,220 @@
+{
+  "id": "N17",
+  "theme": "snow",
+  "name": {
+    "it": "Miniera sotto la vetta",
+    "en": "Mine below the summit"
+  },
+  "terrain": [
+    "....^^^....",
+    "..o.^^^....",
+    "....^^^....",
+    "..o........",
+    "...........",
+    "..o....~~..",
+    "T......~~.."
+  ],
+  "fixed": [],
+  "depots": [
+    {
+      "x": 0,
+      "y": 2,
+      "dir": 1
+    },
+    {
+      "x": 0,
+      "y": 4,
+      "dir": 1
+    }
+  ],
+  "stations": [
+    {
+      "id": "port",
+      "kind": "port",
+      "x": 10,
+      "y": 2,
+      "dir": 1,
+      "accepts": [
+        "coal"
+      ]
+    },
+    {
+      "id": "town",
+      "kind": "town",
+      "x": 10,
+      "y": 5,
+      "dir": 1,
+      "accepts": [
+        "passengers"
+      ]
+    }
+  ],
+  "trains": [
+    {
+      "cargo": null,
+      "wagons": 1,
+      "depart": 1,
+      "depot": 0,
+      "wagon": "coal"
+    },
+    {
+      "cargo": "passengers",
+      "wagons": 1,
+      "depart": 1,
+      "depot": 1
+    },
+    {
+      "cargo": null,
+      "wagons": 1,
+      "depart": 4,
+      "depot": 0,
+      "wagon": "coal"
+    }
+  ],
+  "stock": {
+    "straight": 15,
+    "curve": 3,
+    "tunnel": 3
+  },
+  "targets": {
+    "pieces": 18,
+    "ticks": 14
+  },
+  "pickups": [
+    {
+      "x": 2,
+      "y": 2,
+      "axis": 1,
+      "gives": "coal",
+      "kind": "mine"
+    }
+  ],
+  "solution": [
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 1,
+      "y": 4
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 2,
+      "y": 4
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 3,
+      "y": 4
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 4,
+      "y": 4
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 5,
+      "y": 4
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 6,
+      "y": 4
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 7,
+      "y": 4
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 8,
+      "y": 4
+    },
+    {
+      "kind": "curve",
+      "a": 3,
+      "b": 2,
+      "x": 9,
+      "y": 4
+    },
+    {
+      "kind": "curve",
+      "a": 0,
+      "b": 1,
+      "x": 9,
+      "y": 5
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 1,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 3,
+      "y": 2
+    },
+    {
+      "kind": "tunnel",
+      "a": 3,
+      "b": 1,
+      "x": 4,
+      "y": 2
+    },
+    {
+      "kind": "tunnel",
+      "a": 3,
+      "b": 1,
+      "x": 5,
+      "y": 2
+    },
+    {
+      "kind": "tunnel",
+      "a": 3,
+      "b": 1,
+      "x": 6,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 7,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 8,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 9,
+      "y": 2
+    }
+  ]
+}

@@ -1,8 +1,9 @@
 import { Board, dirBetween } from './core/board';
 import { Result, SimSnapshot, Simulation, scoreRun } from './core/sim';
-import { Cell, LevelDef, StockKind } from './core/types';
+import { Cell, LevelDef, StockKind, Theme } from './core/types';
 import { getLang, setLang, t } from './i18n';
-import { LEVELS } from './levels';
+import { LEVELS, WORLDS, worldOf } from './levels';
+import { BonusId, CLOCK_TICKS, SHOP, awardStars, buy, coins, owned, spend } from './economy';
 import { GameScene } from './render/scene';
 import { levelSave, load, update } from './save';
 import credits from './assets/credits.json';
@@ -39,6 +40,16 @@ let endTimer = -1;
 let tutorialStep = 0;
 /** Strumento semaforo attivo: un tocco mette o toglie un semaforo invece di disegnare. */
 let signalMode = false;
+/** Mondo mostrato nel menu dei livelli. */
+let homeWorld: Theme = 'country';
+
+/** Tipi di pezzi della barra: quelli del livello più quelli aggiunti coi bonus. */
+function stockKinds(): StockKind[] {
+  const order: StockKind[] = ['straight', 'curve', 'switch', 'crossing', 'bridge', 'tunnel', 'signal'];
+  return order.filter((k) => (level.stock[k] ?? 0) + (board.extra[k] ?? 0) > 0);
+}
+
+const coinHtml = (n: number) => `<span class="coin-pill"><span class="coin"></span>${n}</span>`;
 const TICKS_PER_SECOND = 3;
 
 // --- piccoli aiuti DOM ---------------------------------------------------------
@@ -150,14 +161,28 @@ function showHome() {
   duckMusic(false);
   scene.setGridVisible(false);
   const grid = h('div', { class: 'level-grid' });
-  LEVELS.forEach((l, i) => {
+  const tabs = h('div', { class: 'world-tabs' });
+  for (const w of WORLDS) {
+    const got = w.levels.reduce((n, l) => n + levelSave(l.id).stars, 0);
+    tabs.append(
+      h(
+        'button',
+        { class: `world-tab world-${w.id}${w.id === homeWorld ? ' active' : ''}`, onclick: () => { homeWorld = w.id; showHome(); } },
+        h('span', { class: 'world-name' }, t(`world.${w.id}` as any)),
+        h('span', { class: 'world-stars' }, `★ ${got}/${w.levels.length * 3}`),
+      ),
+    );
+  }
+  const world = WORLDS.find((w) => w.id === homeWorld)!;
+  world.levels.forEach((l, wi) => {
+    const i = LEVELS.indexOf(l);
     const s = levelSave(l.id).stars;
     const open = unlocked(i);
     grid.append(
       h(
         'button',
         { class: 'level-btn', disabled: !open, title: open ? '' : t('locked'), onclick: () => startLevel(i) },
-        h('span', { class: 'num' }, String(i + 1)),
+        h('span', { class: 'num' }, String(wi + 1)),
         h('span', { class: 'name' }, l.name[getLang()]),
         h('span', { html: starsHtml(s) }),
       ),
@@ -169,6 +194,8 @@ function showHome() {
       { class: 'home' },
       h('h1', {}, 'Trainland'),
       h('p', { class: 'tagline' }, t('tagline')),
+      h('div', { class: 'home-row' }, h('div', { class: 'panel coins-panel', html: coinHtml(coins()) }), h('button', { onclick: () => showShop(null) }, t('shop'))),
+      tabs,
       grid,
       h(
         'div',
@@ -197,9 +224,12 @@ function showCredits() {
 
 async function startLevel(i: number) {
   level = LEVELS[i];
+  homeWorld = worldOf(level);
   board = new Board(level);
-  const saved = levelSave(level.id).build;
-  if (saved) board.loadPieces(saved, levelSave(level.id).signals ?? []);
+  const ls = levelSave(level.id);
+  board.extra = { ...(ls.extra ?? {}) };
+  board.timeBonus = ls.timeBonus ?? 0;
+  if (ls.build) board.loadPieces(ls.build, ls.signals ?? []);
   signalMode = false;
   ui.innerHTML = '';
   const loading = h('div', { class: 'loading panel' }, t('loading'));
@@ -224,14 +254,15 @@ function enterBuild() {
 
 function goalsHtml() {
   const s = levelSave(level.id).stars;
-  return `${starsHtml(s)} <span>★ ${t('starPieces', { n: level.targets.pieces })}</span><span>★ ${t('starTime', { n: level.targets.ticks })}</span>`;
+  return `${starsHtml(s)} <span>★ ${t('starPieces', { n: level.targets.pieces })}</span><span>★ ${t('starTime', { n: board.targetTicks() })}</span>`;
 }
 
 function renderGameUi() {
   ui.innerHTML = '';
   switchLayer = h('div', { class: `switch-layer${mode === 'build' ? '' : ' locked'}` });
   ui.append(switchLayer);
-  const idx = LEVELS.indexOf(level);
+  const wl = WORLDS.find((w) => w.id === worldOf(level))!;
+  const idx = wl.levels.indexOf(level);
   ui.append(
     h(
       'div',
@@ -257,7 +288,7 @@ function renderGameUi() {
   const toolbar = h('div', { class: 'toolbar' });
   if (mode === 'build') {
     const stock = h('div', { class: 'stock panel' });
-    for (const k of Object.keys(level.stock) as StockKind[]) {
+    for (const k of stockKinds()) {
       const n = board.available(k);
       const kids = [h('span', { html: PIECE_ICON[k] }), h('span', { class: 'count' }, String(n))];
       if (k === 'signal') {
@@ -272,6 +303,7 @@ function renderGameUi() {
       h(
         'div',
         { class: 'actions' },
+        h('button', { class: 'bonus-btn', onclick: showBonusPanel, 'aria-label': t('bonus'), title: t('bonus') }, '🎁', h('span', { class: 'bonus-count' }, String(SHOP.reduce((n, b) => n + owned(b.id), 0)))),
         h('button', { onclick: doUndo, disabled: !board.canUndo(), 'aria-label': t('undo'), title: t('undo') }, '↶'),
         h('button', { onclick: () => { board.clear(); afterEdit(); }, disabled: board.piecesUsed() === 0, title: t('clear') }, '✕'),
         h('button', { class: 'go', onclick: startRun }, t('go')),
@@ -301,7 +333,13 @@ function renderGameUi() {
 function afterEdit() {
   scene.updateTracks();
   update((s) => {
-    s.levels[level.id] = { ...levelSave(level.id), build: board.exportPieces(), signals: board.exportSignals() };
+    s.levels[level.id] = {
+      ...levelSave(level.id),
+      build: board.exportPieces(),
+      signals: board.exportSignals(),
+      extra: { ...board.extra },
+      timeBonus: board.timeBonus,
+    };
   });
   renderGameUi();
 }
@@ -333,10 +371,7 @@ function showResult(r: Result) {
   if (r.outcome === 'won') successJingle(r.stars);
   else failJingle();
   if (r.outcome === 'won') {
-    const best = Math.max(r.stars, levelSave(level.id).stars);
-    update((s) => {
-      s.levels[level.id] = { ...levelSave(level.id), stars: best };
-    });
+    const gain = awardStars(level.id, r.stars);
     const li = (ok: boolean, text: string) => h('li', { html: `${ok ? '<span class="stars"><span class="on">★</span></span>' : '<span class="stars">★</span>'} ${text}` });
     modal.append(
       h('h2', {}, t('won')),
@@ -346,17 +381,113 @@ function showResult(r: Result) {
         {},
         li(true, t('starAll')),
         li(r.starPieces, `${t('starPieces', { n: level.targets.pieces })} · ${t('piecesUsed')}: ${r.pieces}`),
-        li(r.starTime, `${t('starTime', { n: level.targets.ticks })} · ${t('time')}: ${r.ticks}`),
+        li(r.starTime, `${t('starTime', { n: board.targetTicks() })} · ${t('time')}: ${r.ticks}`),
       ),
+      h('p', { class: 'gain', html: gain > 0 ? `+${coinHtml(gain)} ${t('coinsEarned')}` : `${coinHtml(coins())} ${t('noNewCoins')}` }),
     );
     const buttons = h('div', { class: 'buttons' });
-    if (idx + 1 < LEVELS.length) buttons.append(h('button', { class: 'primary', onclick: () => startLevel(idx + 1) }, t('next')));
+    if (idx + 1 < LEVELS.length) buttons.append(h('button', { class: 'primary', onclick: () => { back.remove(); showShop(idx + 1); } }, t('next')));
     buttons.append(h('button', { onclick: () => { back.remove(); enterBuild(); } }, t('retry')), h('button', { onclick: () => { scene.resetTrains(); showHome(); } }, t('levels')));
     modal.append(buttons);
   } else {
     const reason = r.failure?.reason ?? 'derail';
     modal.append(h('h2', {}, '!'), h('p', {}, t(`fail.${reason}` as any)), h('div', { class: 'buttons' }, h('button', { class: 'primary', onclick: () => { back.remove(); enterBuild(); } }, t('edit'))));
   }
+  back.append(modal);
+  ui.append(back);
+}
+
+// --- negozio e bonus ---------------------------------------------------------------
+
+const BONUS_ICON: Record<BonusId, string> = { piece: PIECE_ICON.straight, signal: PIECE_ICON.signal, clock: '⏱', hint: '💡' };
+
+/** Negozio: tra un livello e l'altro (next = indice del livello da giocare dopo) o dal menu (null). */
+function showShop(next: number | null) {
+  mode = next === null ? mode : 'result';
+  const back = h('div', { class: 'modal-back' });
+  const modal = h('div', { class: 'modal panel shop' });
+  const draw = () => {
+    modal.innerHTML = '';
+    modal.append(h('h2', {}, t('shop')), h('p', { class: 'coins-line', html: coinHtml(coins()) }));
+    const list = h('div', { class: 'shop-list' });
+    for (const b of SHOP) {
+      list.append(
+        h(
+          'div',
+          { class: 'shop-item' },
+          h('span', { class: 'shop-icon', html: BONUS_ICON[b.id] }),
+          h('div', { class: 'shop-text' }, h('b', {}, t(`bonus.${b.id}` as any)), h('span', {}, t(`bonus.${b.id}.desc` as any, { n: CLOCK_TICKS })), h('span', { class: 'small' }, t('owned', { n: owned(b.id) }))),
+          h('button', { class: 'primary', disabled: coins() < b.price, onclick: () => { if (buy(b.id)) { placeTick(); draw(); } }, html: coinHtml(b.price) }),
+        ),
+      );
+    }
+    const buttons = h('div', { class: 'buttons' });
+    if (next !== null) {
+      const nl = LEVELS[next];
+      const wl = WORLDS.find((w) => w.id === worldOf(nl))!;
+      buttons.append(h('button', { class: 'go', onclick: () => { back.remove(); startLevel(next); } }, t('playLevel', { n: wl.levels.indexOf(nl) + 1, name: nl.name[getLang()] })));
+      buttons.append(h('button', { onclick: () => { back.remove(); scene.resetTrains(); showHome(); } }, t('levels')));
+    } else buttons.append(h('button', { class: 'primary', onclick: () => { back.remove(); if (mode === 'home') showHome(); } }, t('back')));
+    modal.append(list, buttons);
+  };
+  draw();
+  back.append(modal);
+  ui.append(back);
+}
+
+/** Pannello dei bonus durante la costruzione. */
+function showBonusPanel() {
+  if (mode !== 'build') return;
+  const back = h('div', { class: 'modal-back' });
+  const modal = h('div', { class: 'modal panel shop' });
+  const close = () => back.remove();
+  const draw = () => {
+    modal.innerHTML = '';
+    modal.append(h('h2', {}, t('bonus')));
+    const list = h('div', { class: 'shop-list' });
+    for (const b of SHOP) {
+      const n = owned(b.id);
+      const row = h(
+        'div',
+        { class: 'shop-item' },
+        h('span', { class: 'shop-icon', html: BONUS_ICON[b.id] }),
+        h('div', { class: 'shop-text' }, h('b', {}, `${t(`bonus.${b.id}` as any)} ×${n}`), h('span', {}, t(`bonus.${b.id}.desc` as any, { n: CLOCK_TICKS }))),
+      );
+      if (b.id === 'piece') {
+        // Si sceglie quale pezzo aggiungere.
+        const kinds = (['straight', 'curve', 'switch', 'crossing', 'bridge', 'tunnel'] as StockKind[]).filter((k) => (level.stock[k] ?? 0) > 0);
+        const pick = h('div', { class: 'piece-pick' });
+        for (const k of kinds) pick.append(h('button', { disabled: n <= 0, title: t(k), html: PIECE_ICON[k], onclick: () => useBonus('piece', k) }));
+        row.append(pick);
+      } else row.append(h('button', { class: 'primary', disabled: n <= 0, onclick: () => useBonus(b.id) }, t('use')));
+      list.append(row);
+    }
+    modal.append(list, h('div', { class: 'buttons' }, h('button', { onclick: () => { close(); showShop(null); } }, t('shop')), h('button', { class: 'primary', onclick: close }, t('back'))));
+  };
+  const useBonus = (id: BonusId, kind?: StockKind) => {
+    if (id === 'hint') {
+      board.beginEdit();
+      const c = board.hint();
+      board.endEdit();
+      if (!c) {
+        toast(t('hintNone'));
+        return;
+      }
+      spend(id);
+      scene.setHighlight(c, true);
+      toast(t('hintDone'), 2600);
+    } else {
+      spend(id);
+      if (id === 'piece' && kind) board.extra[kind] = (board.extra[kind] ?? 0) + 1;
+      if (id === 'signal') board.extra.signal = (board.extra.signal ?? 0) + 1;
+      if (id === 'clock') board.timeBonus += CLOCK_TICKS;
+      toast(t(`bonus.${id}.used` as any));
+    }
+    placeTick();
+    close();
+    afterEdit();
+  };
+  draw();
   back.append(modal);
   ui.append(back);
 }
@@ -401,7 +532,7 @@ function extendPath(cell: Cell) {
     scene.updateTracks();
     renderStockOnly();
     renderSwitchButtons();
-  } else if (drawPath.length > 1 && (Object.keys(level.stock) as StockKind[]).every((k) => board.available(k) <= 0)) {
+  } else if (drawPath.length > 1 && stockKinds().every((k) => board.available(k) <= 0)) {
     toast(t('noPieces'));
   }
 }
@@ -410,7 +541,7 @@ function renderStockOnly() {
   const stock = ui.querySelector('.stock');
   if (!stock) return;
   const items = stock.querySelectorAll('.item');
-  (Object.keys(level.stock) as StockKind[]).forEach((k, i) => {
+  stockKinds().forEach((k, i) => {
     const n = board.available(k);
     items[i]?.classList.toggle('empty', n <= 0);
     const c = items[i]?.querySelector('.count');
@@ -622,5 +753,5 @@ function frame(now: number) {
   showHome();
   requestAnimationFrame(frame);
   // Utile per i test automatici e per il debug da console.
-  (window as any).trainland = { board: () => board, sim: () => sim, startLevel, startRun, scene, dirBetween };
+  (window as any).trainland = { board: () => board, sim: () => sim, startLevel, startRun, scene, dirBetween, levels: LEVELS };
 })();

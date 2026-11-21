@@ -120,8 +120,12 @@ export interface PlacedPiece extends Piece {
   y: number;
 }
 
+/** Ambientazione di un livello: cambia solo l'aspetto, non le regole. */
+export type Theme = 'country' | 'snow' | 'desert';
+
 export interface LevelDef {
   id: string;
+  theme?: Theme;
   name: { it: string; en: string };
   /** Righe del terreno: '.' prato, 'T' alberi, '~' acqua, '^' collina, 'R' roccia, '=' strada, 'o' cortile (edifici di carico), ' ' vuoto. */
   terrain: string[];

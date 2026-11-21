@@ -1,4 +1,4 @@
-import type { Cell, PlacedPiece } from './core/types';
+import type { Cell, PlacedPiece, StockKind } from './core/types';
 
 const KEY = 'trainland.save.v1';
 
@@ -6,12 +6,20 @@ export interface LevelSave {
   stars: number;
   build?: PlacedPiece[];
   signals?: Cell[];
+  /** Pezzi extra comprati per questo livello. */
+  extra?: Partial<Record<StockKind, number>>;
+  /** Tick in più per la stella del tempo. */
+  timeBonus?: number;
 }
 
 export interface SaveData {
   version: 1;
   lang?: 'it' | 'en';
   muted?: boolean;
+  /** Monete guadagnate con le stelle. */
+  coins?: number;
+  /** Bonus comprati nel negozio e non ancora usati. */
+  bonuses?: Record<string, number>;
   levels: Record<string, LevelSave>;
 }
 

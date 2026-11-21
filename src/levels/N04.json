@@ -1,0 +1,139 @@
+{
+  "id": "N04",
+  "theme": "snow",
+  "name": {
+    "it": "Il gatto delle nevi",
+    "en": "The snowcat"
+  },
+  "terrain": [
+    "....=....",
+    "T...=....",
+    "....=..T.",
+    "....=....",
+    "....=...."
+  ],
+  "fixed": [],
+  "depots": [
+    {
+      "x": 0,
+      "y": 1,
+      "dir": 1
+    }
+  ],
+  "stations": [
+    {
+      "id": "chalet",
+      "kind": "town",
+      "x": 8,
+      "y": 3,
+      "dir": 1,
+      "accepts": [
+        "passengers",
+        "milk"
+      ]
+    }
+  ],
+  "trains": [
+    {
+      "cargo": "passengers",
+      "wagons": 1,
+      "depart": 1,
+      "depot": 0
+    },
+    {
+      "cargo": "milk",
+      "wagons": 1,
+      "depart": 4,
+      "depot": 0
+    }
+  ],
+  "stock": {
+    "straight": 8,
+    "curve": 3,
+    "signal": 1
+  },
+  "targets": {
+    "pieces": 9,
+    "ticks": 23
+  },
+  "crossings": [
+    {
+      "x": 4,
+      "y": 1,
+      "axis": 1,
+      "period": 5,
+      "offset": 5,
+      "duration": 2
+    }
+  ],
+  "tutorial": [
+    {
+      "it": "Qui al posto del trattore passa il gatto delle nevi. Guarda gli orari sul cartello!",
+      "en": "Here the snowcat takes the tractor's place. Check the times on the sign!"
+    }
+  ],
+  "solution": [
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 1,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 2,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 3,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 5,
+      "y": 1
+    },
+    {
+      "kind": "curve",
+      "a": 3,
+      "b": 2,
+      "x": 6,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 0,
+      "b": 2,
+      "x": 6,
+      "y": 2
+    },
+    {
+      "kind": "curve",
+      "a": 0,
+      "b": 1,
+      "x": 6,
+      "y": 3
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 7,
+      "y": 3
+    }
+  ],
+  "solutionSignals": [
+    {
+      "x": 2,
+      "y": 1
+    }
+  ]
+}

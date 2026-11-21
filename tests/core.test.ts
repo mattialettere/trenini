@@ -222,3 +222,52 @@ describe('passaggi a livello', () => {
     expect(s.snapshot().tractors[0]).toEqual({ start: c.offset, until: c.offset + c.duration - 1 });
   });
 });
+
+describe('mondi', () => {
+  it('20 livelli per ogni ambientazione', async () => {
+    const { WORLDS } = await import('../src/levels');
+    expect(WORLDS.map((w) => [w.id, w.levels.length])).toEqual([
+      ['country', 20],
+      ['snow', 20],
+      ['desert', 20],
+    ]);
+  });
+});
+
+describe('suggerimenti', () => {
+  it('a forza di suggerimenti il livello si risolve, anche senza scorte', () => {
+    for (const id of ['N10', 'D17', '20']) {
+      const b = new Board(lvl(id));
+      let n = 0;
+      while (b.hint()) n++;
+      expect(n).toBe(lvl(id).targets.pieces);
+      expect(run(b).outcome).toBe('won');
+    }
+  });
+  it('il bonus pezzo e il bonus tempo cambiano scorte e obiettivo', () => {
+    const b = new Board(lvl('N01'));
+    const before = b.available('switch');
+    b.extra.switch = 1;
+    expect(b.available('switch')).toBe(before + 1);
+    b.timeBonus = 3;
+    expect(b.targetTicks()).toBe(lvl('N01').targets.ticks + 3);
+  });
+});
+
+describe('monete', () => {
+  it('3 stelle 50, 2 stelle 20, 1 stella 10, e paga solo la differenza', async () => {
+    const mem: Record<string, string> = {};
+    (globalThis as any).localStorage = { getItem: (k: string) => mem[k] ?? null, setItem: (k: string, v: string) => (mem[k] = v) };
+    const e = await import('../src/economy');
+    expect(e.awardStars('x1', 1)).toBe(10);
+    expect(e.awardStars('x2', 2)).toBe(20);
+    expect(e.awardStars('x3', 3)).toBe(50);
+    expect(e.awardStars('x1', 3)).toBe(40);
+    expect(e.awardStars('x3', 3)).toBe(0);
+    expect(e.coins()).toBe(120);
+    expect(e.buy('hint')).toBe(true);
+    expect(e.coins()).toBe(60);
+    expect(e.spend('hint')).toBe(true);
+    expect(e.spend('hint')).toBe(false);
+  });
+});

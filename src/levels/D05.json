@@ -1,0 +1,178 @@
+{
+  "id": "D05",
+  "theme": "desert",
+  "name": {
+    "it": "Mesa rossa",
+    "en": "Red mesa"
+  },
+  "terrain": [
+    "....^^....",
+    "R...^^....",
+    "....^^..R.",
+    "....^^....",
+    "R...^^...."
+  ],
+  "fixed": [],
+  "depots": [
+    {
+      "x": 0,
+      "y": 1,
+      "dir": 1
+    },
+    {
+      "x": 0,
+      "y": 3,
+      "dir": 1
+    }
+  ],
+  "stations": [
+    {
+      "id": "saloon",
+      "kind": "town",
+      "x": 9,
+      "y": 1,
+      "dir": 1,
+      "accepts": [
+        "passengers"
+      ]
+    },
+    {
+      "id": "store",
+      "kind": "port",
+      "x": 9,
+      "y": 3,
+      "dir": 1,
+      "accepts": [
+        "coal"
+      ]
+    }
+  ],
+  "trains": [
+    {
+      "cargo": "coal",
+      "wagons": 1,
+      "depart": 1,
+      "depot": 0
+    },
+    {
+      "cargo": "passengers",
+      "wagons": 1,
+      "depart": 2,
+      "depot": 1
+    }
+  ],
+  "stock": {
+    "straight": 10,
+    "curve": 3,
+    "switch": 2,
+    "tunnel": 2
+  },
+  "targets": {
+    "pieces": 14,
+    "ticks": 13
+  },
+  "solution": [
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 1,
+      "y": 3
+    },
+    {
+      "kind": "curve",
+      "a": 3,
+      "b": 0,
+      "x": 2,
+      "y": 3
+    },
+    {
+      "kind": "straight",
+      "a": 2,
+      "b": 0,
+      "x": 2,
+      "y": 2
+    },
+    {
+      "kind": "switch",
+      "a": 1,
+      "b": 3,
+      "c": 2,
+      "route": "none",
+      "x": 2,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 3,
+      "y": 1
+    },
+    {
+      "kind": "tunnel",
+      "a": 3,
+      "b": 1,
+      "x": 4,
+      "y": 1
+    },
+    {
+      "kind": "tunnel",
+      "a": 3,
+      "b": 1,
+      "x": 5,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 6,
+      "y": 1
+    },
+    {
+      "kind": "switch",
+      "a": 3,
+      "b": 1,
+      "c": 2,
+      "route": "coal",
+      "x": 7,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 8,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 1,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 0,
+      "b": 2,
+      "x": 7,
+      "y": 2
+    },
+    {
+      "kind": "curve",
+      "a": 0,
+      "b": 1,
+      "x": 7,
+      "y": 3
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 8,
+      "y": 3
+    }
+  ]
+}

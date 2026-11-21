@@ -1,0 +1,198 @@
+{
+  "id": "D12",
+  "theme": "desert",
+  "name": {
+    "it": "Il binario unico",
+    "en": "The single track"
+  },
+  "terrain": [
+    "RRRR.RRRR",
+    "RRRR.RRRR",
+    ".........",
+    "R.......R",
+    "........."
+  ],
+  "fixed": [],
+  "depots": [
+    {
+      "x": 0,
+      "y": 2,
+      "dir": 1
+    },
+    {
+      "x": 8,
+      "y": 4,
+      "dir": 3
+    }
+  ],
+  "stations": [
+    {
+      "id": "east",
+      "kind": "town",
+      "x": 8,
+      "y": 2,
+      "dir": 1,
+      "accepts": [
+        "passengers"
+      ]
+    },
+    {
+      "id": "west",
+      "kind": "port",
+      "x": 0,
+      "y": 4,
+      "dir": 3,
+      "accepts": [
+        "coal"
+      ]
+    },
+    {
+      "id": "mine",
+      "kind": "port",
+      "x": 4,
+      "y": 0,
+      "dir": 0,
+      "accepts": [
+        "timber"
+      ]
+    }
+  ],
+  "trains": [
+    {
+      "cargo": "passengers",
+      "wagons": 1,
+      "depart": 1,
+      "depot": 0
+    },
+    {
+      "cargo": "coal",
+      "wagons": 1,
+      "depart": 1,
+      "depot": 1
+    },
+    {
+      "cargo": "timber",
+      "wagons": 1,
+      "depart": 3,
+      "depot": 0
+    }
+  ],
+  "stock": {
+    "straight": 16,
+    "curve": 1,
+    "switch": 1
+  },
+  "targets": {
+    "pieces": 15,
+    "ticks": 9
+  },
+  "solution": [
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 1,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 2,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 3,
+      "y": 2
+    },
+    {
+      "kind": "switch",
+      "a": 3,
+      "b": 1,
+      "c": 0,
+      "route": "timber",
+      "x": 4,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 2,
+      "b": 0,
+      "x": 4,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 1,
+      "b": 3,
+      "x": 7,
+      "y": 4
+    },
+    {
+      "kind": "straight",
+      "a": 1,
+      "b": 3,
+      "x": 6,
+      "y": 4
+    },
+    {
+      "kind": "straight",
+      "a": 1,
+      "b": 3,
+      "x": 5,
+      "y": 4
+    },
+    {
+      "kind": "straight",
+      "a": 1,
+      "b": 3,
+      "x": 4,
+      "y": 4
+    },
+    {
+      "kind": "straight",
+      "a": 1,
+      "b": 3,
+      "x": 3,
+      "y": 4
+    },
+    {
+      "kind": "straight",
+      "a": 1,
+      "b": 3,
+      "x": 2,
+      "y": 4
+    },
+    {
+      "kind": "straight",
+      "a": 1,
+      "b": 3,
+      "x": 1,
+      "y": 4
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 5,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 6,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 7,
+      "y": 2
+    }
+  ]
+}

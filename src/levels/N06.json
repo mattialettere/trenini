@@ -1,0 +1,154 @@
+{
+  "id": "N06",
+  "theme": "snow",
+  "name": {
+    "it": "Il rifugio",
+    "en": "The mountain hut"
+  },
+  "terrain": [
+    "...^^.....",
+    "...^^..o..",
+    "T..^^.....",
+    "...^^..o..",
+    "..........",
+    "T........."
+  ],
+  "fixed": [],
+  "depots": [
+    {
+      "x": 0,
+      "y": 2,
+      "dir": 1
+    }
+  ],
+  "stations": [
+    {
+      "id": "chalet",
+      "kind": "town",
+      "x": 9,
+      "y": 2,
+      "dir": 1,
+      "accepts": [
+        "milk"
+      ]
+    },
+    {
+      "id": "refuge",
+      "kind": "town",
+      "x": 9,
+      "y": 5,
+      "dir": 1,
+      "accepts": [
+        "passengers"
+      ]
+    }
+  ],
+  "trains": [
+    {
+      "cargo": null,
+      "wagons": 1,
+      "depart": 1,
+      "depot": 0,
+      "wagon": "milk"
+    },
+    {
+      "cargo": "passengers",
+      "wagons": 1,
+      "depart": 4,
+      "depot": 0
+    }
+  ],
+  "stock": {
+    "straight": 8,
+    "curve": 2,
+    "switch": 1,
+    "tunnel": 2
+  },
+  "targets": {
+    "pieces": 10,
+    "ticks": 16
+  },
+  "pickups": [
+    {
+      "x": 7,
+      "y": 2,
+      "axis": 1,
+      "gives": "milk",
+      "kind": "farm"
+    }
+  ],
+  "solution": [
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 1,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 2,
+      "y": 2
+    },
+    {
+      "kind": "tunnel",
+      "a": 3,
+      "b": 1,
+      "x": 3,
+      "y": 2
+    },
+    {
+      "kind": "tunnel",
+      "a": 3,
+      "b": 1,
+      "x": 4,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 5,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 6,
+      "y": 2
+    },
+    {
+      "kind": "switch",
+      "a": 3,
+      "b": 1,
+      "c": 2,
+      "route": "passengers",
+      "x": 8,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 0,
+      "b": 2,
+      "x": 8,
+      "y": 3
+    },
+    {
+      "kind": "straight",
+      "a": 0,
+      "b": 2,
+      "x": 8,
+      "y": 4
+    },
+    {
+      "kind": "curve",
+      "a": 0,
+      "b": 1,
+      "x": 8,
+      "y": 5
+    }
+  ]
+}

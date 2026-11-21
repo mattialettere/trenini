@@ -869,5 +869,434 @@
     },
     "origin": "ground level (minY = 0): the model sits on y=0 as-is",
     "triangles": 140
+  },
+  {
+    "id": "snow-laden-spruce-36716e",
+    "title": "Snow-Laden Spruce",
+    "kit": "alpine-and-snow-092f66",
+    "credit": "Snow-Laden Spruce by Polyfork (https://polyfork.dev/asset/snow-laden-spruce-36716e), CC BY 4.0",
+    "size": {
+      "x": 3,
+      "y": 6.06,
+      "z": 3
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 765
+  },
+  {
+    "id": "windblown-larch-abb99c",
+    "title": "Windblown Larch",
+    "kit": "alpine-and-snow-092f66",
+    "credit": "Windblown Larch by Polyfork (https://polyfork.dev/asset/windblown-larch-abb99c), CC BY 4.0",
+    "size": {
+      "x": 7.95,
+      "y": 7,
+      "z": 3.58
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 874
+  },
+  {
+    "id": "bare-mountain-rowan-10e72e",
+    "title": "Bare Mountain Rowan",
+    "kit": "alpine-and-snow-092f66",
+    "credit": "Bare Mountain Rowan by Polyfork (https://polyfork.dev/asset/bare-mountain-rowan-10e72e), CC BY 4.0",
+    "size": {
+      "x": 4.37,
+      "y": 5.03,
+      "z": 4.3
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 990
+  },
+  {
+    "id": "rock-outcrop-158ac3",
+    "title": "Rock Outcrop",
+    "kit": "alpine-and-snow-092f66",
+    "credit": "Rock Outcrop by Polyfork (https://polyfork.dev/asset/rock-outcrop-158ac3), CC BY 4.0",
+    "size": {
+      "x": 2.5,
+      "y": 2.05,
+      "z": 2.5
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 756
+  },
+  {
+    "id": "boulder-field-cluster-08e364",
+    "title": "Boulder Field Cluster",
+    "kit": "alpine-and-snow-092f66",
+    "credit": "Boulder Field Cluster by Polyfork (https://polyfork.dev/asset/boulder-field-cluster-08e364), CC BY 4.0",
+    "size": {
+      "x": 2.5,
+      "y": 1.45,
+      "z": 2
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 734
+  },
+  {
+    "id": "alpine-chalet-47d59e",
+    "title": "Alpine Chalet",
+    "kit": "alpine-and-snow-092f66",
+    "credit": "Alpine Chalet by Polyfork (https://polyfork.dev/asset/alpine-chalet-47d59e), CC BY 4.0",
+    "size": {
+      "x": 10,
+      "y": 7.42,
+      "z": 8
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 1742
+  },
+  {
+    "id": "mountain-refuge-hut-32ab1e",
+    "title": "Mountain Refuge Hut",
+    "kit": "alpine-and-snow-092f66",
+    "credit": "Mountain Refuge Hut by Polyfork (https://polyfork.dev/asset/mountain-refuge-hut-32ab1e), CC BY 4.0",
+    "size": {
+      "x": 6,
+      "y": 4.41,
+      "z": 6
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 1588
+  },
+  {
+    "id": "alpine-hay-barn-3965e5",
+    "title": "Alpine Hay Barn",
+    "kit": "alpine-and-snow-092f66",
+    "credit": "Alpine Hay Barn by Polyfork (https://polyfork.dev/asset/alpine-hay-barn-3965e5), CC BY 4.0",
+    "size": {
+      "x": 6,
+      "y": 4.28,
+      "z": 8
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 2074
+  },
+  {
+    "id": "snow-capped-log-pile-8719e7",
+    "title": "Snow-Capped Log Pile",
+    "kit": "alpine-and-snow-092f66",
+    "credit": "Snow-Capped Log Pile by Polyfork (https://polyfork.dev/asset/snow-capped-log-pile-8719e7), CC BY 4.0",
+    "size": {
+      "x": 2,
+      "y": 1.17,
+      "z": 1.5
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 734
+  },
+  {
+    "id": "scree-heap-42cce5",
+    "title": "Scree Heap",
+    "kit": "alpine-and-snow-092f66",
+    "credit": "Scree Heap by Polyfork (https://polyfork.dev/asset/scree-heap-42cce5), CC BY 4.0",
+    "size": {
+      "x": 2.5,
+      "y": 0.52,
+      "z": 2.5
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 674
+  },
+  {
+    "id": "piste-basher-snowcat-92fe8b",
+    "title": "Piste Basher Snowcat",
+    "kit": "alpine-and-snow-092f66",
+    "credit": "Piste Basher Snowcat by Polyfork (https://polyfork.dev/asset/piste-basher-snowcat-92fe8b), CC BY 4.0",
+    "size": {
+      "x": 3.46,
+      "y": 2.62,
+      "z": 5.41
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 3178
+  },
+  {
+    "id": "stone-cairn-a9bf48",
+    "title": "Stone Cairn",
+    "kit": "alpine-and-snow-092f66",
+    "credit": "Stone Cairn by Polyfork (https://polyfork.dev/asset/stone-cairn-a9bf48), CC BY 4.0",
+    "size": {
+      "x": 1,
+      "y": 1.37,
+      "z": 1
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 805
+  },
+  {
+    "id": "alpine-fingerpost-d47349",
+    "title": "Alpine Fingerpost",
+    "kit": "alpine-and-snow-092f66",
+    "credit": "Alpine Fingerpost by Polyfork (https://polyfork.dev/asset/alpine-fingerpost-d47349), CC BY 4.0",
+    "size": {
+      "x": 1.5,
+      "y": 2.46,
+      "z": 1.5
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 646
+  },
+  {
+    "id": "mountain-hare-d9c64c",
+    "title": "Mountain Hare",
+    "kit": "alpine-and-snow-092f66",
+    "credit": "Mountain Hare by Polyfork (https://polyfork.dev/asset/mountain-hare-d9c64c), CC BY 4.0",
+    "size": {
+      "x": 0.21,
+      "y": 0.53,
+      "z": 0.42
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 2975
+  },
+  {
+    "id": "alpine-ibex-2a288a",
+    "title": "Alpine Ibex",
+    "kit": "alpine-and-snow-092f66",
+    "credit": "Alpine Ibex by Polyfork (https://polyfork.dev/asset/alpine-ibex-2a288a), CC BY 4.0",
+    "size": {
+      "x": 0.59,
+      "y": 1.45,
+      "z": 1.29
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 2844
+  },
+  {
+    "id": "saguaro-cactus-6b27eb",
+    "title": "Saguaro Cactus",
+    "kit": "frontier-town-a0085b",
+    "credit": "Saguaro Cactus by Polyfork (https://polyfork.dev/asset/saguaro-cactus-6b27eb), CC BY 4.0",
+    "size": {
+      "x": 1.15,
+      "y": 4,
+      "z": 1.09
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 525
+  },
+  {
+    "id": "joshua-tree-867a2c",
+    "title": "Joshua Tree",
+    "kit": "roadside-americana-50d40c",
+    "credit": "Joshua Tree by Polyfork (https://polyfork.dev/asset/joshua-tree-867a2c), CC BY 4.0",
+    "size": {
+      "x": 5.51,
+      "y": 6,
+      "z": 2.16
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 819
+  },
+  {
+    "id": "sagebrush-700b03",
+    "title": "Sagebrush",
+    "kit": "frontier-town-a0085b",
+    "credit": "Sagebrush by Polyfork (https://polyfork.dev/asset/sagebrush-700b03), CC BY 4.0",
+    "size": {
+      "x": 1.05,
+      "y": 0.78,
+      "z": 0.82
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 684
+  },
+  {
+    "id": "creosote-bush-5b17d5",
+    "title": "Creosote Bush",
+    "kit": "roadside-americana-50d40c",
+    "credit": "Creosote Bush by Polyfork (https://polyfork.dev/asset/creosote-bush-5b17d5), CC BY 4.0",
+    "size": {
+      "x": 1.66,
+      "y": 1.5,
+      "z": 1.31
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 1543
+  },
+  {
+    "id": "sandstone-outcrop-75800b",
+    "title": "Sandstone Outcrop",
+    "kit": "roadside-americana-50d40c",
+    "credit": "Sandstone Outcrop by Polyfork (https://polyfork.dev/asset/sandstone-outcrop-75800b), CC BY 4.0",
+    "size": {
+      "x": 4.1,
+      "y": 2.5,
+      "z": 2.15
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 786
+  },
+  {
+    "id": "dead-cottonwood-edbde8",
+    "title": "Dead Cottonwood",
+    "kit": "frontier-town-a0085b",
+    "credit": "Dead Cottonwood by Polyfork (https://polyfork.dev/asset/dead-cottonwood-edbde8), CC BY 4.0",
+    "size": {
+      "x": 6.82,
+      "y": 7,
+      "z": 3.71
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 1090
+  },
+  {
+    "id": "general-store-a2187a",
+    "title": "General Store",
+    "kit": "frontier-town-a0085b",
+    "credit": "General Store by Polyfork (https://polyfork.dev/asset/general-store-a2187a), CC BY 4.0",
+    "size": {
+      "x": 6,
+      "y": 6,
+      "z": 8
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 1395
+  },
+  {
+    "id": "saloon-6dda1c",
+    "title": "Saloon",
+    "kit": "frontier-town-a0085b",
+    "credit": "Saloon by Polyfork (https://polyfork.dev/asset/saloon-6dda1c), CC BY 4.0",
+    "size": {
+      "x": 6,
+      "y": 6,
+      "z": 8
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 1394
+  },
+  {
+    "id": "mine-headframe-735cf4",
+    "title": "Mine Headframe",
+    "kit": "frontier-town-a0085b",
+    "credit": "Mine Headframe by Polyfork (https://polyfork.dev/asset/mine-headframe-735cf4), CC BY 4.0",
+    "size": {
+      "x": 4,
+      "y": 9,
+      "z": 4
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 1689
+  },
+  {
+    "id": "ore-chute-and-bin-8375ac",
+    "title": "Ore Chute and Bin",
+    "kit": "frontier-town-a0085b",
+    "credit": "Ore Chute and Bin by Polyfork (https://polyfork.dev/asset/ore-chute-and-bin-8375ac), CC BY 4.0",
+    "size": {
+      "x": 3,
+      "y": 4,
+      "z": 3
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 633
+  },
+  {
+    "id": "livery-stable-c01ee0",
+    "title": "Livery Stable",
+    "kit": "frontier-town-a0085b",
+    "credit": "Livery Stable by Polyfork (https://polyfork.dev/asset/livery-stable-c01ee0), CC BY 4.0",
+    "size": {
+      "x": 8,
+      "y": 6.78,
+      "z": 10
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 1677
+  },
+  {
+    "id": "plank-trough-baf3d5",
+    "title": "Plank Trough",
+    "kit": "frontier-town-a0085b",
+    "credit": "Plank Trough by Polyfork (https://polyfork.dev/asset/plank-trough-baf3d5), CC BY 4.0",
+    "size": {
+      "x": 2.49,
+      "y": 0.74,
+      "z": 0.5
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 590
+  },
+  {
+    "id": "windmill-pump-2993a4",
+    "title": "Windmill Pump",
+    "kit": "frontier-town-a0085b",
+    "credit": "Windmill Pump by Polyfork (https://polyfork.dev/asset/windmill-pump-2993a4), CC BY 4.0",
+    "size": {
+      "x": 2.63,
+      "y": 7.26,
+      "z": 3.45
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 710
+  },
+  {
+    "id": "water-tower-on-a-dbc730",
+    "title": "Water Tower on a Trestle",
+    "kit": "frontier-town-a0085b",
+    "credit": "Water Tower on a Trestle by Polyfork (https://polyfork.dev/asset/water-tower-on-a-dbc730), CC BY 4.0",
+    "size": {
+      "x": 2.83,
+      "y": 11.46,
+      "z": 2.87
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 758
+  },
+  {
+    "id": "stagecoach-94db88",
+    "title": "Stagecoach",
+    "kit": "frontier-town-a0085b",
+    "credit": "Stagecoach by Polyfork (https://polyfork.dev/asset/stagecoach-94db88), CC BY 4.0",
+    "size": {
+      "x": 2,
+      "y": 2.79,
+      "z": 4.5
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 2654
+  },
+  {
+    "id": "tumbleweed-2caa1a",
+    "title": "Tumbleweed",
+    "kit": "frontier-town-a0085b",
+    "credit": "Tumbleweed by Polyfork (https://polyfork.dev/asset/tumbleweed-2caa1a), CC BY 4.0",
+    "size": {
+      "x": 0.57,
+      "y": 0.55,
+      "z": 0.55
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 636
+  },
+  {
+    "id": "stage-and-freight-office-c5a38a",
+    "title": "Stage and Freight Office",
+    "kit": "frontier-town-a0085b",
+    "credit": "Stage and Freight Office by Polyfork (https://polyfork.dev/asset/stage-and-freight-office-c5a38a), CC BY 4.0",
+    "size": {
+      "x": 6,
+      "y": 5.5,
+      "z": 8
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 1554
+  },
+  {
+    "id": "freight-crate-and-sack-f49cbb",
+    "title": "Freight Crate and Sack Stack",
+    "kit": "frontier-town-a0085b",
+    "credit": "Freight Crate and Sack Stack by Polyfork (https://polyfork.dev/asset/freight-crate-and-sack-f49cbb), CC BY 4.0",
+    "size": {
+      "x": 1.5,
+      "y": 0.9,
+      "z": 0.93
+    },
+    "origin": "ground level (minY = 0): the model sits on y=0 as-is",
+    "triangles": 522
   }
 ]

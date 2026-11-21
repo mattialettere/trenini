@@ -70,3 +70,36 @@ Le curve e gli scambi sono una modifica del modello Straight Track (piegato in c
 - Apple Tree by Polyfork (https://polyfork.dev/asset/apple-tree-ef0ba0), CC BY 4.0
 - Hay Bale by Polyfork (https://polyfork.dev/asset/hay-bale-079e8c), CC BY 4.0
 - Garden Rock by Polyfork (https://polyfork.dev/asset/garden-rock-7f5d60), CC BY 4.0
+- Snow-Laden Spruce by Polyfork (https://polyfork.dev/asset/snow-laden-spruce-36716e), CC BY 4.0
+- Windblown Larch by Polyfork (https://polyfork.dev/asset/windblown-larch-abb99c), CC BY 4.0
+- Bare Mountain Rowan by Polyfork (https://polyfork.dev/asset/bare-mountain-rowan-10e72e), CC BY 4.0
+- Rock Outcrop by Polyfork (https://polyfork.dev/asset/rock-outcrop-158ac3), CC BY 4.0
+- Boulder Field Cluster by Polyfork (https://polyfork.dev/asset/boulder-field-cluster-08e364), CC BY 4.0
+- Alpine Chalet by Polyfork (https://polyfork.dev/asset/alpine-chalet-47d59e), CC BY 4.0
+- Mountain Refuge Hut by Polyfork (https://polyfork.dev/asset/mountain-refuge-hut-32ab1e), CC BY 4.0
+- Alpine Hay Barn by Polyfork (https://polyfork.dev/asset/alpine-hay-barn-3965e5), CC BY 4.0
+- Snow-Capped Log Pile by Polyfork (https://polyfork.dev/asset/snow-capped-log-pile-8719e7), CC BY 4.0
+- Scree Heap by Polyfork (https://polyfork.dev/asset/scree-heap-42cce5), CC BY 4.0
+- Piste Basher Snowcat by Polyfork (https://polyfork.dev/asset/piste-basher-snowcat-92fe8b), CC BY 4.0
+- Stone Cairn by Polyfork (https://polyfork.dev/asset/stone-cairn-a9bf48), CC BY 4.0
+- Alpine Fingerpost by Polyfork (https://polyfork.dev/asset/alpine-fingerpost-d47349), CC BY 4.0
+- Mountain Hare by Polyfork (https://polyfork.dev/asset/mountain-hare-d9c64c), CC BY 4.0
+- Alpine Ibex by Polyfork (https://polyfork.dev/asset/alpine-ibex-2a288a), CC BY 4.0
+- Saguaro Cactus by Polyfork (https://polyfork.dev/asset/saguaro-cactus-6b27eb), CC BY 4.0
+- Joshua Tree by Polyfork (https://polyfork.dev/asset/joshua-tree-867a2c), CC BY 4.0
+- Sagebrush by Polyfork (https://polyfork.dev/asset/sagebrush-700b03), CC BY 4.0
+- Creosote Bush by Polyfork (https://polyfork.dev/asset/creosote-bush-5b17d5), CC BY 4.0
+- Sandstone Outcrop by Polyfork (https://polyfork.dev/asset/sandstone-outcrop-75800b), CC BY 4.0
+- Dead Cottonwood by Polyfork (https://polyfork.dev/asset/dead-cottonwood-edbde8), CC BY 4.0
+- General Store by Polyfork (https://polyfork.dev/asset/general-store-a2187a), CC BY 4.0
+- Saloon by Polyfork (https://polyfork.dev/asset/saloon-6dda1c), CC BY 4.0
+- Mine Headframe by Polyfork (https://polyfork.dev/asset/mine-headframe-735cf4), CC BY 4.0
+- Ore Chute and Bin by Polyfork (https://polyfork.dev/asset/ore-chute-and-bin-8375ac), CC BY 4.0
+- Livery Stable by Polyfork (https://polyfork.dev/asset/livery-stable-c01ee0), CC BY 4.0
+- Plank Trough by Polyfork (https://polyfork.dev/asset/plank-trough-baf3d5), CC BY 4.0
+- Windmill Pump by Polyfork (https://polyfork.dev/asset/windmill-pump-2993a4), CC BY 4.0
+- Water Tower on a Trestle by Polyfork (https://polyfork.dev/asset/water-tower-on-a-dbc730), CC BY 4.0
+- Stagecoach by Polyfork (https://polyfork.dev/asset/stagecoach-94db88), CC BY 4.0
+- Tumbleweed by Polyfork (https://polyfork.dev/asset/tumbleweed-2caa1a), CC BY 4.0
+- Stage and Freight Office by Polyfork (https://polyfork.dev/asset/stage-and-freight-office-c5a38a), CC BY 4.0
+- Freight Crate and Sack Stack by Polyfork (https://polyfork.dev/asset/freight-crate-and-sack-f49cbb), CC BY 4.0

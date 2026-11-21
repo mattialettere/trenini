@@ -1,0 +1,252 @@
+{
+  "id": "N18",
+  "theme": "snow",
+  "name": {
+    "it": "Tre depositi",
+    "en": "Three depots"
+  },
+  "terrain": [
+    "...........",
+    "...........",
+    "..T......T.",
+    "...........",
+    "....T......",
+    "...........",
+    "T.........."
+  ],
+  "fixed": [],
+  "depots": [
+    {
+      "x": 0,
+      "y": 1,
+      "dir": 1
+    },
+    {
+      "x": 0,
+      "y": 5,
+      "dir": 1
+    },
+    {
+      "x": 5,
+      "y": 6,
+      "dir": 0
+    }
+  ],
+  "stations": [
+    {
+      "id": "north",
+      "kind": "town",
+      "x": 10,
+      "y": 1,
+      "dir": 1,
+      "accepts": [
+        "passengers"
+      ]
+    },
+    {
+      "id": "port",
+      "kind": "port",
+      "x": 10,
+      "y": 5,
+      "dir": 1,
+      "accepts": [
+        "coal"
+      ]
+    },
+    {
+      "id": "up",
+      "kind": "town",
+      "x": 5,
+      "y": 0,
+      "dir": 0,
+      "accepts": [
+        "milk"
+      ]
+    }
+  ],
+  "trains": [
+    {
+      "cargo": "passengers",
+      "wagons": 2,
+      "depart": 1,
+      "depot": 0
+    },
+    {
+      "cargo": "coal",
+      "wagons": 1,
+      "depart": 1,
+      "depot": 1
+    },
+    {
+      "cargo": "milk",
+      "wagons": 1,
+      "depart": 1,
+      "depot": 2
+    }
+  ],
+  "stock": {
+    "straight": 21,
+    "curve": 1,
+    "crossing": 2,
+    "signal": 1
+  },
+  "targets": {
+    "pieces": 22,
+    "ticks": 11
+  },
+  "solution": [
+    {
+      "kind": "crossing",
+      "a": 0,
+      "b": 2,
+      "x": 5,
+      "y": 5
+    },
+    {
+      "kind": "straight",
+      "a": 2,
+      "b": 0,
+      "x": 5,
+      "y": 4
+    },
+    {
+      "kind": "straight",
+      "a": 2,
+      "b": 0,
+      "x": 5,
+      "y": 3
+    },
+    {
+      "kind": "straight",
+      "a": 2,
+      "b": 0,
+      "x": 5,
+      "y": 2
+    },
+    {
+      "kind": "crossing",
+      "a": 0,
+      "b": 2,
+      "x": 5,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 1,
+      "y": 5
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 2,
+      "y": 5
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 3,
+      "y": 5
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 4,
+      "y": 5
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 6,
+      "y": 5
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 7,
+      "y": 5
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 8,
+      "y": 5
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 9,
+      "y": 5
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 1,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 2,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 3,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 4,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 6,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 7,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 8,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 9,
+      "y": 1
+    }
+  ],
+  "solutionSignals": [
+    {
+      "x": 5,
+      "y": 2
+    }
+  ]
+}

@@ -1,0 +1,163 @@
+{
+  "id": "N02",
+  "theme": "snow",
+  "name": {
+    "it": "Il lago ghiacciato",
+    "en": "The frozen lake"
+  },
+  "terrain": [
+    ".........",
+    "...~~~...",
+    "...~~~...",
+    "...~~~...",
+    "........."
+  ],
+  "fixed": [],
+  "depots": [
+    {
+      "x": 0,
+      "y": 2,
+      "dir": 1
+    }
+  ],
+  "stations": [
+    {
+      "id": "north",
+      "kind": "town",
+      "x": 8,
+      "y": 0,
+      "dir": 1,
+      "accepts": [
+        "passengers"
+      ]
+    },
+    {
+      "id": "south",
+      "kind": "town",
+      "x": 8,
+      "y": 4,
+      "dir": 1,
+      "accepts": [
+        "milk"
+      ]
+    }
+  ],
+  "trains": [
+    {
+      "cargo": "passengers",
+      "wagons": 1,
+      "depart": 1,
+      "depot": 0
+    },
+    {
+      "cargo": "milk",
+      "wagons": 1,
+      "depart": 3,
+      "depot": 0
+    }
+  ],
+  "stock": {
+    "straight": 11,
+    "curve": 4,
+    "switch": 1
+  },
+  "targets": {
+    "pieces": 13,
+    "ticks": 17
+  },
+  "solution": [
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 1,
+      "y": 2
+    },
+    {
+      "kind": "curve",
+      "a": 3,
+      "b": 0,
+      "x": 2,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 2,
+      "b": 0,
+      "x": 2,
+      "y": 1
+    },
+    {
+      "kind": "curve",
+      "a": 2,
+      "b": 1,
+      "x": 2,
+      "y": 0
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 3,
+      "y": 0
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 4,
+      "y": 0
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 5,
+      "y": 0
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 6,
+      "y": 0
+    },
+    {
+      "kind": "switch",
+      "a": 3,
+      "b": 1,
+      "c": 2,
+      "route": "milk",
+      "x": 7,
+      "y": 0
+    },
+    {
+      "kind": "straight",
+      "a": 0,
+      "b": 2,
+      "x": 7,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 0,
+      "b": 2,
+      "x": 7,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 0,
+      "b": 2,
+      "x": 7,
+      "y": 3
+    },
+    {
+      "kind": "curve",
+      "a": 0,
+      "b": 1,
+      "x": 7,
+      "y": 4
+    }
+  ]
+}
