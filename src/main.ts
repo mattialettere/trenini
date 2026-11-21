@@ -136,8 +136,11 @@ function placeSwitchButtons() {
 
 // --- schermate -----------------------------------------------------------------
 
+/** In questa fase di prova tutti i livelli sono aperti; a false si sbloccano uno alla volta. */
+const ALL_UNLOCKED = true;
+
 function unlocked(i: number) {
-  return i === 0 || levelSave(LEVELS[i - 1].id).stars > 0;
+  return ALL_UNLOCKED || i === 0 || levelSave(LEVELS[i - 1].id).stars > 0;
 }
 
 function showHome() {
