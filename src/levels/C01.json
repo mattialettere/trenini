@@ -1,0 +1,155 @@
+{
+  "id": "C01",
+  "theme": "coast",
+  "name": {
+    "it": "Il porticciolo",
+    "en": "The little harbour"
+  },
+  "terrain": [
+    "........",
+    "..T.....",
+    "........",
+    ".....R..",
+    "........"
+  ],
+  "fixed": [],
+  "depots": [
+    {
+      "x": 0,
+      "y": 2,
+      "dir": 1
+    }
+  ],
+  "stations": [
+    {
+      "id": "piazza",
+      "kind": "town",
+      "x": 7,
+      "y": 0,
+      "dir": 1,
+      "accepts": [
+        "passengers"
+      ]
+    },
+    {
+      "id": "porto",
+      "kind": "port",
+      "x": 7,
+      "y": 4,
+      "dir": 1,
+      "accepts": [
+        "coal"
+      ]
+    }
+  ],
+  "trains": [
+    {
+      "cargo": "passengers",
+      "wagons": 1,
+      "depart": 1,
+      "depot": 0
+    },
+    {
+      "cargo": "coal",
+      "wagons": 1,
+      "depart": 3,
+      "depot": 0
+    }
+  ],
+  "stock": {
+    "straight": 9,
+    "curve": 4,
+    "switch": 1
+  },
+  "targets": {
+    "pieces": 11,
+    "ticks": 12
+  },
+  "tutorial": [
+    {
+      "it": "Benvenuto sulla costa! Qui ogni livello ha una regola nuova: leggi bene i cartelli.",
+      "en": "Welcome to the coast! Every level here has a new rule: read the signs carefully."
+    }
+  ],
+  "solution": [
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 1,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 2,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 3,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 4,
+      "y": 2
+    },
+    {
+      "kind": "switch",
+      "a": 3,
+      "b": 1,
+      "c": 0,
+      "route": "passengers",
+      "x": 5,
+      "y": 2
+    },
+    {
+      "kind": "curve",
+      "a": 3,
+      "b": 2,
+      "x": 6,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 0,
+      "b": 2,
+      "x": 6,
+      "y": 3
+    },
+    {
+      "kind": "curve",
+      "a": 0,
+      "b": 1,
+      "x": 6,
+      "y": 4
+    },
+    {
+      "kind": "straight",
+      "a": 2,
+      "b": 0,
+      "x": 5,
+      "y": 1
+    },
+    {
+      "kind": "curve",
+      "a": 2,
+      "b": 1,
+      "x": 5,
+      "y": 0
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 6,
+      "y": 0
+    }
+  ]
+}

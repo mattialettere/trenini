@@ -668,3 +668,24 @@ button.go {
   border-radius: 10px;
   padding: 1px 6px;
 }
+
+/* Scambio a tempo: non si tocca, ha un orologio sotto. */
+.switch-btn.timed {
+  pointer-events: none;
+  width: 52px;
+  height: 52px;
+}
+.switch-btn.timed .timer {
+  position: absolute;
+  left: 50%;
+  bottom: -14px;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-size: 12px;
+  font-weight: 700;
+  background: #fffaf0;
+  border: 2px solid #e0a21b;
+  border-radius: 10px;
+  padding: 0 6px;
+  color: #3b2f25;
+}

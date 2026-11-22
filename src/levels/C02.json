@@ -1,0 +1,155 @@
+{
+  "id": "C02",
+  "theme": "coast",
+  "name": {
+    "it": "Prima i passeggeri",
+    "en": "Passengers first"
+  },
+  "terrain": [
+    "T........",
+    ".........",
+    ".........",
+    ".........",
+    "......T.."
+  ],
+  "fixed": [],
+  "depots": [
+    {
+      "x": 0,
+      "y": 1,
+      "dir": 1
+    },
+    {
+      "x": 0,
+      "y": 3,
+      "dir": 1
+    }
+  ],
+  "stations": [
+    {
+      "id": "piazza",
+      "kind": "town",
+      "x": 8,
+      "y": 2,
+      "dir": 1,
+      "accepts": [
+        "milk",
+        "passengers"
+      ],
+      "order": [
+        "passengers",
+        "milk"
+      ]
+    }
+  ],
+  "trains": [
+    {
+      "cargo": "milk",
+      "wagons": 1,
+      "depart": 1,
+      "depot": 0
+    },
+    {
+      "cargo": "passengers",
+      "wagons": 1,
+      "depart": 2,
+      "depot": 1
+    }
+  ],
+  "stock": {
+    "straight": 8,
+    "curve": 4,
+    "switch": 1,
+    "signal": 1
+  },
+  "targets": {
+    "pieces": 11,
+    "ticks": 15
+  },
+  "tutorial": [
+    {
+      "it": "I numeri sul cartello dicono l'ordine: prima i passeggeri, poi il latte. Fai aspettare il latte con un semaforo.",
+      "en": "The numbers on the sign give the order: passengers first, then milk. Make the milk wait with a signal."
+    }
+  ],
+  "solution": [
+    {
+      "kind": "switch",
+      "a": 1,
+      "b": 3,
+      "c": 0,
+      "route": "none",
+      "x": 1,
+      "y": 3
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 2,
+      "y": 3
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 3,
+      "y": 3
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 4,
+      "y": 3
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 5,
+      "y": 3
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 6,
+      "y": 3
+    },
+    {
+      "kind": "curve",
+      "a": 3,
+      "b": 0,
+      "x": 7,
+      "y": 3
+    },
+    {
+      "kind": "curve",
+      "a": 2,
+      "b": 1,
+      "x": 7,
+      "y": 2
+    },
+    {
+      "kind": "curve",
+      "a": 3,
+      "b": 2,
+      "x": 1,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 0,
+      "b": 2,
+      "x": 1,
+      "y": 2
+    }
+  ],
+  "solutionSignals": [
+    {
+      "x": 1,
+      "y": 2
+    }
+  ]
+}

@@ -229,3 +229,29 @@ export function scheduleSprite(times: number[]): THREE.Sprite {
   s.renderOrder = 10;
   return s;
 }
+
+/** Etichetta tonda con un breve testo (numeri d'ordine, capienza). */
+export function textSprite(text: string, scale = 2.2, color = '#3b2f25'): THREE.Sprite {
+  const s = new THREE.Sprite(
+    spriteMaterial(`text-${text}-${color}`, (ctx, n) => {
+      const h = n * 0.5;
+      const y0 = (n - h) / 2;
+      ctx.font = `bold ${h * 0.62}px sans-serif`;
+      const w = Math.min(n * 0.96, Math.max(h, ctx.measureText(text).width + h * 0.6));
+      ctx.fillStyle = '#fffaf0';
+      ctx.strokeStyle = color;
+      ctx.lineWidth = n * 0.035;
+      ctx.beginPath();
+      ctx.roundRect((n - w) / 2, y0, w, h, h / 2);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = color;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(text, n / 2, n / 2 + n * 0.01);
+    }),
+  );
+  s.scale.set(scale, scale, 1);
+  s.renderOrder = 10;
+  return s;
+}

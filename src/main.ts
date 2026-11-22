@@ -1,6 +1,6 @@
 import { Board, dirBetween } from './core/board';
-import { Result, SimSnapshot, Simulation, scoreRun } from './core/sim';
-import { Cell, LevelDef, StockKind, Theme } from './core/types';
+import { Result, SimSnapshot, Simulation, routeAt, scoreRun } from './core/sim';
+import { Cell, LevelDef, PlacedPiece, StockKind, Theme } from './core/types';
 import { getLang, setLang, t } from './i18n';
 import { LEVELS, WORLDS, worldOf } from './levels';
 import { BonusId, CLOCK_TICKS, SHOP, awardStars, buy, coins, owned, spend } from './economy';
@@ -115,6 +115,19 @@ function renderSwitchButtons() {
   switchLayer.innerHTML = '';
   const teach = levelSave(level.id).stars === 0;
   for (const p of board.pieces.values()) {
+    if (p.kind === 'switch' && p.timer) {
+      // Scambio a tempo: non si tocca, cambia da solo. Il cartello mostra lo stato e l'orologio.
+      const tm = p.timer;
+      const badge = h(
+        'div',
+        { class: 'switch-btn timed', 'data-x': p.x, 'data-y': p.y, 'data-timed': '1', title: t('timedSwitch', { p: tm.period, o: tm.offset }) },
+        h('img', { src: switchIconUrl(routeAt(p, 0)), alt: '' }),
+        h('span', { class: 'timer' }, `⏱ ${[0, 1, 2].map((k) => tm.offset + k * tm.period).join(' · ')} …`),
+      );
+      (badge as any).piece = p;
+      switchLayer.append(badge);
+      continue;
+    }
     if (p.kind !== 'switch' || p.fixed) continue;
     const btn = h(
       'button',
@@ -142,6 +155,12 @@ function placeSwitchButtons() {
   for (const el of switchLayer.children as HTMLCollectionOf<HTMLElement>) {
     const pos = scene.screenPos(Number(el.dataset.x), Number(el.dataset.y), 2.2);
     el.style.transform = `translate(${pos.x}px, ${pos.y}px) translate(-50%, -100%)`;
+    const piece = (el as any).piece as PlacedPiece | undefined;
+    if (piece) {
+      const img = el.querySelector('img')!;
+      const src = switchIconUrl(routeAt(piece, mode === 'build' ? 0 : (curSnap?.tick ?? 0)));
+      if (img.getAttribute('src') !== src) img.setAttribute('src', src);
+    }
   }
 }
 
@@ -737,6 +756,7 @@ function frame(now: number) {
       scene.drawTrains(prevSnap, curSnap, alpha);
       scene.drawSignals(curSnap);
       scene.drawTractors(curSnap, curSnap.tick - 1 + alpha);
+      scene.drawBroken(curSnap);
     }
   }
   scene.render(dt);

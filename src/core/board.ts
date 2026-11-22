@@ -23,6 +23,8 @@ const TERRAIN_CHARS: Record<string, Terrain> = {
   R: 'rock',
   '=': 'road',
   o: 'lot',
+  b: 'boardwalk',
+  ':': 'gap',
   ' ': 'void',
 };
 
@@ -34,6 +36,15 @@ export function dirBetween(from: Cell, to: Cell): Dir | null {
   if (dx === 0 && dy === 1) return 2;
   if (dx === -1 && dy === 0) return 3;
   return null;
+}
+
+/** I treni con `repeat` diventano più treni uguali, uno ogni `every` tick. */
+export function expandTrains(level: LevelDef): LevelDef {
+  if (!level.trains.some((t) => t.repeat)) return level;
+  const trains = level.trains.flatMap(({ repeat, ...t }) =>
+    repeat ? Array.from({ length: repeat.count }, (_, k) => ({ ...t, depart: t.depart + k * repeat.every })) : [t],
+  );
+  return { ...level, trains };
 }
 
 /** Stato della costruzione di un livello: terreno, pezzi posati e scorte. */
@@ -49,15 +60,28 @@ export class Board {
   timeBonus = 0;
   private undoStack: string[] = [];
 
-  constructor(readonly level: LevelDef) {
+  readonly level: LevelDef;
+
+  constructor(level: LevelDef) {
+    this.level = expandTrains(level);
     this.height = level.terrain.length;
     this.width = Math.max(...level.terrain.map((r) => r.length));
     for (const p of level.fixed) this.pieces.set(cellKey(p.x, p.y), { ...p, fixed: true });
     // Stazioni di carico e passaggi a livello hanno già il loro binario dritto.
-    for (const f of [...(level.pickups ?? []), ...(level.crossings ?? [])]) {
+    // Sopra l'acqua (ponte levatoio) il binario è un ponte.
+    for (const f of [...(level.pickups ?? []), ...(level.crossings ?? []), ...(level.drops ?? [])]) {
       const a: Dir = f.axis === 0 ? 0 : 3;
-      this.pieces.set(cellKey(f.x, f.y), { kind: 'straight', a, b: opposite(a), x: f.x, y: f.y, fixed: true });
+      const kind = this.terrain(f.x, f.y) === 'water' ? 'bridge' : 'straight';
+      this.pieces.set(cellKey(f.x, f.y), { kind, a, b: opposite(a), x: f.x, y: f.y, fixed: true });
     }
+  }
+
+  dropAt(x: number, y: number) {
+    return this.level.drops?.find((p) => p.x === x && p.y === y);
+  }
+
+  turntableAt(x: number, y: number) {
+    return this.level.turntables?.find((p) => p.x === x && p.y === y);
   }
 
   pickupAt(x: number, y: number) {
@@ -76,7 +100,7 @@ export class Board {
   canHoldSignal(x: number, y: number): boolean {
     const p = this.pieceAt(x, y);
     if (!p || !['straight', 'curve', 'bridge'].includes(p.kind)) return false;
-    return !this.pickupAt(x, y) && !this.levelCrossingAt(x, y);
+    return !this.pickupAt(x, y) && !this.levelCrossingAt(x, y) && !this.dropAt(x, y);
   }
 
   /** Mette o toglie un semaforo. Restituisce true se qualcosa è cambiato. */
@@ -115,8 +139,8 @@ export class Board {
   /** Si può posare un binario qui? (prato, acqua con un ponte, collina con una galleria; mai sopra un pezzo fisso). */
   buildable(x: number, y: number): boolean {
     const tr = this.terrain(x, y);
-    if (tr !== 'grass' && tr !== 'water' && tr !== 'hill') return false;
-    if (this.depotAt(x, y) || this.stationAt(x, y)) return false;
+    if (tr !== 'grass' && tr !== 'water' && tr !== 'hill' && tr !== 'boardwalk' && tr !== 'gap') return false;
+    if (this.depotAt(x, y) || this.stationAt(x, y) || this.turntableAt(x, y)) return false;
     const p = this.pieceAt(x, y);
     return !p?.fixed;
   }
@@ -129,6 +153,8 @@ export class Board {
     if (d && d.dir === side) return true;
     const s = this.stationAt(x, y);
     if (s && opposite(s.dir) === side) return true;
+    const tt = this.turntableAt(x, y);
+    if (tt && tt.side === side) return true;
     return false;
   }
 
@@ -332,10 +358,10 @@ export class Board {
     if (!this.buildable(x, y)) return false;
     const old = this.pieceAt(x, y);
     const tr = this.terrain(x, y);
-    if (tr === 'water' || tr === 'hill') {
-      // Sull'acqua e nelle colline solo binari dritti: ponti e gallerie.
+    if (tr === 'water' || tr === 'hill' || tr === 'gap') {
+      // Sull'acqua e nelle colline solo binari dritti: ponti (o viadotti sul crepaccio) e gallerie.
       if (a !== opposite(b)) return false;
-      const kind: PieceKind = tr === 'water' ? 'bridge' : 'tunnel';
+      const kind: PieceKind = tr === 'hill' ? 'tunnel' : 'bridge';
       if (old && old.kind === kind && connects(old, a)) return true;
       return this.setPiece(x, y, { kind, a, b });
     }

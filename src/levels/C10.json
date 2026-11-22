@@ -1,0 +1,139 @@
+{
+  "id": "C10",
+  "theme": "coast",
+  "name": {
+    "it": "La piattaforma girevole",
+    "en": "The turntable"
+  },
+  "terrain": [
+    "..........",
+    "..T.......",
+    "..........",
+    "......R...",
+    ".........."
+  ],
+  "fixed": [],
+  "depots": [
+    {
+      "x": 0,
+      "y": 2,
+      "dir": 1
+    }
+  ],
+  "stations": [
+    {
+      "id": "molo",
+      "kind": "port",
+      "x": 0,
+      "y": 4,
+      "dir": 3,
+      "accepts": [
+        "coal"
+      ]
+    }
+  ],
+  "trains": [
+    {
+      "cargo": "coal",
+      "wagons": 1,
+      "depart": 1,
+      "depot": 0
+    }
+  ],
+  "stock": {
+    "straight": 10,
+    "curve": 2,
+    "switch": 1
+  },
+  "targets": {
+    "pieces": 10,
+    "ticks": 21
+  },
+  "turntables": [
+    {
+      "x": 9,
+      "y": 2,
+      "side": 3
+    }
+  ],
+  "tutorial": [
+    {
+      "it": "La stazione è alle tue spalle! Vai fino alla piattaforma girevole: il treno gira e torna indietro.",
+      "en": "The station is behind you! Drive to the turntable: the train turns and comes back."
+    }
+  ],
+  "solution": [
+    {
+      "kind": "switch",
+      "a": 1,
+      "b": 3,
+      "c": 2,
+      "route": "all",
+      "x": 1,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 2,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 3,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 4,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 5,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 6,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 7,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 8,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 0,
+      "b": 2,
+      "x": 1,
+      "y": 3
+    },
+    {
+      "kind": "curve",
+      "a": 0,
+      "b": 3,
+      "x": 1,
+      "y": 4
+    }
+  ]
+}
