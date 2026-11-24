@@ -1,6 +1,6 @@
 import { Board } from './board';
 import { exitSide } from './pieces';
-import { Cargo, DX, DY, Dir, cellKey, opposite } from './types';
+import { Cargo, DX, DY, Dir, Piece, SwitchRoute, cellKey, opposite } from './types';
 
 /** Una cella occupata da un veicolo, con il lato da cui è entrato e quello da cui uscirà. */
 export interface TrackStep {
@@ -27,12 +27,35 @@ export interface TrainState {
   absorbed: number;
   /** Fermo davanti a un semaforo in questo tick. */
   held: boolean;
+  /** Vagoni da lasciare agli scarichi lungo la strada (l'ultimo è quello di coda). */
+  drops: Cargo[];
+  /** Ha girato su una piattaforma: marcia al contrario, con la locomotiva in coda. */
+  reversed: boolean;
+  /** Ha appena girato su questa piattaforma (per non girare due volte). */
+  turnedAt?: string;
   stationId?: string;
   deliveredAt?: number;
   doneAt?: number;
 }
 
-export type FailReason = 'collision' | 'derail' | 'wrong-station' | 'level-crossing' | 'timeout';
+/** Instradamento di uno scambio al tick dato: gli scambi a tempo cambiano da soli. */
+export function routeAt(p: Piece, tick: number): SwitchRoute {
+  if (!p.timer) return p.route ?? 'none';
+  if (tick < p.timer.offset) return 'none';
+  return Math.floor((tick - p.timer.offset) / p.timer.period) % 2 === 0 ? 'all' : 'none';
+}
+
+export type FailReason =
+  | 'collision'
+  | 'derail'
+  | 'wrong-station'
+  | 'level-crossing'
+  | 'drawbridge'
+  | 'wrong-order'
+  | 'station-full'
+  | 'undelivered'
+  | 'broken'
+  | 'timeout';
 
 export interface Failure {
   reason: FailReason;
@@ -49,11 +72,14 @@ export interface SimSnapshot {
     status: TrainStatus;
     cargo: Cargo | null;
     held: boolean;
+    drops: Cargo[];
     /** Veicoli visibili: indice del veicolo e cella. */
     vehicles: { v: number; step: TrackStep; inside?: boolean }[];
   }[];
   /** Per ogni passaggio a livello: tick di inizio e di fine del passaggio del trattore (fine < tick = libero). */
   tractors: { start: number; until: number }[];
+  /** Passerelle già rotte da un treno. */
+  broken: string[];
 }
 
 export type Outcome = 'running' | 'won' | 'failed';
@@ -72,13 +98,19 @@ export class Simulation {
   readonly trains: TrainState[];
   readonly maxTicks: number;
   private tractors: { start: number; until: number }[];
+  private received = new Map<string, number>();
+  /** Passerelle su cui è passato un treno (si rompono quando si liberano) e passerelle rotte. */
+  private trodden = new Set<string>();
+  readonly broken = new Set<string>();
 
   constructor(private board: Board) {
     const lvl = board.level;
     this.trains = lvl.trains.map((t, index) => ({
       index,
       cargo: t.cargo,
-      length: 1 + t.wagons,
+      length: 1 + t.wagons + (t.drops?.length ?? 0),
+      drops: [...(t.drops ?? [])],
+      reversed: false,
       status: 'waiting',
       trail: [],
       emerged: 0,
@@ -153,7 +185,7 @@ export class Simulation {
       if (!p) break;
       if (i > 0 && (p.kind === 'switch' || p.kind === 'crossing')) break;
       const pick = this.board.pickupAt(cx, cy);
-      const exit = exitSide(p, ent, pick && t.cargo === null ? pick.gives : this.routeCargo(t));
+      const exit = exitSide(this.live(p, this.tick + i), ent, pick && t.cargo === null ? pick.gives : this.routeCargo(t));
       if (exit === null) break;
       cx += DX[exit];
       cy += DY[exit];
@@ -161,6 +193,11 @@ export class Simulation {
       if (cx === x && cy === y) break;
     }
     return cells;
+  }
+
+  /** Il pezzo com'è al tick dato (gli scambi a tempo cambiano instradamento). */
+  private live(p: Piece, tick: number): Piece {
+    return p.timer ? { ...p, route: routeAt(p, tick) } : p;
   }
 
   /**
@@ -177,13 +214,15 @@ export class Simulation {
           if (t.status !== 'done' || justDone) {
             const start = Math.max(0, t.absorbed - 1);
             for (let i = start; i < t.emerged; i++) {
-              vehicles.push({ v: i, step: t.trail[i], inside: i < t.absorbed });
+              // Dopo la piattaforma girevole il primo della fila è l'ultimo vagone.
+              vehicles.push({ v: t.reversed ? t.length - 1 - i : i, step: t.trail[i], inside: i < t.absorbed });
             }
           }
         }
-        return { index: t.index, status: t.status, cargo: t.cargo, held: t.held, vehicles };
+        return { index: t.index, status: t.status, cargo: t.cargo, held: t.held, drops: [...t.drops], vehicles };
       }),
       tractors: this.tractors.map((x) => ({ ...x })),
+      broken: [...this.broken],
     };
   }
 
@@ -234,6 +273,17 @@ export class Simulation {
       }
       if (t.status !== 'running') continue;
       const head = t.trail[0];
+      // Piattaforma girevole: il treno si ferma un tick, gira e riparte all'indietro.
+      const tt = this.board.turntableAt(head.x, head.y);
+      if (tt && t.turnedAt !== cellKey(head.x, head.y) && t.emerged === t.length && t.absorbed === 0) {
+        t.trail = t.trail
+          .slice(0, t.length)
+          .reverse()
+          .map((s) => ({ x: s.x, y: s.y, entry: s.exit, exit: s.entry }));
+        t.reversed = !t.reversed;
+        t.turnedAt = cellKey(head.x, head.y);
+        continue;
+      }
       const nx = head.x + DX[head.exit];
       const ny = head.y + DY[head.exit];
       const entry = opposite(head.exit);
@@ -243,6 +293,20 @@ export class Simulation {
           this.fail('wrong-station', nx, ny, [t.index]);
           return this.outcome;
         }
+        const got = this.received.get(station.id) ?? 0;
+        const why: FailReason | null =
+          t.drops.length > 0
+            ? 'undelivered'
+            : station.capacity !== undefined && got >= station.capacity
+              ? 'station-full'
+              : station.order && station.order[got] !== t.cargo
+                ? 'wrong-order'
+                : null;
+        if (why) {
+          this.fail(why, nx, ny, [t.index]);
+          return this.outcome;
+        }
+        this.received.set(station.id, got + 1);
         t.trail.unshift({ x: nx, y: ny, entry, exit: station.dir });
         t.absorbed = 1;
         if (t.emerged < t.length) t.emerged++;
@@ -263,17 +327,40 @@ export class Simulation {
           continue;
         }
       }
+      const turn = this.board.turntableAt(nx, ny);
+      if (turn) {
+        // Si entra solo dal lato aperto; il treno si ferma al centro.
+        if (turn.side !== entry) {
+          this.fail('derail', nx, ny, [t.index]);
+          return this.outcome;
+        }
+        t.trail.unshift({ x: nx, y: ny, entry, exit: opposite(entry) });
+        if (t.emerged < t.length) t.emerged++;
+        if (t.trail.length > t.length + 1) t.trail.length = t.length + 1;
+        continue;
+      }
       const piece = this.board.pieceAt(nx, ny);
       const pickup = this.board.pickupAt(nx, ny);
       if (pickup && t.cargo === null) t.cargo = pickup.gives;
-      const exit = piece ? exitSide(piece, entry, this.routeCargo(t)) : null;
+      const exit = piece ? exitSide(this.live(piece, this.tick), entry, this.routeCargo(t)) : null;
       if (exit === null) {
         this.fail('derail', nx, ny, [t.index]);
         return this.outcome;
       }
       if (this.tractorOn(nx, ny)) {
-        this.fail('level-crossing', nx, ny, [t.index]);
+        this.fail(this.board.levelCrossingAt(nx, ny)?.kind === 'boat' ? 'drawbridge' : 'level-crossing', nx, ny, [t.index]);
         return this.outcome;
+      }
+      if (this.broken.has(cellKey(nx, ny))) {
+        this.fail('broken', nx, ny, [t.index]);
+        return this.outcome;
+      }
+      // Scarico: se il vagone di coda porta questa merce, resta qui e il treno si accorcia.
+      const drop = this.board.dropAt(nx, ny);
+      if (drop && !t.reversed && t.drops[t.drops.length - 1] === drop.takes) {
+        t.drops.pop();
+        t.length--;
+        if (t.emerged > t.length) t.emerged = t.length;
       }
       t.trail.unshift({ x: nx, y: ny, entry, exit });
       if (t.emerged < t.length) t.emerged++;
@@ -304,6 +391,19 @@ export class Simulation {
           return this.outcome;
         }
       }
+    }
+
+    // Passerelle: reggono un solo passaggio, si rompono appena il treno è passato.
+    const now = new Set<string>();
+    for (const t of this.trains) for (const s of this.occupied(t)) now.add(cellKey(s.x, s.y));
+    for (const k of now) {
+      const [x, y] = k.split(',').map(Number);
+      if (this.board.terrain(x, y) === 'boardwalk') this.trodden.add(k);
+    }
+    for (const k of [...this.trodden]) {
+      if (now.has(k)) continue;
+      this.trodden.delete(k);
+      this.broken.add(k);
     }
 
     if (this.trains.every((t) => t.status === 'done')) this.outcome = 'won';

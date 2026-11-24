@@ -103,3 +103,21 @@ Le curve e gli scambi sono una modifica del modello Straight Track (piegato in c
 - Tumbleweed by Polyfork (https://polyfork.dev/asset/tumbleweed-2caa1a), CC BY 4.0
 - Stage and Freight Office by Polyfork (https://polyfork.dev/asset/stage-and-freight-office-c5a38a), CC BY 4.0
 - Freight Crate and Sack Stack by Polyfork (https://polyfork.dev/asset/freight-crate-and-sack-f49cbb), CC BY 4.0
+- Olive Tree by Polyfork (https://polyfork.dev/asset/olive-tree-3cb4a4), CC BY 4.0
+- Tamarisk Bush by Polyfork (https://polyfork.dev/asset/tamarisk-bush-ba4337), CC BY 4.0
+- Prickly Pear Cactus by Polyfork (https://polyfork.dev/asset/prickly-pear-cactus-57e065), CC BY 4.0
+- Rock Armour Revetment by Polyfork (https://polyfork.dev/asset/rock-armour-revetment-aea1ca), CC BY 4.0
+- Beach Parasol by Polyfork (https://polyfork.dev/asset/beach-parasol-fd4530), CC BY 4.0
+- Lobster Pot Stack by Polyfork (https://polyfork.dev/asset/lobster-pot-stack-d870f0), CC BY 4.0
+- Driftwood Log by Polyfork (https://polyfork.dev/asset/driftwood-log-89a68f), CC BY 4.0
+- Marram Grass Tuft by Polyfork (https://polyfork.dev/asset/marram-grass-tuft-8c7a99), CC BY 4.0
+- Cube House Module by Polyfork (https://polyfork.dev/asset/cube-house-module-a9b8e8), CC BY 4.0
+- Pack Donkey by Polyfork (https://polyfork.dev/asset/pack-donkey-c69029), CC BY 4.0
+- Net Pile by Polyfork (https://polyfork.dev/asset/net-pile-0bd489), CC BY 4.0
+- Three-Wheeled Delivery Mini Truck by Polyfork (https://polyfork.dev/asset/three-wheeled-delivery-mini-744094), CC BY 4.0
+- Sailboat by Polyfork (https://polyfork.dev/asset/sailboat-3ee283), CC BY 4.0
+- Old Lighthouse by Polyfork (https://polyfork.dev/asset/old-lighthouse-48ca6c), CC BY 4.0
+- Boardwalk Deck Run by Polyfork (https://polyfork.dev/asset/boardwalk-deck-run-c1f678), CC BY 4.0
+- Fish Crate by Polyfork (https://polyfork.dev/asset/fish-crate-3c3f7b), CC BY 4.0
+- Boat Shed by Polyfork (https://polyfork.dev/asset/boat-shed-74c94f), CC BY 4.0
+- Beach Hut by Polyfork (https://polyfork.dev/asset/beach-hut-fc7649), CC BY 4.0

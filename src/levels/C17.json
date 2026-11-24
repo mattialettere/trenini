@@ -1,0 +1,234 @@
+{
+  "id": "C17",
+  "theme": "coast",
+  "name": {
+    "it": "Il viadotto lungo",
+    "en": "The long viaduct"
+  },
+  "terrain": [
+    "....:::....",
+    "....:::....",
+    "..T.:::....",
+    "....:::....",
+    "....:::....",
+    "....:::..R."
+  ],
+  "fixed": [],
+  "depots": [
+    {
+      "x": 0,
+      "y": 1,
+      "dir": 1
+    },
+    {
+      "x": 0,
+      "y": 4,
+      "dir": 1
+    }
+  ],
+  "stations": [
+    {
+      "id": "piazza",
+      "kind": "town",
+      "x": 10,
+      "y": 0,
+      "dir": 1,
+      "accepts": [
+        "passengers"
+      ]
+    },
+    {
+      "id": "porto",
+      "kind": "port",
+      "x": 10,
+      "y": 4,
+      "dir": 1,
+      "accepts": [
+        "coal"
+      ]
+    }
+  ],
+  "trains": [
+    {
+      "cargo": "passengers",
+      "wagons": 3,
+      "depart": 1,
+      "depot": 0
+    },
+    {
+      "cargo": "coal",
+      "wagons": 3,
+      "depart": 1,
+      "depot": 1
+    },
+    {
+      "cargo": "passengers",
+      "wagons": 1,
+      "depart": 6,
+      "depot": 1
+    }
+  ],
+  "stock": {
+    "straight": 13,
+    "curve": 3,
+    "switch": 2,
+    "bridge": 6
+  },
+  "targets": {
+    "pieces": 21,
+    "ticks": 20
+  },
+  "solution": [
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 1,
+      "y": 4
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 2,
+      "y": 4
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 3,
+      "y": 4
+    },
+    {
+      "kind": "bridge",
+      "a": 3,
+      "b": 1,
+      "x": 4,
+      "y": 4
+    },
+    {
+      "kind": "bridge",
+      "a": 3,
+      "b": 1,
+      "x": 5,
+      "y": 4
+    },
+    {
+      "kind": "bridge",
+      "a": 3,
+      "b": 1,
+      "x": 6,
+      "y": 4
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 7,
+      "y": 4
+    },
+    {
+      "kind": "switch",
+      "a": 3,
+      "b": 1,
+      "c": 0,
+      "route": "passengers",
+      "x": 8,
+      "y": 4
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 9,
+      "y": 4
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 1,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 2,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 3,
+      "y": 1
+    },
+    {
+      "kind": "bridge",
+      "a": 3,
+      "b": 1,
+      "x": 4,
+      "y": 1
+    },
+    {
+      "kind": "bridge",
+      "a": 3,
+      "b": 1,
+      "x": 5,
+      "y": 1
+    },
+    {
+      "kind": "bridge",
+      "a": 3,
+      "b": 1,
+      "x": 6,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 7,
+      "y": 1
+    },
+    {
+      "kind": "switch",
+      "a": 1,
+      "b": 3,
+      "c": 2,
+      "route": "none",
+      "x": 8,
+      "y": 1
+    },
+    {
+      "kind": "curve",
+      "a": 3,
+      "b": 0,
+      "x": 9,
+      "y": 1
+    },
+    {
+      "kind": "curve",
+      "a": 2,
+      "b": 1,
+      "x": 9,
+      "y": 0
+    },
+    {
+      "kind": "straight",
+      "a": 2,
+      "b": 0,
+      "x": 8,
+      "y": 3
+    },
+    {
+      "kind": "straight",
+      "a": 2,
+      "b": 0,
+      "x": 8,
+      "y": 2
+    }
+  ]
+}

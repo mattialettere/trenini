@@ -1,0 +1,155 @@
+{
+  "id": "C06",
+  "theme": "coast",
+  "name": {
+    "it": "Lo scambio col timer",
+    "en": "The timed switch"
+  },
+  "terrain": [
+    ".........",
+    ".........",
+    ".........",
+    ".........",
+    "..T......"
+  ],
+  "fixed": [
+    {
+      "x": 4,
+      "y": 2,
+      "kind": "switch",
+      "a": 3,
+      "b": 1,
+      "c": 0,
+      "route": "none",
+      "timer": {
+        "period": 4,
+        "offset": 6
+      }
+    }
+  ],
+  "depots": [
+    {
+      "x": 0,
+      "y": 2,
+      "dir": 1
+    }
+  ],
+  "stations": [
+    {
+      "id": "faro",
+      "kind": "town",
+      "x": 4,
+      "y": 0,
+      "dir": 0,
+      "accepts": [
+        "passengers"
+      ]
+    },
+    {
+      "id": "porto",
+      "kind": "port",
+      "x": 8,
+      "y": 2,
+      "dir": 1,
+      "accepts": [
+        "coal"
+      ]
+    }
+  ],
+  "trains": [
+    {
+      "cargo": "passengers",
+      "wagons": 1,
+      "depart": 2,
+      "depot": 0
+    },
+    {
+      "cargo": "coal",
+      "wagons": 1,
+      "depart": 4,
+      "depot": 0
+    }
+  ],
+  "stock": {
+    "straight": 6,
+    "curve": 5,
+    "switch": 1
+  },
+  "targets": {
+    "pieces": 9,
+    "ticks": 14
+  },
+  "tutorial": [
+    {
+      "it": "Questo scambio non si tocca: cambia da solo agli orari scritti sotto. Se il momento è sbagliato, fai un'altra strada.",
+      "en": "You can't touch this switch: it flips by itself at the times written below. If the timing is wrong, take another route."
+    }
+  ],
+  "solution": [
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 1,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 2,
+      "y": 2
+    },
+    {
+      "kind": "curve",
+      "a": 3,
+      "b": 0,
+      "x": 3,
+      "y": 2
+    },
+    {
+      "kind": "curve",
+      "a": 2,
+      "b": 1,
+      "x": 3,
+      "y": 1
+    },
+    {
+      "kind": "switch",
+      "a": 3,
+      "b": 1,
+      "c": 0,
+      "route": "passengers",
+      "x": 4,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 5,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 6,
+      "y": 1
+    },
+    {
+      "kind": "curve",
+      "a": 3,
+      "b": 2,
+      "x": 7,
+      "y": 1
+    },
+    {
+      "kind": "curve",
+      "a": 0,
+      "b": 1,
+      "x": 7,
+      "y": 2
+    }
+  ]
+}

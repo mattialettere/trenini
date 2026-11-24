@@ -19,6 +19,26 @@ import l17 from './17.json';
 import l18 from './18.json';
 import l19 from './19.json';
 import l20 from './20.json';
+import lC01 from './C01.json';
+import lC02 from './C02.json';
+import lC03 from './C03.json';
+import lC04 from './C04.json';
+import lC05 from './C05.json';
+import lC06 from './C06.json';
+import lC07 from './C07.json';
+import lC08 from './C08.json';
+import lC09 from './C09.json';
+import lC10 from './C10.json';
+import lC11 from './C11.json';
+import lC12 from './C12.json';
+import lC13 from './C13.json';
+import lC14 from './C14.json';
+import lC15 from './C15.json';
+import lC16 from './C16.json';
+import lC17 from './C17.json';
+import lC18 from './C18.json';
+import lC19 from './C19.json';
+import lC20 from './C20.json';
 import lD01 from './D01.json';
 import lD02 from './D02.json';
 import lD03 from './D03.json';
@@ -62,14 +82,15 @@ import lN20 from './N20.json';
 
 const L = (list: unknown[]) => list as LevelDef[];
 
-/** I tre mondi, ognuno con i suoi livelli in ordine di difficoltà. */
+/** I mondi, ognuno con i suoi livelli in ordine di difficoltà. */
 export const WORLDS: { id: Theme; levels: LevelDef[] }[] = [
   { id: 'country', levels: L([l01, l02, l03, l04, l05, l06, l07, l08, l09, l10, l11, l12, l13, l14, l15, l16, l17, l18, l19, l20]) },
   { id: 'snow', levels: L([lN01, lN02, lN03, lN04, lN05, lN06, lN07, lN08, lN09, lN10, lN11, lN12, lN13, lN14, lN15, lN16, lN17, lN18, lN19, lN20]) },
   { id: 'desert', levels: L([lD01, lD02, lD03, lD04, lD05, lD06, lD07, lD08, lD09, lD10, lD11, lD12, lD13, lD14, lD15, lD16, lD17, lD18, lD19, lD20]) },
+  { id: 'coast', levels: L([lC01, lC02, lC03, lC04, lC05, lC06, lC07, lC08, lC09, lC10, lC11, lC12, lC13, lC14, lC15, lC16, lC17, lC18, lC19, lC20]) },
 ];
 
-/** Tutti i livelli in fila: prima la campagna, poi la neve, poi il deserto. */
+/** Tutti i livelli in fila: un mondo dopo l'altro. */
 export const LEVELS: LevelDef[] = WORLDS.flatMap((w) => w.levels);
 
 export const worldOf = (l: LevelDef): Theme => l.theme ?? 'country';

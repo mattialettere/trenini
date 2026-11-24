@@ -1,9 +1,9 @@
 import * as THREE from 'three';
 import { Board } from '../core/board';
 import type { SimSnapshot, TrackStep } from '../core/sim';
-import { Cargo, Cell, DX, DY, Dir, Piece, Theme, TrainDef, opposite } from '../core/types';
+import { Cargo, Cell, DX, DY, Dir, DropDef, LevelCrossingDef, Piece, Theme, TrainDef, TurntableDef, cellKey, opposite } from '../core/types';
 import { ModelGeo, bendTrack, centered, loadModel } from './assets';
-import { cargoSprite, emptySprite, lightSprite, markerSprite, scheduleSprite } from './icons';
+import { cargoSprite, emptySprite, lightSprite, markerSprite, scheduleSprite, textSprite } from './icons';
 
 /** Lato di una cella in metri: quanto il binario dritto Polyfork. */
 export const CELL = 4;
@@ -47,6 +47,14 @@ const X = {
   excavator: 'tracked-excavator-8ebd3c',
   firewood: 'firewood-stack-810f49',
   stump: 'log-stump-1d65a5',
+  viaduct: 'stone-viaduct-span-0bd731',
+  turntable: 'turntable-6415d2',
+  deck: 'boardwalk-deck-run-c1f678',
+  sailboat: 'sailboat-3ee283',
+  lighthouse: 'old-lighthouse-48ca6c',
+  boatShed: 'boat-shed-74c94f',
+  fishCrate: 'fish-crate-3c3f7b',
+  lobster: 'lobster-pot-stack-d870f0',
 } as const;
 
 
@@ -149,6 +157,27 @@ const THEMES: Record<Theme, ThemeDef> = {
     vehicle: { id: 'stagecoach-94db88', scale: 0.75 },
     port: 'freight',
   },
+  coast: {
+    sky: 0xbfe8f0,
+    colors: pal({
+      grass: '#a9b56a', grassDark: '#9eaa60', margin: '#e8d5a5', soil: '#c9a46a', soilDark: '#a8834f',
+      rock: '#9a9488', rockDark: '#7d776c', water: '#3fb3c9', waterDeep: '#2fa0b8', fall: '#9fe0ee',
+      lot: '#e0cfa0', hill: '#a6b064', hillDark: '#97a058',
+    }),
+    trees: [{ id: 'olive-tree-3cb4a4', scale: 0.62 }, { id: 'tamarisk-bush-ba4337', scale: 1.3 }, { id: 'prickly-pear-cactus-57e065', scale: 1.1 }],
+    rock: { id: 'rock-armour-revetment-aea1ca', scale: 0.8 },
+    scatter: [{ id: 'beach-parasol-fd4530', scale: 1 }, { id: 'driftwood-log-89a68f', scale: 1 }, { id: 'marram-grass-tuft-8c7a99', scale: 1.4 }, { id: 'beach-hut-fc7649', scale: 0.55 }],
+    town: { id: 'cube-house-module-a9b8e8', scale: 0.62 },
+    barn: { id: 'beach-hut-fc7649', scale: 0.6 },
+    silo: null,
+    hay: { id: 'pack-donkey-c69029', scale: 1.2 },
+    spoil: { id: 'net-pile-0bd489', scale: 1 },
+    digger: { id: 'tracked-excavator-8ebd3c', scale: 0.36 },
+    logs: { id: 'driftwood-log-89a68f', scale: 1.1 },
+    stump: { id: 'lobster-pot-stack-d870f0', scale: 1.4 },
+    vehicle: { id: 'three-wheeled-delivery-mini-744094', scale: 0.9 },
+    port: 'harbour',
+  },
 };
 
 const FREIGHT = { office: 'stage-and-freight-office-c5a38a', crates: 'freight-crate-and-sack-f49cbb' };
@@ -175,8 +204,16 @@ export function modelsFor(board: Board): string[] {
   const has = (tr: string) => lvl.terrain.some((r) => r.includes(tr));
   if (has('~') || (lvl.stock.bridge ?? 0) > 0) ids.add(X.bridge);
   if (has('^')) ids.add(X.portal);
-  if (has('=') || (lvl.crossings ?? []).length > 0) ids.add(X.lane);
-  if ((lvl.crossings ?? []).length > 0) ids.add(X.levelCrossing).add(th.vehicle.id);
+  if (has('=')) ids.add(X.lane);
+  const crossings = lvl.crossings ?? [];
+  if (crossings.some((c) => c.kind !== 'boat')) ids.add(X.levelCrossing).add(th.vehicle.id).add(X.lane);
+  if (crossings.some((c) => c.kind === 'boat')) ids.add(X.sailboat).add(X.bridge);
+  if (has(':')) ids.add(X.viaduct);
+  if (has('b')) ids.add(X.deck);
+  if ((lvl.turntables ?? []).length) ids.add(X.turntable).add(M.buffer);
+  if ((lvl.drops ?? []).length) ids.add(X.boatShed).add(X.fishCrate).add(X.lobster);
+  for (const t of lvl.trains) for (const c of t.drops ?? []) ids.add(WAGON_MODEL[c]);
+  if (lvl.theme === 'coast') ids.add(X.lighthouse);
   ids.add(X.signal); // anche per il bonus semaforo extra
   for (const p of lvl.pickups ?? []) {
     if (p.kind === 'farm') [th.barn, th.silo, th.hay].forEach((q) => q && ids.add(q.id)), ids.add(X.churns);
@@ -231,7 +268,10 @@ export class GameScene {
   private tagCargo: (Cargo | null | undefined)[] = [];
   private signalGroup = new THREE.Group();
   private signalLights = new Map<string, THREE.Sprite>();
-  private tractors: { mesh: THREE.Mesh; center: THREE.Vector3; road: THREE.Vector3; offset: number; period: number }[] = [];
+  private tractors: { mesh: THREE.Mesh; center: THREE.Vector3; road: THREE.Vector3; offset: number; period: number; lift?: string }[] = [];
+  private turntables: { mesh: THREE.Mesh; key: string; base: number }[] = [];
+  /** Meshes dei binari per cella, per sollevare i ponti levatoi e far cedere le passerelle. */
+  private cellMeshes = new Map<string, THREE.Mesh[]>();
   private sun: THREE.DirectionalLight;
 
   // Camera isometrica: angolo a scatti di 90 gradi, zoom e spostamento.
@@ -326,6 +366,7 @@ export class GameScene {
     this.cargoTags = [];
     this.tagCargo = [];
     this.tractors = [];
+    this.turntables = [];
     this.buildIsland();
     this.buildFeatures();
     this.updateTracks();
@@ -351,8 +392,9 @@ export class GameScene {
       for (let i = 0; i < 6; i++) col.push(c.r, c.g, c.b);
     };
     // Acqua: le celle '~' e, sul bordo, la cella di margine subito fuori (il fiume esce dall'isola).
+    // Le passerelle di legno stanno sopra il mare: sotto si disegna l'acqua.
     const isWater = (cx: number, cy: number): boolean => {
-      if (b.terrain(cx, cy) === 'water') return true;
+      if (b.terrain(cx, cy) === 'water' || b.terrain(cx, cy) === 'boardwalk') return true;
       if (b.inside(cx, cy)) return false;
       const inX = cx >= 0 && cx < b.width;
       const inY = cy >= 0 && cy < b.height;
@@ -362,6 +404,20 @@ export class GameScene {
       if (inY && cx === b.width) return b.terrain(b.width - 1, cy) === 'water';
       return false;
     };
+    // Crepaccio tra due isole: le celle ':' e il loro prolungamento sul bordo.
+    const isGap = (cx: number, cy: number): boolean => {
+      if (b.terrain(cx, cy) === 'gap') return true;
+      if (b.inside(cx, cy)) return false;
+      const inX = cx >= 0 && cx < b.width;
+      const inY = cy >= 0 && cy < b.height;
+      if (inX && cy === -1) return b.terrain(cx, 0) === 'gap';
+      if (inX && cy === b.height) return b.terrain(cx, b.height - 1) === 'gap';
+      if (inY && cx === -1) return b.terrain(0, cy) === 'gap';
+      if (inY && cx === b.width) return b.terrain(b.width - 1, cy) === 'gap';
+      return false;
+    };
+    const GAP_Y = -9;
+    const gapFloor: number[] = [];
     const WATER_Y = -0.55;
     const wall = (ax: number, az: number, bx: number, bz: number, y1: number, y2: number, c: THREE.Color) => {
       // Due facce, così si vede da entrambi i lati.
@@ -377,6 +433,25 @@ export class GameScene {
         const tr = b.terrain(cx, cy);
         const ax = x0 + gx * CELL;
         const az = z0 + gy * CELL;
+        if (isGap(cx, cy)) {
+          // Niente terreno: pareti di roccia giù fino al fondo, che ha il colore del cielo.
+          gapFloor.push(ax, GAP_Y, az, ax, GAP_Y, az + CELL, ax + CELL, GAP_Y, az + CELL, ax, GAP_Y, az, ax + CELL, GAP_Y, az + CELL, ax + CELL, GAP_Y, az);
+          for (const d of [0, 1, 2, 3] as Dir[]) {
+            const nx = cx + DX[d];
+            const ny = cy + DY[d];
+            const outside = nx < -MARGIN || ny < -MARGIN || nx >= b.width + MARGIN || ny >= b.height + MARGIN;
+            if (outside || isGap(nx, ny)) continue;
+            const e = [
+              [ax, az, ax + CELL, az],
+              [ax + CELL, az, ax + CELL, az + CELL],
+              [ax, az + CELL, ax + CELL, az + CELL],
+              [ax, az, ax, az + CELL],
+            ][d];
+            wall(e[0], e[1], e[2], e[3], 0, -1.2, this.th.colors.soil);
+            wall(e[0], e[1], e[2], e[3], -1.2, GAP_Y, (cx + cy + d) % 2 ? this.th.colors.rock : this.th.colors.rockDark);
+          }
+          continue;
+        }
         if (isWater(cx, cy)) {
           const c = ((cx + cy) % 2 === 0 ? this.th.colors.water : this.th.colors.waterDeep).clone();
           quad(ax, az, ax + CELL, az + CELL, WATER_Y, c);
@@ -407,6 +482,7 @@ export class GameScene {
         let c: THREE.Color;
         if (!inGrid) c = this.th.colors.margin.clone();
         else if (tr === 'lot') c = this.th.colors.lot.clone();
+        else if (tr === 'boardwalk') c = this.th.colors.margin.clone();
         else c = ((cx + cy) % 2 === 0 ? this.th.colors.grass : this.th.colors.grassDark).clone();
         c.offsetHSL(0, 0, (rand() - 0.5) * 0.02);
         quad(ax, az, ax + CELL, az + CELL, 0, c);
@@ -417,6 +493,11 @@ export class GameScene {
     top.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
     top.computeVertexNormals();
     this.levelGroup.add(this.mesh(top, false, true));
+    if (gapFloor.length) {
+      const g = new THREE.BufferGeometry();
+      g.setAttribute('position', new THREE.Float32BufferAttribute(gapFloor, 3));
+      this.levelGroup.add(new THREE.Mesh(g, new THREE.MeshBasicMaterial({ color: this.th.sky })));
+    }
 
     // Fianchi di terra e roccia sotto l'isola, a punta, irregolari.
     const ring = (inset: number, y: number, jitter: number) => {
@@ -504,6 +585,16 @@ export class GameScene {
           if (!b.levelCrossingAt(x, y)) this.addRoad(x, y);
           continue;
         }
+        if (tr === 'boardwalk') {
+          // Passerella di legno: il binario ci passa sopra, ma regge un solo treno.
+          const deck = this.mesh(this.geo(X.deck), false, true);
+          const sz = new THREE.Vector3();
+          this.models.get(X.deck)!.box.getSize(sz);
+          deck.scale.set(CELL / sz.x, 0.6, CELL / sz.z);
+          deck.position.copy(this.cellCenter(x, y)).setY(-sz.y * 0.6 + 0.1);
+          this.levelGroup.add(deck);
+          continue;
+        }
         if (tr !== 'tree') continue;
         const tp = this.th.trees[Math.floor(rand() * this.th.trees.length)];
         const t = this.prop(tp.id, null, tp.scale * (0.9 + rand() * 0.2));
@@ -521,7 +612,7 @@ export class GameScene {
     }
     for (let gy = -MARGIN; gy < b.height + MARGIN; gy++) {
       for (let gx = -MARGIN; gx < b.width + MARGIN; gx++) {
-        if (b.inside(gx, gy) || reserved.has(`${gx},${gy}`) || isWater(gx, gy)) continue;
+        if (b.inside(gx, gy) || reserved.has(`${gx},${gy}`) || isWater(gx, gy) || isGap(gx, gy)) continue;
         const r = rand();
         if (r > 0.45) continue;
         const pick = r < 0.32 ? this.th.trees[Math.floor((r / 0.32) * this.th.trees.length)] : this.th.scatter[Math.floor(((r - 0.32) / 0.13) * this.th.scatter.length) % this.th.scatter.length];
@@ -624,16 +715,37 @@ export class GameScene {
         this.levelGroup.add(bld);
       }
       const tag = new THREE.Group();
-      s.accepts.forEach((cg, i) => {
+      // Con un ordine di arrivo si vede la fila delle merci numerate, altrimenti cosa accetta.
+      const list = s.order ?? s.accepts;
+      list.forEach((cg, i) => {
         const sp = cargoSprite(cg, 2.2);
-        sp.position.set((i - (s.accepts.length - 1) / 2) * 2.4, 0, 0);
+        sp.position.set((i - (list.length - 1) / 2) * 2.4, 0, 0);
         tag.add(sp);
+        if (s.order) {
+          const n = textSprite(String(i + 1), 1.3);
+          n.position.set((i - (list.length - 1) / 2) * 2.4 + 0.8, -0.9, 0);
+          tag.add(n);
+        }
       });
+      if (s.capacity !== undefined) {
+        const cap = textSprite(`max ${s.capacity}`, 2.6, '#c2492b');
+        cap.position.set(0, 1.7, 0);
+        tag.add(cap);
+      }
       tag.position.copy(c).add(new THREE.Vector3(0, 6.5, 0)).addScaledVector(fwd, CELL * 0.6);
       this.levelGroup.add(tag);
     }
     for (const pk of b.level.pickups ?? []) this.buildPickup(pk);
     for (const lc of b.level.crossings ?? []) this.buildLevelCrossing(lc);
+    for (const d of b.level.drops ?? []) this.buildDrop(d);
+    for (const t of b.level.turntables ?? []) this.buildTurntable(t);
+    if (b.level.theme === 'coast') {
+      // Un faro su un angolo dell'isola.
+      const lh = this.prop(X.lighthouse, null, 0.42);
+      lh.position.copy(this.cellCenter(b.width, -1));
+      lh.rotation.y = -0.6;
+      this.levelGroup.add(lh);
+    }
     for (const d of b.level.decorations ?? []) {
       const p = this.prop(d.model, null, d.scale ?? 1);
       p.position.copy(this.cellCenter(d.x, d.y));
@@ -653,13 +765,19 @@ export class GameScene {
       const p = b.pieceAt(x, y);
       if (p) this.addSignal(p);
     }
+    this.cellMeshes.clear();
     for (const p of b.pieces.values()) {
-      if (b.levelCrossingAt(p.x, p.y)) continue; // il modello del passaggio a livello ha già i binari
+      const lc = b.levelCrossingAt(p.x, p.y);
+      if (lc && lc.kind !== 'boat') continue; // il modello del passaggio a livello ha già i binari
       const c = this.cellCenter(p.x, p.y);
+      const list: THREE.Mesh[] = [];
       for (const mesh of this.pieceMeshes(p)) {
         mesh.position.add(c);
+        mesh.userData.y = mesh.position.y;
         this.trackGroup.add(mesh);
+        list.push(mesh);
       }
+      this.cellMeshes.set(cellKey(p.x, p.y), list);
     }
   }
 
@@ -686,6 +804,18 @@ export class GameScene {
       case 'straight':
         return [straight(p.a)];
       case 'bridge': {
+        if (this.board!.terrain(p.x, p.y) === 'gap') {
+          // Viadotto di pietra sul crepaccio.
+          const v = this.mesh(this.geo(X.viaduct, false), true, true);
+          const sz = new THREE.Vector3();
+          this.models.get(X.viaduct)!.box.getSize(sz);
+          v.scale.set(0.62, 0.8, CELL / sz.z);
+          v.position.y = -sz.y * 0.8 - 0.02;
+          v.rotation.y = yawFor(p.a);
+          const t = straight(p.a);
+          t.position.y = 0.02;
+          return [v, t];
+        }
         const deck = this.mesh(this.geo(X.bridge), true, true);
         deck.scale.set(0.62, 0.55, CELL / 12);
         deck.rotation.y = yawFor(p.a);
@@ -852,8 +982,64 @@ export class GameScene {
     this.levelGroup.add(tag);
   }
 
-  private buildLevelCrossing(lc: { x: number; y: number; axis: 0 | 1; period: number; offset: number; duration: number }) {
+  /** Scarico: capanno e casse sul cortile accanto al binario, con la merce che prende. */
+  private buildDrop(d: DropDef) {
+    const b = this.board!;
+    const c = this.cellCenter(d.x, d.y);
+    const sides = d.axis === 0 ? ([1, 3] as Dir[]) : ([2, 0] as Dir[]);
+    const lot = sides.find((s) => b.terrain(d.x + DX[s], d.y + DY[s]) === 'lot') ?? sides[0];
+    const lc = this.cellCenter(d.x + DX[lot], d.y + DY[lot]);
+    const shed = this.prop(X.boatShed, null, 0.42);
+    shed.position.copy(lc);
+    shed.rotation.y = yawFor(opposite(lot));
+    this.levelGroup.add(shed);
+    const along = d.axis === 0 ? new THREE.Vector3(0, 0, 1) : new THREE.Vector3(1, 0, 0);
+    for (const k of [-1, 1]) {
+      const cr = this.prop(X.fishCrate, null, 2.2);
+      cr.position.copy(c).addScaledVector(DIR_VEC(lot), 1.6).addScaledVector(along, k * 1.1);
+      cr.rotation.y = k * 0.4;
+      this.levelGroup.add(cr);
+    }
+    const pots = this.prop(X.lobster, null, 1.3);
+    pots.position.copy(c).addScaledVector(DIR_VEC(opposite(lot)), 1.6);
+    this.levelGroup.add(pots);
+    const tag = new THREE.Group();
+    const arrow = textSprite('↓', 1.4);
+    arrow.position.set(0, -1.6, 0);
+    tag.add(cargoSprite(d.takes, 2.2), arrow);
+    tag.position.copy(c).add(new THREE.Vector3(0, 6.5, 0));
+    this.levelGroup.add(tag);
+  }
+
+  /** Piattaforma girevole in fondo al binario morto. */
+  private buildTurntable(t: TurntableDef) {
+    const c = this.cellCenter(t.x, t.y);
+    const plate = this.prop(X.turntable, CELL * 0.98);
+    plate.position.copy(c);
+    this.levelGroup.add(plate);
+    const track = this.mesh(this.straightGeo!, false, true);
+    track.position.copy(c).setY(0.12);
+    track.rotation.y = yawFor(t.side);
+    this.levelGroup.add(track);
+    this.turntables.push({ mesh: track, key: cellKey(t.x, t.y), base: yawFor(t.side) });
+  }
+
+  private buildLevelCrossing(lc: LevelCrossingDef) {
     const c = this.cellCenter(lc.x, lc.y);
+    if (lc.kind === 'boat') {
+      // Ponte levatoio: la barca a vela passa sull'acqua e il ponte si solleva.
+      const water = lc.axis === 0 ? new THREE.Vector3(1, 0, 0) : new THREE.Vector3(0, 0, 1);
+      const boat = this.prop(X.sailboat, null, 11);
+      boat.position.y = -0.55;
+      this.levelGroup.add(boat);
+      this.tractors.push({ mesh: boat, center: c.clone().setY(-0.55), road: water, offset: lc.offset, period: lc.period, lift: cellKey(lc.x, lc.y) });
+      const times = [0, 1, 2].map((k) => lc.offset + k * lc.period);
+      const sign = scheduleSprite(times);
+      sign.position.copy(c).addScaledVector(water, CELL * 1.1).add(new THREE.Vector3(0, 4.5, 0));
+      this.levelGroup.add(sign);
+      this.drawTractors(null, 0);
+      return;
+    }
     const m = this.mesh(this.geo(X.levelCrossing), false, true);
     m.scale.set(CELL / 12, 1, 1);
     // Il modello ha la strada lungo x e i binari lungo z.
@@ -898,7 +1084,7 @@ export class GameScene {
     if (this.vehicles.length > 0) return;
     for (const t of snap.trains) {
       const def = b.level.trains[t.index];
-      const ids = [M.loco, ...Array.from({ length: def.wagons }, () => WAGON_MODEL[wagonOf(def)])];
+      const ids = [M.loco, ...Array.from({ length: def.wagons }, () => WAGON_MODEL[wagonOf(def)]), ...(def.drops ?? []).map((c) => WAGON_MODEL[c])];
       ids.forEach((id, v) => {
         const m = this.models.get(id)!;
         const size = new THREE.Vector3();
@@ -927,6 +1113,7 @@ export class GameScene {
     this.tagCargo = [];
     for (const k of this.signalLights.keys()) this.setSignalLight(k, 'green');
     this.drawTractors(null, 0);
+    this.drawBroken(null);
     this.overlayGroup.children.filter((c) => c !== this.highlight).forEach((c) => this.overlayGroup.remove(c));
   }
 
@@ -1044,8 +1231,27 @@ export class GameScene {
         else off = z;
       }
       tr.mesh.position.copy(tr.center).addScaledVector(tr.road, off);
-      tr.mesh.rotation.y = Math.atan2(tr.road.x * dir, tr.road.z * dir);
+      tr.mesh.rotation.y = Math.atan2(tr.road.x * dir, tr.road.z * dir) + (tr.lift ? Math.PI / 2 : 0);
+      if (tr.lift) {
+        // Il ponte si alza mentre la barca è vicina.
+        const up = Math.max(0, 1 - Math.abs(off) / (CELL * 0.95)) * 3.2;
+        for (const m of this.cellMeshes.get(tr.lift) ?? []) m.position.y = (m.userData.y ?? 0) + up;
+      }
     });
+  }
+
+  /** Passerelle rotte: il binario sprofonda. */
+  drawBroken(cur: SimSnapshot | null) {
+    const broken = new Set(cur?.broken ?? []);
+    const b = this.board!;
+    for (const [k, list] of this.cellMeshes) {
+      const [x, y] = k.split(',').map(Number);
+      if (b.terrain(x, y) !== 'boardwalk') continue;
+      for (const m of list) {
+        m.position.y = (m.userData.y ?? 0) - (broken.has(k) ? 0.9 : 0);
+        m.rotation.z = broken.has(k) ? 0.18 : 0;
+      }
+    }
   }
 
   showFailure(x: number, y: number) {

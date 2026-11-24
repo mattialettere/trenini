@@ -1,0 +1,126 @@
+{
+  "id": "C07",
+  "theme": "coast",
+  "name": {
+    "it": "Il ponte levatoio",
+    "en": "The drawbridge"
+  },
+  "terrain": [
+    "....~....",
+    "....~....",
+    "....~....",
+    "....~....",
+    "....~...."
+  ],
+  "fixed": [],
+  "depots": [
+    {
+      "x": 0,
+      "y": 2,
+      "dir": 1
+    }
+  ],
+  "stations": [
+    {
+      "id": "piazza",
+      "kind": "town",
+      "x": 8,
+      "y": 2,
+      "dir": 1,
+      "accepts": [
+        "passengers",
+        "coal"
+      ]
+    }
+  ],
+  "trains": [
+    {
+      "cargo": "passengers",
+      "wagons": 1,
+      "depart": 1,
+      "depot": 0
+    },
+    {
+      "cargo": "coal",
+      "wagons": 1,
+      "depart": 4,
+      "depot": 0
+    }
+  ],
+  "stock": {
+    "straight": 8,
+    "curve": 1,
+    "signal": 1
+  },
+  "targets": {
+    "pieces": 7,
+    "ticks": 18
+  },
+  "crossings": [
+    {
+      "x": 4,
+      "y": 2,
+      "axis": 1,
+      "period": 6,
+      "offset": 5,
+      "duration": 2,
+      "kind": "boat"
+    }
+  ],
+  "tutorial": [
+    {
+      "it": "Quando passa la barca il ponte si alza. Guarda gli orari e aspetta con un semaforo.",
+      "en": "When the boat passes, the bridge goes up. Check the times and wait with a signal."
+    }
+  ],
+  "solution": [
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 1,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 2,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 3,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 5,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 6,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 7,
+      "y": 2
+    }
+  ],
+  "solutionSignals": [
+    {
+      "x": 2,
+      "y": 2
+    }
+  ]
+}

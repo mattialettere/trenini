@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { Board } from '../src/core/board';
 import { combine, exitSide } from '../src/core/pieces';
-import { Simulation, scoreRun } from '../src/core/sim';
+import { Simulation, routeAt, scoreRun } from '../src/core/sim';
 import { Cell, LevelDef } from '../src/core/types';
 import { LEVELS } from '../src/levels';
 
@@ -230,6 +230,7 @@ describe('mondi', () => {
       ['country', 20],
       ['snow', 20],
       ['desert', 20],
+      ['coast', 20],
     ]);
   });
 });
@@ -269,5 +270,58 @@ describe('monete', () => {
     expect(e.coins()).toBe(60);
     expect(e.spend('hint')).toBe(true);
     expect(e.spend('hint')).toBe(false);
+  });
+});
+
+describe('regole della costa', () => {
+  const withLevel = (id: string, f: (l: LevelDef) => LevelDef) => {
+    const l = f(JSON.parse(JSON.stringify(lvl(id))));
+    const b = new Board(l);
+    b.loadSolution();
+    return b;
+  };
+  it("ordine di arrivo: con l'ordine rovesciato la soluzione sbaglia", () => {
+    const b = withLevel('C02', (l) => ({ ...l, stations: l.stations.map((s) => ({ ...s, order: [...s.order!].reverse() })) }));
+    expect(run(b).failure?.reason).toBe('wrong-order');
+  });
+  it('capienza: una stazione piena non accetta altri treni', () => {
+    const b = withLevel('C09', (l) => ({ ...l, stations: l.stations.map((s) => ({ ...s, capacity: 1 })) }));
+    expect(run(b).failure?.reason).toBe('station-full');
+  });
+  it('scarico: il vagone di coda resta allo scarico e il treno si accorcia', () => {
+    const s = new Simulation(solved(lvl('C05')));
+    s.runToEnd();
+    expect(s.outcome).toBe('won');
+    expect(s.trains[0].length).toBe(2);
+    const b = withLevel('C05', (l) => ({ ...l, trains: l.trains.map((t) => ({ ...t, drops: ['timber'] })) }));
+    expect(run(b).failure?.reason).toBe('undelivered');
+  });
+  it('scambio a tempo: dritto, poi deviato e di nuovo dritto', () => {
+    const p = { kind: 'switch' as const, a: 3 as const, b: 1 as const, c: 0 as const, timer: { period: 4, offset: 6 } };
+    expect([5, 6, 9, 10, 14].map((t) => routeAt(p, t))).toEqual(['none', 'all', 'all', 'none', 'all']);
+  });
+  it('ponte levatoio: senza semaforo il treno trova il ponte alzato', () => {
+    const b = new Board(lvl('C07'));
+    b.loadPieces(lvl('C07').solution);
+    expect(run(b).failure?.reason).toBe('drawbridge');
+  });
+  it('passerella: un secondo treno sulla stessa passerella la trova rotta', () => {
+    const b = withLevel('C08', (l) => ({ ...l, trains: [...l.trains, { ...l.trains[0], depart: 12 }] }));
+    expect(run(b).failure?.reason).toBe('broken');
+  });
+  it('piattaforma girevole: il treno gira e torna indietro', () => {
+    const s = new Simulation(solved(lvl('C10')));
+    s.runToEnd();
+    expect(s.outcome).toBe('won');
+    expect(s.trains[0].reversed).toBe(true);
+  });
+  it('treni a ripetizione: un treno con repeat diventa più treni', () => {
+    expect(new Board(lvl('C12')).level.trains.length).toBe(6);
+  });
+  it('crepaccio: si attraversa solo con un viadotto dritto', () => {
+    const b = new Board({ ...lvl('C11'), stock: { straight: 9, curve: 9, bridge: 9 } });
+    b.placePath([{ x: 3, y: 1 }, { x: 4, y: 1 }, { x: 5, y: 1 }, { x: 6, y: 1 }]);
+    expect(b.pieceAt(4, 1)?.kind).toBe('bridge');
+    expect(b.buildable(4, 1)).toBe(true);
   });
 });

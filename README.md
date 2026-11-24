@@ -3,9 +3,14 @@
 Un puzzle rilassante di treni su isole sospese, giocabile nel browser (prima di tutto dal telefono).
 Posi pochi binari sulla griglia, premi **Via!** e guardi i treni consegnare latte, carbone, legname e passeggeri.
 
-Stato: **60 livelli** in tre mondi (campagna, neve, deserto), 20 per mondo, di difficoltà crescente: scambi,
+Stato: **80 livelli** in quattro mondi (campagna, neve, deserto, costa), 20 per mondo, di difficoltà crescente: scambi,
 ponti, gallerie, incroci, fattorie, miniere e boschi dove i treni vuoti caricano la merce, semafori e passaggi
 a livello (trattore, gatto delle nevi, diligenza).
+
+La costa aggiunge una regola nuova per livello: consegne in ordine, binari già posati, scorte strette, treni
+lunghi, scarichi dove lasciare il vagone di coda, scambi a tempo, ponti levatoi per le barche, passerelle che
+reggono un solo treno, stazioni con capienza, piattaforme girevoli per tornare indietro, isole separate da un
+crepaccio (solo viadotti) e depositi che mandano treni a ripetizione.
 
 Monete e negozio: le stelle danno monete (1 stella 10, 2 stelle 20, 3 stelle 50; rigiocando si prende solo la
 differenza). Tra un livello e l'altro si apre il negozio, dove si comprano bonus da usare durante la costruzione:

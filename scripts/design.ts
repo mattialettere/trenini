@@ -24,20 +24,29 @@ interface Node {
   y: number;
   entry: Dir;
   loaded: Cargo | null;
+  /** Vagoni ancora da lasciare agli scarichi (si lasciano dalla coda). */
+  drops: number;
+  /** Ha già girato sulla piattaforma. */
+  turned: boolean;
   cost: number;
   path: Cell[];
   seen: Set<string>;
 }
 
-function route(b: Board, ti: number): { path: Cell[]; cargo: Cargo } | null {
+function route(b: Board, ti: number, avoid: Set<string>, full: Set<string>): { path: Cell[]; cargo: Cargo; station: string } | null {
   const lvl = b.level;
-  const tr = lvl.trains[ti];
+  const tr = lvl.trains[ti] as LevelDef['trains'][number] & { via?: string };
   const d = lvl.depots[tr.depot];
+  const drops = tr.drops ?? [];
+  const L = 1 + tr.wagons + drops.length;
+  const mustTurn = tr.via === 'turntable';
   const start: Node = {
     x: d.x + DX[d.dir],
     y: d.y + DY[d.dir],
     entry: opposite(d.dir),
     loaded: tr.cargo,
+    drops: drops.length,
+    turned: false,
     cost: 0,
     path: [{ x: d.x, y: d.y }],
     seen: new Set([cellKey(d.x, d.y)]),
@@ -47,21 +56,35 @@ function route(b: Board, ti: number): { path: Cell[]; cargo: Cargo } | null {
   while (open.length) {
     open.sort((p, q) => p.cost - q.cost);
     const n = open.shift()!;
-    const key = `${n.x},${n.y},${n.entry},${n.loaded}`;
+    const key = `${n.x},${n.y},${n.entry},${n.loaded},${n.drops},${n.turned}`;
     if ((best.get(key) ?? Infinity) <= n.cost) continue;
     best.set(key, n.cost);
     if (n.path.length > 60) continue;
     const st = b.stationAt(n.x, n.y);
     if (st) {
-      if (opposite(st.dir) === n.entry && n.loaded && st.accepts.includes(n.loaded)) {
-        return { path: [...n.path, { x: n.x, y: n.y }], cargo: n.loaded };
+      if (opposite(st.dir) === n.entry && n.loaded && st.accepts.includes(n.loaded) && n.drops === 0 && (n.turned || !mustTurn) && !full.has(st.id)) {
+        return { path: [...n.path, { x: n.x, y: n.y }], cargo: n.loaded, station: st.id };
       }
       continue;
     }
-    if (!b.inside(n.x, n.y) || b.depotAt(n.x, n.y) || n.seen.has(cellKey(n.x, n.y))) continue;
+    const tt = b.turntableAt(n.x, n.y);
+    if (tt) {
+      // Piattaforma: il treno gira e riparte dalla sua coda, all'indietro.
+      const len = n.path.length;
+      if (tt.side !== n.entry || n.turned || !mustTurn || len - L < 1) continue;
+      const tail = n.path[len - L + 1];
+      const front = n.path[len - L];
+      const back = n.path.slice(len - L + 1).reverse();
+      const e = ([0, 1, 2, 3] as Dir[]).find((q) => front.x + DX[q] === tail.x && front.y + DY[q] === tail.y)!;
+      open.push({ x: front.x, y: front.y, entry: e, loaded: n.loaded, drops: n.drops, turned: true, cost: n.cost + 0.5, path: [...n.path, { x: n.x, y: n.y }, ...back], seen: new Set() });
+      continue;
+    }
+    if (!b.inside(n.x, n.y) || b.depotAt(n.x, n.y) || n.seen.has(cellKey(n.x, n.y)) || avoid.has(cellKey(n.x, n.y))) continue;
     const p = b.pieceAt(n.x, n.y);
     const pick = b.pickupAt(n.x, n.y);
     const loaded = pick && n.loaded === null ? pick.gives : n.loaded;
+    const dr = b.dropAt(n.x, n.y);
+    const left = dr && n.drops > 0 && !n.turned && drops[n.drops - 1] === dr.takes ? n.drops - 1 : n.drops;
     const tr0 = b.terrain(n.x, n.y);
     for (const x of [0, 1, 2, 3] as Dir[]) {
       if (x === n.entry) continue;
@@ -80,35 +103,46 @@ function route(b: Board, ti: number): { path: Cell[]; cargo: Cargo } | null {
           if (m) c = m.kind === 'switch' ? 1.6 : 2.2;
         }
       } else if (b.buildable(n.x, n.y)) {
-        if (tr0 === 'water' || tr0 === 'hill') c = x === opposite(n.entry) ? 1.3 : null;
+        if (tr0 === 'water' || tr0 === 'hill' || tr0 === 'gap') c = x === opposite(n.entry) ? 1.3 : null;
         else c = x === opposite(n.entry) ? 1 : 1.15;
       }
       if (c === null) continue;
       const seen = new Set(n.seen);
       seen.add(cellKey(n.x, n.y));
-      open.push({ x: n.x + DX[x], y: n.y + DY[x], entry: opposite(x), loaded, cost: n.cost + c, path: [...n.path, { x: n.x, y: n.y }], seen });
+      open.push({ x: n.x + DX[x], y: n.y + DY[x], entry: opposite(x), loaded, drops: left, turned: n.turned, cost: n.cost + c, path: [...n.path, { x: n.x, y: n.y }], seen });
     }
   }
   return null;
 }
 
-function attempt(id: string, draft: Draft, order: number[]): { out: LevelDef; line: string; ticks: number; pieces: number } | string {
+function attempt(id: string, draft: Draft, order: number[], mask = 0): { out: LevelDef; line: string; ticks: number; pieces: number } | string {
   const big: Partial<Record<StockKind, number>> = { straight: 99, curve: 99, switch: 99, crossing: 99, bridge: 99, tunnel: 99, signal: 9 };
   const b = new Board({ ...draft, stock: big });
   const paths: Cell[][] = [];
+  // Le passerelle reggono un solo treno: un altro treno non ci può passare.
+  const avoid = new Set<string>();
+  const timed = [...b.pieces.values()].filter((p) => p.timer).map((p) => cellKey(p.x, p.y));
+  const got = new Map<string, number>();
+  const full = new Set<string>();
   for (const ti of order) {
-    const r = route(b, ti);
+    // Con la maschera, alcuni treni evitano gli scambi a tempo e fanno un'altra strada.
+    const av = mask & (1 << ti) ? new Set([...avoid, ...timed]) : avoid;
+    const r = route(b, ti, av, full);
     if (!r) {
       return `nessun percorso per il treno ${ti}`;
     }
     b.placePath(r.path);
     paths[ti] = r.path;
+    got.set(r.station, (got.get(r.station) ?? 0) + 1);
+    const cap = b.stationAt(r.path[r.path.length - 1].x, r.path[r.path.length - 1].y)?.capacity;
+    if (cap !== undefined && got.get(r.station)! >= cap) full.add(r.station);
+    for (const c of r.path) if (b.terrain(c.x, c.y) === 'boardwalk') avoid.add(cellKey(c.x, c.y));
   }
   // Scambi: per ogni scambio, quali treni entrano dal tronco e quali deviano.
-  const lvl = draft;
+  const lvl = b.level;
   const routeCargo = (ti: number) => lvl.trains[ti].cargo ?? lvl.trains[ti].wagon ?? null;
   for (const p of b.pieces.values()) {
-    if (p.kind !== 'switch') continue;
+    if (p.kind !== 'switch' || p.fixed) continue;
     const div = new Set<Cargo | null>();
     const str = new Set<Cargo | null>();
     paths.forEach((path, ti) => {
@@ -160,11 +194,11 @@ function attempt(id: string, draft: Draft, order: number[]): { out: LevelDef; li
     const n = bb.used(k) + (bb.used(k) > 0 || (slack as any)[k] ? ((slack as any)[k] ?? 0) : 0);
     if (n > 0) stock[k] = n;
   }
-  const out: LevelDef = { ...draft, stock, targets: { pieces: r.pieces, ticks: r.ticks }, solution: pieces.map(({ fixed, ...p }) => p as PlacedPiece) };
+  const out: LevelDef = { ...draft, trains: draft.trains.map(({ via, ...t }: any) => t), stock, targets: { pieces: r.pieces, ticks: r.ticks }, solution: pieces.map(({ fixed, ...p }) => p as PlacedPiece) };
   if (sigs.length) out.solutionSignals = sigs;
   else delete out.solutionSignals;
   for (const k of ['slack', 'maxSignals', 'designOrder'] as const) delete (out as any)[k];
-  return { out, ticks: r.ticks, pieces: r.pieces, line: `order=${order} ticks=${r.ticks} pieces=${r.pieces} signals=${sigs.length} stock=${JSON.stringify(stock)}` };
+  return { out, ticks: r.ticks, pieces: r.pieces, line: `order=${order} mask=${mask} ticks=${r.ticks} pieces=${r.pieces} signals=${sigs.length} stock=${JSON.stringify(stock)}` };
 }
 
 function permutations(n: number): number[][] {
@@ -178,11 +212,14 @@ function permutations(n: number): number[][] {
 function design(id: string): boolean {
   const file = `src/levels/${id}.json`;
   const draft = JSON.parse(readFileSync(file, 'utf8')) as Draft;
-  const orders = draft.designOrder ? [draft.designOrder] : permutations(draft.trains.length).slice(0, 24);
+  const n = new Board(draft).level.trains.length;
+  const orders = draft.designOrder ? [draft.designOrder] : permutations(n).slice(0, 24);
   let best: Exclude<ReturnType<typeof attempt>, string> | null = null;
   const why = new Set<string>();
-  for (const o of orders) {
-    const r = attempt(id, draft, o);
+  const hasTimed = draft.fixed.some((p) => p.timer);
+  const masks = hasTimed ? Array.from({ length: 1 << Math.min(n, 4) }, (_, i) => i) : [0];
+  for (const o of orders) for (const m of masks) {
+    const r = attempt(id, draft, o, m);
     if (typeof r === 'string') why.add(r);
     else if (!best || r.ticks < best.ticks || (r.ticks === best.ticks && r.pieces < best.pieces)) best = r;
   }

@@ -1,0 +1,269 @@
+{
+  "id": "C20",
+  "theme": "coast",
+  "name": {
+    "it": "Festa al porto",
+    "en": "Harbour festival"
+  },
+  "terrain": [
+    "....::......",
+    "....::...o..",
+    "....::......",
+    "....::......",
+    "....::..~...",
+    "....::..~...",
+    "....::..~..."
+  ],
+  "fixed": [],
+  "depots": [
+    {
+      "x": 0,
+      "y": 1,
+      "dir": 1
+    },
+    {
+      "x": 0,
+      "y": 5,
+      "dir": 1
+    }
+  ],
+  "stations": [
+    {
+      "id": "piazza",
+      "kind": "town",
+      "x": 11,
+      "y": 2,
+      "dir": 1,
+      "accepts": [
+        "passengers",
+        "milk"
+      ],
+      "order": [
+        "passengers",
+        "milk"
+      ]
+    },
+    {
+      "id": "porto",
+      "kind": "port",
+      "x": 11,
+      "y": 5,
+      "dir": 1,
+      "accepts": [
+        "coal"
+      ]
+    }
+  ],
+  "trains": [
+    {
+      "cargo": "passengers",
+      "wagons": 1,
+      "depart": 1,
+      "depot": 0,
+      "drops": [
+        "timber"
+      ]
+    },
+    {
+      "cargo": "milk",
+      "wagons": 1,
+      "depart": 1,
+      "depot": 1
+    },
+    {
+      "cargo": "coal",
+      "wagons": 1,
+      "depart": 4,
+      "depot": 1
+    }
+  ],
+  "stock": {
+    "straight": 15,
+    "curve": 3,
+    "switch": 2,
+    "bridge": 4,
+    "signal": 1
+  },
+  "targets": {
+    "pieces": 22,
+    "ticks": 17
+  },
+  "drops": [
+    {
+      "x": 9,
+      "y": 2,
+      "axis": 1,
+      "takes": "timber"
+    }
+  ],
+  "crossings": [
+    {
+      "x": 8,
+      "y": 5,
+      "axis": 1,
+      "period": 6,
+      "offset": 6,
+      "duration": 2,
+      "kind": "boat"
+    }
+  ],
+  "solution": [
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 1,
+      "y": 5
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 2,
+      "y": 5
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 3,
+      "y": 5
+    },
+    {
+      "kind": "bridge",
+      "a": 3,
+      "b": 1,
+      "x": 4,
+      "y": 5
+    },
+    {
+      "kind": "bridge",
+      "a": 3,
+      "b": 1,
+      "x": 5,
+      "y": 5
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 6,
+      "y": 5
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 7,
+      "y": 5
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 9,
+      "y": 5
+    },
+    {
+      "kind": "switch",
+      "a": 3,
+      "b": 1,
+      "c": 0,
+      "route": "milk",
+      "x": 10,
+      "y": 5
+    },
+    {
+      "kind": "straight",
+      "a": 2,
+      "b": 0,
+      "x": 10,
+      "y": 4
+    },
+    {
+      "kind": "straight",
+      "a": 2,
+      "b": 0,
+      "x": 10,
+      "y": 3
+    },
+    {
+      "kind": "switch",
+      "a": 1,
+      "b": 3,
+      "c": 2,
+      "route": "none",
+      "x": 10,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 1,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 2,
+      "y": 1
+    },
+    {
+      "kind": "curve",
+      "a": 3,
+      "b": 2,
+      "x": 3,
+      "y": 1
+    },
+    {
+      "kind": "curve",
+      "a": 0,
+      "b": 1,
+      "x": 3,
+      "y": 2
+    },
+    {
+      "kind": "bridge",
+      "a": 3,
+      "b": 1,
+      "x": 4,
+      "y": 2
+    },
+    {
+      "kind": "bridge",
+      "a": 3,
+      "b": 1,
+      "x": 5,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 6,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 7,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 8,
+      "y": 2
+    }
+  ],
+  "solutionSignals": [
+    {
+      "x": 7,
+      "y": 5
+    }
+  ]
+}

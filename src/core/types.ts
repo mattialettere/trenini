@@ -24,7 +24,7 @@ export interface Cell {
 export const cellKey = (x: number, y: number): string => `${x},${y}`;
 
 /** Terreno di una cella. */
-export type Terrain = 'grass' | 'tree' | 'water' | 'hill' | 'rock' | 'road' | 'lot' | 'void';
+export type Terrain = 'grass' | 'tree' | 'water' | 'hill' | 'rock' | 'road' | 'lot' | 'void' | 'boardwalk' | 'gap';
 
 /** Pezzi che il giocatore può posare. */
 export type PieceKind = 'straight' | 'curve' | 'switch' | 'crossing' | 'bridge' | 'tunnel';
@@ -48,6 +48,8 @@ export interface Piece {
   b: Dir;
   c?: Dir;
   route?: SwitchRoute;
+  /** Scambio a tempo (solo pezzi fissi): dal tick offset cambia da solo tra dritto e deviato ogni `period` tick. */
+  timer?: { period: number; offset: number };
   /** Pezzo già presente nel livello: non si può togliere né cambiare. */
   fixed?: boolean;
 }
@@ -69,6 +71,10 @@ export interface StationDef {
   /** Direzione di marcia dei treni che entrano (la stazione si apre sul lato opposto). */
   dir: Dir;
   accepts: Cargo[];
+  /** Le merci devono arrivare in quest'ordine (una per treno). */
+  order?: Cargo[];
+  /** Quanti treni al massimo può ricevere. */
+  capacity?: number;
 }
 
 export type LocoModel = 'tank-steam' | 'tender-steam' | 'diesel-shunter' | 'mainline-diesel' | 'railbus' | 'handcar';
@@ -83,6 +89,10 @@ export interface TrainDef {
   /** Tick di partenza dal deposito. */
   depart: number;
   depot: number;
+  /** Vagoni in più da lasciare lungo la strada, ognuno al suo scarico. */
+  drops?: Cargo[];
+  /** Il deposito manda `count` treni uguali, uno ogni `every` tick. */
+  repeat?: { count: number; every: number };
 }
 
 /** Stazione di carico passante: un treno vuoto che la attraversa prende la merce. */
@@ -95,6 +105,22 @@ export interface PickupDef {
   kind: 'farm' | 'mine' | 'forest';
 }
 
+/** Scarico passante: un treno che lo attraversa lascia qui il vagone di questa merce. */
+export interface DropDef {
+  x: number;
+  y: number;
+  axis: 0 | 1;
+  takes: Cargo;
+}
+
+/** Piattaforma girevole in fondo a un binario morto: il treno entra, gira e torna indietro. */
+export interface TurntableDef {
+  x: number;
+  y: number;
+  /** Lato aperto verso il binario. */
+  side: Dir;
+}
+
 /** Passaggio a livello: una strada attraversa il binario e un trattore passa a orari fissi. */
 export interface LevelCrossingDef {
   x: number;
@@ -105,6 +131,8 @@ export interface LevelCrossingDef {
   period: number;
   offset: number;
   duration: number;
+  /** road = trattore sulla strada; boat = ponte levatoio che si alza per una barca. */
+  kind?: 'road' | 'boat';
 }
 
 export interface Decoration {
@@ -121,19 +149,21 @@ export interface PlacedPiece extends Piece {
 }
 
 /** Ambientazione di un livello: cambia solo l'aspetto, non le regole. */
-export type Theme = 'country' | 'snow' | 'desert';
+export type Theme = 'country' | 'snow' | 'desert' | 'coast';
 
 export interface LevelDef {
   id: string;
   theme?: Theme;
   name: { it: string; en: string };
-  /** Righe del terreno: '.' prato, 'T' alberi, '~' acqua, '^' collina, 'R' roccia, '=' strada, 'o' cortile (edifici di carico), ' ' vuoto. */
+  /** Righe del terreno: '.' prato, 'T' alberi, '~' acqua, '^' collina, 'R' roccia, '=' strada, 'o' cortile (edifici di carico), 'b' passerella di legno (regge un solo treno), ':' crepaccio tra due isole (solo viadotti), ' ' vuoto. */
   terrain: string[];
   fixed: PlacedPiece[];
   depots: DepotDef[];
   stations: StationDef[];
   pickups?: PickupDef[];
   crossings?: LevelCrossingDef[];
+  drops?: DropDef[];
+  turntables?: TurntableDef[];
   trains: TrainDef[];
   stock: Partial<Record<StockKind, number>>;
   targets: { pieces: number; ticks: number };

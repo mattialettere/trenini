@@ -1,0 +1,193 @@
+{
+  "id": "C11",
+  "theme": "coast",
+  "name": {
+    "it": "Due isole",
+    "en": "Two islands"
+  },
+  "terrain": [
+    "....::....",
+    "....::....",
+    ".T..::....",
+    "....::....",
+    "....::..R."
+  ],
+  "fixed": [],
+  "depots": [
+    {
+      "x": 0,
+      "y": 1,
+      "dir": 1
+    },
+    {
+      "x": 0,
+      "y": 3,
+      "dir": 1
+    }
+  ],
+  "stations": [
+    {
+      "id": "piazza",
+      "kind": "town",
+      "x": 9,
+      "y": 1,
+      "dir": 1,
+      "accepts": [
+        "passengers"
+      ]
+    },
+    {
+      "id": "porto",
+      "kind": "port",
+      "x": 9,
+      "y": 3,
+      "dir": 1,
+      "accepts": [
+        "coal"
+      ]
+    }
+  ],
+  "trains": [
+    {
+      "cargo": "passengers",
+      "wagons": 1,
+      "depart": 1,
+      "depot": 0
+    },
+    {
+      "cargo": "coal",
+      "wagons": 1,
+      "depart": 1,
+      "depot": 1
+    }
+  ],
+  "stock": {
+    "straight": 14,
+    "curve": 1,
+    "bridge": 4
+  },
+  "targets": {
+    "pieces": 16,
+    "ticks": 10
+  },
+  "tutorial": [
+    {
+      "it": "Tra le due isole c'è il vuoto: solo i viadotti di pietra lo attraversano.",
+      "en": "There's nothing between the two islands: only stone viaducts can cross."
+    }
+  ],
+  "solution": [
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 1,
+      "y": 3
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 2,
+      "y": 3
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 3,
+      "y": 3
+    },
+    {
+      "kind": "bridge",
+      "a": 3,
+      "b": 1,
+      "x": 4,
+      "y": 3
+    },
+    {
+      "kind": "bridge",
+      "a": 3,
+      "b": 1,
+      "x": 5,
+      "y": 3
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 6,
+      "y": 3
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 7,
+      "y": 3
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 8,
+      "y": 3
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 1,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 2,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 3,
+      "y": 1
+    },
+    {
+      "kind": "bridge",
+      "a": 3,
+      "b": 1,
+      "x": 4,
+      "y": 1
+    },
+    {
+      "kind": "bridge",
+      "a": 3,
+      "b": 1,
+      "x": 5,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 6,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 7,
+      "y": 1
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 8,
+      "y": 1
+    }
+  ]
+}

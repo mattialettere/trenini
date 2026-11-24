@@ -1,0 +1,126 @@
+{
+  "id": "C05",
+  "theme": "coast",
+  "name": {
+    "it": "Il pescivendolo",
+    "en": "The fishmonger"
+  },
+  "terrain": [
+    ".........",
+    "....o....",
+    ".........",
+    "T........",
+    "........."
+  ],
+  "fixed": [],
+  "depots": [
+    {
+      "x": 0,
+      "y": 2,
+      "dir": 1
+    }
+  ],
+  "stations": [
+    {
+      "id": "piazza",
+      "kind": "town",
+      "x": 8,
+      "y": 4,
+      "dir": 1,
+      "accepts": [
+        "passengers"
+      ]
+    }
+  ],
+  "trains": [
+    {
+      "cargo": "passengers",
+      "wagons": 1,
+      "depart": 1,
+      "depot": 0,
+      "drops": [
+        "milk"
+      ]
+    }
+  ],
+  "stock": {
+    "straight": 8,
+    "curve": 3
+  },
+  "targets": {
+    "pieces": 8,
+    "ticks": 11
+  },
+  "drops": [
+    {
+      "x": 4,
+      "y": 2,
+      "axis": 1,
+      "takes": "milk"
+    }
+  ],
+  "tutorial": [
+    {
+      "it": "Il vagone di coda va lasciato allo scarico con la stessa merce. Passaci sopra prima di arrivare!",
+      "en": "The last wagon must be left at the unloading spot with the same cargo. Drive through it before arriving!"
+    }
+  ],
+  "solution": [
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 1,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 2,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 3,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 5,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 3,
+      "b": 1,
+      "x": 6,
+      "y": 2
+    },
+    {
+      "kind": "curve",
+      "a": 3,
+      "b": 2,
+      "x": 7,
+      "y": 2
+    },
+    {
+      "kind": "straight",
+      "a": 0,
+      "b": 2,
+      "x": 7,
+      "y": 3
+    },
+    {
+      "kind": "curve",
+      "a": 0,
+      "b": 1,
+      "x": 7,
+      "y": 4
+    }
+  ]
+}
